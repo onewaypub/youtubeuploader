@@ -8,7 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.UserSettings;
-import org.gneisenau.youtube.model.UserSettingsDAO;
+import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -23,7 +23,7 @@ public class MailSendService {
 
 	private static final Logger logger = LogManager.getLogger(MailSendService.class);
 	@Autowired
-	private UserSettingsDAO userSettingsDAO;
+	private UserSettingsRepository userSettingsDAO;
 
 	@Value("${mail.server}")
 	private String mailServer;

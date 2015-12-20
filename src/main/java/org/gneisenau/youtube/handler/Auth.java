@@ -13,7 +13,7 @@ import org.gneisenau.youtube.exceptions.AuthorizeException;
 import org.gneisenau.youtube.exceptions.ClientSecrectsException;
 import org.gneisenau.youtube.exceptions.SecretsStoreException;
 import org.gneisenau.youtube.message.MailSendService;
-import org.gneisenau.youtube.model.UserSettingsDAO;
+import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -41,7 +41,7 @@ import com.google.common.collect.Lists;
 public class Auth {
 
 	@Autowired
-	private UserSettingsDAO userSettingDAO;
+	private UserSettingsRepository userSettingDAO;
 	@Value("${tomcat.home.dir}")
 	private String tomcatHomeDir;
 

@@ -28,7 +28,7 @@ import org.gneisenau.youtube.exceptions.SecretsStoreException;
 import org.gneisenau.youtube.exceptions.UploadException;
 import org.gneisenau.youtube.model.PrivacySetting;
 import org.gneisenau.youtube.model.UploadState;
-import org.gneisenau.youtube.model.VideoDAO;
+import org.gneisenau.youtube.model.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -62,7 +62,7 @@ import com.google.api.services.youtube.model.VideoStatus;
 public class VideoHandler {
 
 	@Autowired
-	private VideoDAO videoDAO;
+	private VideoRepository videoDAO;
 	@Autowired
 	private YoutubeHandler youtubeHandler;
 	@Autowired

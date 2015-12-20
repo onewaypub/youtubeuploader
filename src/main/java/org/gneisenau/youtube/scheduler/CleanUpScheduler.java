@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.gneisenau.youtube.controller.IOService;
 import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.Video;
-import org.gneisenau.youtube.model.VideoDAO;
+import org.gneisenau.youtube.model.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CleanUpScheduler {
 
 	@Autowired
-	private VideoDAO videoDAO;
+	private VideoRepository videoDAO;
 	@Autowired
 	private IOService ioService;
 

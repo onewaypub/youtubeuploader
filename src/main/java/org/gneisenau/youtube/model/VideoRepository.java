@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class VideoDAO {
+public class VideoRepository {
 
 	@PersistenceContext
 	private EntityManager em;

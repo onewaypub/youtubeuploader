@@ -13,9 +13,9 @@ import org.gneisenau.youtube.exceptions.VideoMergeException;
 import org.gneisenau.youtube.exceptions.VideoTranscodeException;
 import org.gneisenau.youtube.message.MailSendService;
 import org.gneisenau.youtube.model.State;
-import org.gneisenau.youtube.model.UserSettingsDAO;
+import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.gneisenau.youtube.model.Video;
-import org.gneisenau.youtube.model.VideoDAO;
+import org.gneisenau.youtube.model.VideoRepository;
 import org.gneisenau.youtube.video.VideoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class VideoProcessingScheduler {
 
 	@Autowired
-	private UserSettingsDAO userSettingsDAO;
+	private UserSettingsRepository userSettingsDAO;
 	@Autowired
 	IOService ioService;
 	@Value("${tomcat.home.dir}")
@@ -37,7 +37,7 @@ public class VideoProcessingScheduler {
 
 
 	@Autowired
-	private VideoDAO videoDAO;
+	private VideoRepository videoDAO;
 	@Autowired
 	private VideoUtils videoProcessor;
 	@Autowired

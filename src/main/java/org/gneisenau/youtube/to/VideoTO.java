@@ -116,4 +116,100 @@ public class VideoTO {
 		this.gerne = gerne;
 	}
 
+	@Override
+	public String toString() {
+		return "VideoTO [description=" + description + ", title=" + title + ", playlist=" + playlist + ", tags=" + tags
+				+ ", timestamp=" + timestamp + ", publisher=" + publisher + ", published=" + published + ", shorttitle="
+				+ shorttitle + ", developer=" + developer + ", categoryId=" + categoryId + ", gerne=" + gerne
+				+ ", ageRestricted=" + ageRestricted + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (ageRestricted ? 1231 : 1237);
+		result = prime * result + ((categoryId == null) ? 0 : categoryId.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((developer == null) ? 0 : developer.hashCode());
+		result = prime * result + ((gerne == null) ? 0 : gerne.hashCode());
+		result = prime * result + ((playlist == null) ? 0 : playlist.hashCode());
+		result = prime * result + ((published == null) ? 0 : published.hashCode());
+		result = prime * result + ((publisher == null) ? 0 : publisher.hashCode());
+		result = prime * result + ((shorttitle == null) ? 0 : shorttitle.hashCode());
+		result = prime * result + ((tags == null) ? 0 : tags.hashCode());
+		result = prime * result + ((timestamp == null) ? 0 : timestamp.hashCode());
+		result = prime * result + ((title == null) ? 0 : title.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		VideoTO other = (VideoTO) obj;
+		if (ageRestricted != other.ageRestricted)
+			return false;
+		if (categoryId == null) {
+			if (other.categoryId != null)
+				return false;
+		} else if (!categoryId.equals(other.categoryId))
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (developer == null) {
+			if (other.developer != null)
+				return false;
+		} else if (!developer.equals(other.developer))
+			return false;
+		if (gerne == null) {
+			if (other.gerne != null)
+				return false;
+		} else if (!gerne.equals(other.gerne))
+			return false;
+		if (playlist == null) {
+			if (other.playlist != null)
+				return false;
+		} else if (!playlist.equals(other.playlist))
+			return false;
+		if (published == null) {
+			if (other.published != null)
+				return false;
+		} else if (!published.equals(other.published))
+			return false;
+		if (publisher == null) {
+			if (other.publisher != null)
+				return false;
+		} else if (!publisher.equals(other.publisher))
+			return false;
+		if (shorttitle == null) {
+			if (other.shorttitle != null)
+				return false;
+		} else if (!shorttitle.equals(other.shorttitle))
+			return false;
+		if (tags == null) {
+			if (other.tags != null)
+				return false;
+		} else if (!tags.equals(other.tags))
+			return false;
+		if (timestamp == null) {
+			if (other.timestamp != null)
+				return false;
+		} else if (!timestamp.equals(other.timestamp))
+			return false;
+		if (title == null) {
+			if (other.title != null)
+				return false;
+		} else if (!title.equals(other.title))
+			return false;
+		return true;
+	}
+
 }

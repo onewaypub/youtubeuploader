@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class UserSettingsDAO {
+public class UserSettingsRepository {
 
 	@PersistenceContext
 	private EntityManager em;

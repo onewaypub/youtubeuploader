@@ -30,14 +30,14 @@
 			<div class="col-md-1"></div>
 		</div>
 		<form action="save.do?${_csrf.parameterName}=${_csrf.token}"
-			method="post">
+			method="post" modelattribute="usersettings">
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-2">
 					<div class="form-group">
 						<label for="title">Mailadresse</label> <input type="email"
-							name="mailTo" class="form-control" id="mailTo" required="required"
-							value="${usersettings.mailTo}" />
+							name="mailTo" class="form-control" id="mailTo"
+							required="required" value="${usersettings.mailTo}" />
 					</div>
 				</div>
 				<div class="col-md-9"></div>
@@ -97,7 +97,7 @@
 				<div class="col-md-1"></div>
 				<div class="col-md-2">
 					<div class="form-group">
-						<label for="title">Nachricht nach Fehler</label> 
+						<label for="title">Nachricht nach Fehler</label>
 						<c:if test="${usersettings.notifyErrorState}">
 							<input type="checkbox" name="notifyErrorState"
 								class="form-control" id="notifyErrorState" checked="checked"></input>
@@ -112,17 +112,95 @@
 			</div>
 			<div class="row">
 				<div class="col-md-1"></div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label for="title">Video Footer</label>
+						<textarea class="form-control" rows="3" placeholder="Video Footer"
+							name="videoFooter" id="videoFooter"></textarea>
+					</div>
+				</div>
+				<div class="col-md-9"></div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label for="title">Standard Tags</label> <input type="text"
+							name="defaultTags" class="form-control" id="defaultTags"
+							required="required" />
+					</div>
+				</div>
+				<div class="col-md-9"></div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label for="title">Auf Twitter posten</label>
+						<c:if test="${usersettings.notifyErrorState}">
+							<input type="checkbox" name="postOnTwitter" class="form-control"
+								id="postOnTwitter" checked="checked"></input>
+						</c:if>
+						<c:if test="${not usersettings.notifyErrorState}">
+							<input type="checkbox" name="postOnTwitter" class="form-control"
+								id="postOnTwitter"></input>
+						</c:if>
+					</div>
+				</div>
+				<div class="col-md-9"></div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label for="title">Twitter Post</label> <input type="text"
+							name="twitterPost" class="form-control" id="twitterPost" />
+					</div>
+				</div>
+				<div class="col-md-9"></div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label for="title">Auf Facebook posten</label>
+						<c:if test="${usersettings.notifyErrorState}">
+							<input type="checkbox" name="postOnFacebook" class="form-control"
+								id="postOnFacebook" checked="checked"></input>
+						</c:if>
+						<c:if test="${not usersettings.notifyErrorState}">
+							<input type="checkbox" name="postOnFacebook" class="form-control"
+								id="postOnFacebook"></input>
+						</c:if>
+					</div>
+				</div>
+				<div class="col-md-9"></div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<label for="title">Facebook Post</label> <input type="text"
+							name="facebookPost" class="form-control" id="facebookPost" />
+					</div>
+				</div>
+				<div class="col-md-9"></div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
 				<div class="col-md-1">
 					<button type="submit" class="btn btn-default">Speichern &
 						Zurück</button>
 				</div>
 				<div class="col-md-1">
-					<a href="list.do?${_csrf.parameterName}=${_csrf.token}" class="btn btn-default">Zurück</a>
+					<a href="list.do?${_csrf.parameterName}=${_csrf.token}"
+						class="btn btn-default">Zurück</a>
 				</div>
-				<div class="col-md-9">
-				</div>
+				<div class="col-md-9"></div>
 			</div>
 		</form>
+		<form action="/connectToFacebook.do?${_csrf.parameterName}=${_csrf.token}" method="POST"><button type="submit">Connect to Facebook</button></form>
+		<form action="/connectToTwitter.do?${_csrf.parameterName}=${_csrf.token}" method="POST"><button type="submit">Connect to Twitter</button></form>
 	</div>
 	<!-- jQuery (wird für Bootstrap JavaScript-Plugins benötigt) -->
 	<script src="js/sockjs-0.3.4.js"></script>

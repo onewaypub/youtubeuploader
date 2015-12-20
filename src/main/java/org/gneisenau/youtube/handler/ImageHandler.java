@@ -25,7 +25,7 @@ import org.gneisenau.youtube.exceptions.PreUploadException;
 import org.gneisenau.youtube.exceptions.UploadException;
 import org.gneisenau.youtube.model.UploadState;
 import org.gneisenau.youtube.model.Video;
-import org.gneisenau.youtube.model.VideoDAO;
+import org.gneisenau.youtube.model.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -51,7 +51,7 @@ import com.google.api.services.youtube.model.ThumbnailSetResponse;
 public class ImageHandler {
 
 	@Autowired
-	private VideoDAO videoDAO;
+	private VideoRepository videoDAO;
 	@Autowired
 	private Auth auth;
 	@Value("${youtube.app.name}")
