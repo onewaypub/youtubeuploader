@@ -29,11 +29,8 @@
 			<artifactId>google-api-services-youtube</artifactId>
 			<version>v3-rev107-1.18.0-rc</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>com.google.http-client</groupId>
-			<artifactId>google-http-client-jackson2</artifactId>
-			<version>1.20.0</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>com.google.http-client</groupId> <artifactId>google-http-client-jackson2</artifactId> 
+			<version>1.20.0</version> </dependency> -->
 		<dependency>
 			<groupId>com.google.collections</groupId>
 			<artifactId>google-collections</artifactId>
@@ -188,6 +185,11 @@
 			<groupId>org.springframework.social</groupId>
 			<artifactId>spring-social-twitter</artifactId>
 			<version>1.1.2.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.social</groupId>
+			<artifactId>spring-social-google</artifactId>
+			<version>1.0.0.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.validation</groupId>

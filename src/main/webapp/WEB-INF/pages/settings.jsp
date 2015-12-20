@@ -57,10 +57,6 @@
 						</c:if>
 					</div>
 				</div>
-				<div class="col-md-9"></div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
 				<div class="col-md-2">
 					<div class="form-group">
 						<label for="title">Nachricht nach Verarbeitung</label>
@@ -74,10 +70,6 @@
 						</c:if>
 					</div>
 				</div>
-				<div class="col-md-9"></div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
 				<div class="col-md-2">
 					<div class="form-group">
 						<label for="title">Nachricht nach Freigabe</label>
@@ -91,10 +83,6 @@
 						</c:if>
 					</div>
 				</div>
-				<div class="col-md-9"></div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
 				<div class="col-md-2">
 					<div class="form-group">
 						<label for="title">Nachricht nach Fehler</label>
@@ -108,29 +96,29 @@
 						</c:if>
 					</div>
 				</div>
-				<div class="col-md-9"></div>
+				<div class="col-md-3"></div>
 			</div>
 			<div class="row">
 				<div class="col-md-1"></div>
-				<div class="col-md-2">
+				<div class="col-md-8">
 					<div class="form-group">
 						<label for="title">Video Footer</label>
 						<textarea class="form-control" rows="3" placeholder="Video Footer"
 							name="videoFooter" id="videoFooter"></textarea>
 					</div>
 				</div>
-				<div class="col-md-9"></div>
+				<div class="col-md-3"></div>
 			</div>
 			<div class="row">
 				<div class="col-md-1"></div>
-				<div class="col-md-2">
+				<div class="col-md-8">
 					<div class="form-group">
 						<label for="title">Standard Tags</label> <input type="text"
 							name="defaultTags" class="form-control" id="defaultTags"
 							required="required" />
 					</div>
 				</div>
-				<div class="col-md-9"></div>
+				<div class="col-md-3"></div>
 			</div>
 			<div class="row">
 				<div class="col-md-1"></div>
@@ -147,17 +135,13 @@
 						</c:if>
 					</div>
 				</div>
-				<div class="col-md-9"></div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-2">
+				<div class="col-md-6">
 					<div class="form-group">
 						<label for="title">Twitter Post</label> <input type="text"
 							name="twitterPost" class="form-control" id="twitterPost" />
 					</div>
 				</div>
-				<div class="col-md-9"></div>
+				<div class="col-md-3"></div>
 			</div>
 			<div class="row">
 				<div class="col-md-1"></div>
@@ -174,17 +158,13 @@
 						</c:if>
 					</div>
 				</div>
-				<div class="col-md-9"></div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-2">
+				<div class="col-md-6">
 					<div class="form-group">
 						<label for="title">Facebook Post</label> <input type="text"
 							name="facebookPost" class="form-control" id="facebookPost" />
 					</div>
 				</div>
-				<div class="col-md-9"></div>
+				<div class="col-md-3"></div>
 			</div>
 			<div class="row">
 				<div class="col-md-1"></div>

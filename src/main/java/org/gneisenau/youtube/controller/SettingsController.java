@@ -76,11 +76,11 @@ public class SettingsController {
 
 	@RequestMapping(value = "/connectToFacebook", method = RequestMethod.POST)
 	public String connectFacebook() {
-		return "redirect:/connect/facebook";
+		return "redirect:/connect/facebook.do";
 	}
 	@RequestMapping(value = "/connectToTwitter", method = RequestMethod.POST)
 	public String connectTwitter() {
-		return "redirect:/connect/twitter";
+		return "redirect:/connect/twitter.do";
 	}
 
 
