@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.gneisenau.youtube.model.UserSettings;
 import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.gneisenau.youtube.to.UserSettingsTO;
 import org.gneisenau.youtube.to.VideoTO;
+import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,7 +40,7 @@ public class SettingsController {
 
 	@Autowired
 	private UserSettingsRepository userSettingsDAO;
-	private static final Logger logger = LogManager.getLogger(SettingsController.class);
+	private static final Logger logger = Logger.getLogger(SettingsController.class);
 
 	@RequestMapping(value = "/settings", method = RequestMethod.POST)
 	public ModelAndView init(HttpServletRequest request, HttpServletResponse response) {

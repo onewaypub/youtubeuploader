@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
+import org.gneisenau.youtube.controller.IOService;
 import org.gneisenau.youtube.exceptions.AuthorizeException;
 import org.gneisenau.youtube.exceptions.ClientSecrectsException;
 import org.gneisenau.youtube.exceptions.PreUploadException;
@@ -70,7 +70,7 @@ public class VideoHandler {
 	@Value("${youtube.app.name}")
 	private String youtubeAppName;
 
-	private static final Logger logger = LogManager.getLogger(VideoHandler.class);
+	private static final Logger logger = Logger.getLogger(VideoHandler.class);
 
 	/**
 	 * Define a global instance of a Youtube object, which will be used to make

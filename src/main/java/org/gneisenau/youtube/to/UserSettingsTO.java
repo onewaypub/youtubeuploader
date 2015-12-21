@@ -1,7 +1,5 @@
 package org.gneisenau.youtube.to;
 
-import org.springframework.web.bind.annotation.RequestParam;
-
 public class UserSettingsTO {
 
 	private String mailTo;

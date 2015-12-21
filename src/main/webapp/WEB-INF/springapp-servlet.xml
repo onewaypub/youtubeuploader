@@ -109,6 +109,7 @@
 		<constructor-arg value="#{request.userPrincipal.name}" />
 		<aop:scoped-proxy proxy-target-class="false" />
 	</bean>
+
 	<bean id="connectionFactoryLocator"
 		class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
 		<property name="connectionFactories">
@@ -127,15 +128,18 @@
 					class="org.springframework.social.google.connect.GoogleConnectionFactory">
 					<constructor-arg value="${google.appId}" />
 					<constructor-arg value="${google.appSecret}" />
-					<property name="scope" value="https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.upload" />
+					<property name="scope"
+						value="https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.upload" />
 				</bean>
 			</list>
 		</property>
 	</bean>
+
 	<bean id="connectController"
 		class="org.springframework.social.connect.web.ConnectController">
 		<property name="applicationUrl" value="http://localhost:8080" />
 	</bean>
+
 	<bean id="userIdSource"
 		class="org.springframework.social.security.AuthenticationNameUserIdSource" />
 

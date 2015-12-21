@@ -12,8 +12,7 @@ import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,7 @@ import org.springframework.stereotype.Service;
 @PropertySource("file:${user.home}/youtubeuploader.properties")
 public class IOService {
 
-	private static final Logger logger = LogManager.getLogger(IOService.class);
+	private static final Logger logger = Logger.getLogger(IOService.class);
 	@Value("${ffmpeg.home}")
 	private String ffmpegHome;
 	@Value("${home.temp.dir}")

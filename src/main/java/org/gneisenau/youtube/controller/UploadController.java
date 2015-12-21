@@ -23,8 +23,9 @@ import javax.validation.Valid;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.dozer.DozerBeanMapper;
 import org.gneisenau.youtube.handler.YoutubeHandler;
 import org.gneisenau.youtube.model.PrivacySetting;
@@ -55,7 +56,7 @@ public class UploadController {
 
 	private static final String[] dateTimePatterns = { "dd.MM.yyyy hh:mm" };
 	private static final String[] datePatterns = { "dd.MM.yyyy" };
-	private static final Logger logger = LogManager.getLogger(UploadController.class);
+	private static final Logger logger = Logger.getLogger(UploadController.class);
 	@Autowired
 	private SecurityUtil secUtil;
 	@Autowired
@@ -70,7 +71,7 @@ public class UploadController {
 		ModelAndView model = getCurrentVideoList();
 		Map<String, String> playlists = null;
 		playlists = youtubeService.getPlaylists(secUtil.getPrincipal());
-		model.addObject("playlist", playlists);
+		logger.info("test");		model.addObject("playlist", playlists);
 		Map<String, String> categories;
 		categories = youtubeService.getCategories();
 		model.addObject("categories", categories);

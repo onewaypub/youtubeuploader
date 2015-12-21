@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.exec.ExecuteException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.gneisenau.youtube.controller.IOService;
 import org.gneisenau.youtube.exceptions.VideoMergeException;
 import org.gneisenau.youtube.exceptions.VideoTranscodeException;
@@ -43,7 +42,7 @@ public class VideoProcessingScheduler {
 	@Autowired
 	private MailSendService mailService;
 
-	private static final Logger logger = LogManager.getLogger(VideoProcessingScheduler.class);
+	private static final Logger logger = Logger.getLogger(VideoProcessingScheduler.class);
 
 	@Scheduled(fixedDelay = 60000) // every hour
 	@Transactional

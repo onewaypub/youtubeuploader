@@ -12,8 +12,8 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
+import org.gneisenau.youtube.controller.IOService;
 import org.gneisenau.youtube.exceptions.AuthorizeException;
 import org.gneisenau.youtube.exceptions.ClientSecrectsException;
 import org.gneisenau.youtube.exceptions.PreUploadException;
@@ -52,7 +52,7 @@ public class YoutubeScheduler {
 	@Autowired
 	private MailSendService mailService;
 
-	private static final Logger logger = LogManager.getLogger(YoutubeScheduler.class);
+	private static final Logger logger = Logger.getLogger(YoutubeScheduler.class);
 
 	@Scheduled(fixedDelay = 60000) // every hour
 	@Transactional

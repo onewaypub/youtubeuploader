@@ -13,8 +13,8 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
+import org.gneisenau.youtube.controller.IOService;
 import org.gneisenau.youtube.exceptions.AuthorizeException;
 import org.gneisenau.youtube.exceptions.ClientSecrectsException;
 import org.gneisenau.youtube.exceptions.SecretsStoreException;
@@ -39,7 +39,7 @@ public class YoutubeHandler {
 	private Auth auth;
 	@Value("${youtube.app.name}")
 	private String youtubeAppName;
-	private static final Logger logger = LogManager.getLogger(YoutubeHandler.class);
+	private static final Logger logger = Logger.getLogger(YoutubeHandler.class);
 
 	private static final String API_KEY = "AIzaSyD9GYNNMLGXfc8OeZx0etSYvU94STP9hrM";
 
