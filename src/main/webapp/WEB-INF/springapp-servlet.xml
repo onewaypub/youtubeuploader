@@ -129,7 +129,7 @@
 					<constructor-arg value="${google.appId}" />
 					<constructor-arg value="${google.appSecret}" />
 					<property name="scope"
-						value="https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.upload" />
+						value="https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.upload profile" />
 				</bean>
 			</list>
 		</property>
@@ -143,5 +143,9 @@
 	<bean id="userIdSource"
 		class="org.springframework.social.security.AuthenticationNameUserIdSource" />
 
+
+	<!-- <bean class="org.dozer.spring.DozerBeanMapperFactoryBean">
+		<property name="mappingFiles" value="classpath*:/*mapping.xml" />
+	</bean> -->
 </beans>
 
