@@ -181,6 +181,7 @@
 		</form>
 		<form action="/connectToFacebook.do?${_csrf.parameterName}=${_csrf.token}" method="POST"><button type="submit">Connect to Facebook</button></form>
 		<form action="/connectToTwitter.do?${_csrf.parameterName}=${_csrf.token}" method="POST"><button type="submit">Connect to Twitter</button></form>
+		<form action="/connectToGoogle.do?${_csrf.parameterName}=${_csrf.token}" method="POST"><button type="submit">Connect to Google</button></form>
 	</div>
 	<!-- jQuery (wird für Bootstrap JavaScript-Plugins benötigt) -->
 	<script src="js/sockjs-0.3.4.js"></script>

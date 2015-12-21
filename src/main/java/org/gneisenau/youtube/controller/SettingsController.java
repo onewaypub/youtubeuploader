@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.social.facebook.api.Facebook;
+import org.springframework.social.google.api.Google;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,7 @@ public class SettingsController {
 
 	private Facebook facebook;
 	private Twitter twitter;
+	private Google google;
 
 	@Autowired
 	private UserSettingsRepository userSettingsDAO;
@@ -81,6 +83,10 @@ public class SettingsController {
 	@RequestMapping(value = "/connectToTwitter", method = RequestMethod.POST)
 	public String connectTwitter() {
 		return "redirect:/connect/twitter.do";
+	}
+	@RequestMapping(value = "/connectToGoogle", method = RequestMethod.POST)
+	public String connectGoogle() {
+		return "redirect:/connect/google.do";
 	}
 
 

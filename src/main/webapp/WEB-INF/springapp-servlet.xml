@@ -2,15 +2,17 @@
 	xmlns:sec="http://www.springframework.org/schema/security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:task="http://www.springframework.org/schema/task" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd
 	http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans.xsd 
 	http://www.springframework.org/schema/mvc	http://www.springframework.org/schema/mvc/spring-mvc.xsd 
 	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
 	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
-	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
 	<tx:annotation-driven />
-	<context:component-scan base-package="org.gneisenau, org.springframework.social.connect.web" />
+	<context:component-scan base-package="org.gneisenau" />
 	<mvc:annotation-driven />
 
 	<bean
@@ -92,7 +94,21 @@
 			</list>
 		</property>
 	</bean>
+	<bean id="textEncryptor" class="org.springframework.security.crypto.encrypt.Encryptors"
+		factory-method="noOpText" />
 
+	<bean id="usersConnectionRepository"
+		class="org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository">
+		<constructor-arg ref="dataSource" />
+		<constructor-arg ref="connectionFactoryLocator" />
+		<constructor-arg ref="textEncryptor" />
+	</bean>
+
+	<bean id="connectionRepository" factory-method="createConnectionRepository"
+		factory-bean="usersConnectionRepository" scope="request">
+		<constructor-arg value="#{request.userPrincipal.name}" />
+		<aop:scoped-proxy proxy-target-class="false" />
+	</bean>
 	<bean id="connectionFactoryLocator"
 		class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
 		<property name="connectionFactories">
@@ -102,9 +118,26 @@
 					<constructor-arg value="${facebook.appId}" />
 					<constructor-arg value="${facebook.appSecret}" />
 				</bean>
+				<bean
+					class="org.springframework.social.twitter.connect.TwitterConnectionFactory">
+					<constructor-arg value="${twitter.appId}" />
+					<constructor-arg value="${twitter.appSecret}" />
+				</bean>
+				<bean
+					class="org.springframework.social.google.connect.GoogleConnectionFactory">
+					<constructor-arg value="${google.appId}" />
+					<constructor-arg value="${google.appSecret}" />
+					<property name="scope" value="https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.upload" />
+				</bean>
 			</list>
 		</property>
 	</bean>
-	
+	<bean id="connectController"
+		class="org.springframework.social.connect.web.ConnectController">
+		<property name="applicationUrl" value="http://localhost:8080" />
+	</bean>
+	<bean id="userIdSource"
+		class="org.springframework.social.security.AuthenticationNameUserIdSource" />
+
 </beans>
 
