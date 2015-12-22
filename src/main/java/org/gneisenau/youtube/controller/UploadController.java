@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -34,11 +36,18 @@ import org.gneisenau.youtube.model.UploadState;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
 import org.gneisenau.youtube.security.SecurityUtil;
+import org.gneisenau.youtube.to.FileMeta;
 import org.gneisenau.youtube.to.VideoTO;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.google.api.Google;
+import org.springframework.social.google.connect.GoogleConnectionFactory;
+import org.springframework.social.twitter.api.Twitter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,7 +55,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.api.client.util.IOUtils;
@@ -60,6 +71,9 @@ public class UploadController {
 	@Autowired
 	private SecurityUtil secUtil;
 	@Autowired
+    private ConnectionRepository connectionRepository;
+
+	@Autowired
 	private VideoRepository videoDAO;
 	@Autowired
 	private YoutubeHandler youtubeService;
@@ -71,14 +85,69 @@ public class UploadController {
 		ModelAndView model = getCurrentVideoList();
 		Map<String, String> playlists = null;
 		playlists = youtubeService.getPlaylists(secUtil.getPrincipal());
-		logger.info("test");		model.addObject("playlist", playlists);
+
+		Connection<Google> findPrimaryConnection = connectionRepository.findPrimaryConnection(Google.class);
+		Connection<Twitter> findPrimaryConnection2 = connectionRepository.findPrimaryConnection(Twitter.class);
+		
+		model.addObject("playlist", playlists);
 		Map<String, String> categories;
 		categories = youtubeService.getCategories();
 		model.addObject("categories", categories);
 		model.addObject("random", new Random().nextInt());
 		return model;
 	}
-
+    LinkedList<FileMeta> files = new LinkedList<FileMeta>();
+    FileMeta fileMeta = null;
+	
+    @RequestMapping(value="/upload", method = RequestMethod.POST)
+    public @ResponseBody LinkedList<FileMeta> upload(MultipartHttpServletRequest request, HttpServletResponse response) {
+ 
+        //1. build an iterator
+         Iterator<String> itr =  request.getFileNames();
+         MultipartFile mpf = null;
+ 
+         //2. get each file
+         while(itr.hasNext()){
+ 
+             //2.1 get next MultipartFile
+             mpf = request.getFile(itr.next()); 
+             System.out.println(mpf.getOriginalFilename() +" uploaded! "+files.size());
+ 
+             //2.2 if files > 10 remove the first from the list
+             if(files.size() >= 10)
+                 files.pop();
+ 
+             //2.3 create new fileMeta
+             fileMeta = new FileMeta();
+             fileMeta.setFileName(mpf.getOriginalFilename());
+             fileMeta.setFileSize(mpf.getSize()/1024+" Kb");
+             fileMeta.setFileType(mpf.getContentType());
+ 
+             try {
+                //fileMeta.setBytes(mpf.getBytes());
+ 
+                 // copy file to local disk (make sure the path "e.g. D:/temp/files" exists)            
+         		String name = "D:/TEMP/" + File.separator + UUID.randomUUID().toString();
+     			InputStream thumbnialInputStream = mpf.getInputStream();
+    			String fileName = mpf.getOriginalFilename();
+    			fileName = name + fileName;
+    			BufferedOutputStream thumbnailOutputStream = new BufferedOutputStream(
+    					new FileOutputStream(new File(fileName)));
+    			IOUtils.copy(thumbnialInputStream, thumbnailOutputStream);
+    			thumbnailOutputStream.close();
+    			thumbnialInputStream.close();
+ 
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+             //2.4 add to files
+             files.add(fileMeta);
+         }
+        // result will be like this
+        // [{"fileName":"app_engine-85x77.png","fileSize":"8 Kb","fileType":"image/png"},...]
+        return files;
+    }
 	@RequestMapping(value = "/getThumbnailImage/{id}")
 	public void getUserImage(HttpServletResponse response, @PathVariable("id") long id) throws IOException {
 		response.setContentType("image/jpeg");

@@ -5,6 +5,7 @@
 <!DOCTYPE html>
 <html lang="de" xmlns:th="http://www.thymeleaf.org">
 <head>
+<link href="css/dropzone.css" type="text/css" rel="stylesheet" />
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,10 +13,12 @@
 <link href="css/bootstrap.css" rel="stylesheet">
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.js"></script>
-<!-- Binde alle kompilierten Plugins zusammen ein (wie hier unten) oder such dir einzelne Dateien nach Bedarf aus -->
 <script src="js/bootstrap.js"></script>
-<script type="text/javascript" src="js/dropdown.js"></script>
-
+<script src="js/vendor/jquery.ui.widget.js"></script>
+<script src="js/jquery.iframe-transport.js"></script>
+<script src="js/jquery.fileupload.js"></script>
+<script src="js/myuploadfunction.js"></script>
+</head>
 <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -23,13 +26,6 @@
 </head>
 <body>
 	<div class="container-fluid">
-		<div class="row">
-			<div class="col-md-1"></div>
-			<div class="col-md-10">
-				<h1>Neues Video</h1>
-			</div>
-			<div class="col-md-1"></div>
-		</div>
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-7"></div>
@@ -48,6 +44,41 @@
 			</div>
 			<div class="col-md-1"></div>
 		</div>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<h1>Neues Video</h1>
+			</div>
+			<div class="col-md-1"></div>
+		</div>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<div style="width: 500px; padding: 20px">
+
+					<input id="fileupload" type="file" name="files[]"
+						data-url="upload.do?${_csrf.parameterName}=${_csrf.token}"
+						multiple>
+
+					<div id="dropzone">Drop files here</div>
+
+					<div id="progress">
+						<div style="width: 0%;"></div>
+					</div>
+
+					<table id="uploaded-files">
+						<tr>
+							<th>File Name</th>
+							<th>File Size</th>
+							<th>File Type</th>
+							<th>Download</th>
+						</tr>
+					</table>
+
+				</div>
+			</div>
+			<div class="col-md-1"></div>
+		</div>
 		<form action="add.do?${_csrf.parameterName}=${_csrf.token}"
 			method="post" enctype="multipart/form-data"
 			modelattribute="videolist">
@@ -56,7 +87,8 @@
 				<div class="col-md-10">
 					<div class="form-group">
 						<label for="title">Titel</label> <input type="text" name="title"
-							class="form-control" id="title" placeholder="Titel" required="required">
+							class="form-control" id="title" placeholder="Titel"
+							required="required">
 					</div>
 					<div class="form-group">
 						<label for="description">Beschreibung</label>
@@ -70,21 +102,26 @@
 				<div class="col-md-1"></div>
 				<div class="col-md-3">
 					<div class="form-group">
-						<label for="tags">Tags (z.B. tag1,tag2,tag3)</label> <input type="text" name="tags"
-							class="form-control" id="tags" placeholder="Tags" required="required">
+						<label for="tags">Tags (z.B. tag1,tag2,tag3)</label> <input
+							type="text" name="tags" class="form-control" id="tags"
+							placeholder="Tags" required="required">
 					</div>
 				</div>
 				<div class="col-md-4">
 					<div class="form-group">
-						<label for="relasedate">Veröffentlichungsdatum (z.B. 12.12.2015 10:00)</label> <input pattern="^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d [012]{0,1}[0-9]:[0-6][0-9]$"
+						<label for="relasedate">Veröffentlichungsdatum (z.B.
+							12.12.2015 10:00)</label> <input
+							pattern="^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d [012]{0,1}[0-9]:[0-6][0-9]$"
 							type="datetime" class="form-control" id="timestamp"
-							name="timestamp" placeholder="Veröffentlichungsdatum" required="required">
+							name="timestamp" placeholder="Veröffentlichungsdatum"
+							required="required">
 					</div>
 				</div>
 				<div class="col-md-3">
 					<div class="form-group">
 						<label for="relasedate">Youtube Kategorie</label><select
-							class="form-control" id="categoryId" name="categoryId" required="required">
+							class="form-control" id="categoryId" name="categoryId"
+							required="required">
 							<option id="-1" value="-1">-</option>
 							<c:forEach var="categoryItem" items="${categories}">
 								<option id="${categoryItem.key}" value="${categoryItem.key}">${categoryItem.value}</option>
@@ -129,7 +166,9 @@
 				</div>
 				<div class="col-md-4">
 					<div class="form-group">
-						<label for="relasedate">Spiele-Veröffentlichung (z.B. 12.12.2015)</label> <input pattern="^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d$"
+						<label for="relasedate">Spiele-Veröffentlichung (z.B.
+							12.12.2015)</label> <input
+							pattern="^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d$"
 							type="text" name="published" class="form-control" id="published"
 							placeholder="Veröffentlichung">
 					</div>
@@ -152,14 +191,13 @@
 				<div class="col-md-1"></div>
 				<div class="col-md-3">
 					<div class="form-group">
-						<label for="relasedate">Alterbeschränkung</label> <input type="checkbox" name="ageRestricted"
-								class="form-control" id="ageRestricted"></input>
+						<label for="relasedate">Alterbeschränkung</label> <input
+							type="checkbox" name="ageRestricted" class="form-control"
+							id="ageRestricted"></input>
 					</div>
 				</div>
-				<div class="col-md-4">
-				</div>
-				<div class="col-md-3">
-				</div>
+				<div class="col-md-4"></div>
+				<div class="col-md-3"></div>
 				<div class="col-md-1"></div>
 			</div>
 			<div class="row">
@@ -177,23 +215,6 @@
 						<script type="text/javascript">
 							$('input[id=thumbfile]').change(function() {
 								$('#thumb').val($(this).val());
-							});
-						</script>
-					</div>
-				</div>
-				<div class="col-md-8">
-					<div class="form-group">
-						<label for="video">Video</label> <input id="vidfile" type="file"
-							name="video" style="display: none" accept="video/*"
-							placeholder="Thumbnaildatei" required="required">
-						<div class="input-append">
-							<input id="vid" class="input-large" type="text"> <a
-								class="btn btn-primary"
-								onclick="$('input[id=vidfile]').click();">Browse</a>
-						</div>
-						<script type="text/javascript">
-							$('input[id=vidfile]').change(function() {
-								$('#vid').val($(this).val());
 							});
 						</script>
 					</div>
@@ -286,7 +307,9 @@
 												<div class="col-md-2">
 													<label for="thumbnail">Video URL</label>
 												</div>
-												<div class="col-md-8"><a href="${video.videoUrl}">${video.videoUrl}</a></div>
+												<div class="col-md-8">
+													<a href="${video.videoUrl}">${video.videoUrl}</a>
+												</div>
 											</div>
 											<div class="row">
 												<div class="col-md-2">
@@ -309,7 +332,8 @@
 													class="embed-responsive embed-responsive-16by9">
 													<video controls loop class="embed-responsive-item"
 														preload="none">
-														<source src="getVideo/<c:out value="${video.id}"/>.do?t=<c:out value="${random}"/>"
+														<source
+															src="getVideo/<c:out value="${video.id}"/>.do?t=<c:out value="${random}"/>"
 															type="video/mp4">
 													</video>
 												</div>
