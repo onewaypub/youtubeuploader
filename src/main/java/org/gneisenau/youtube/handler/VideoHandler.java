@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.gneisenau.youtube.controller.IOService;
 import org.gneisenau.youtube.exceptions.AuthorizeException;
 import org.gneisenau.youtube.exceptions.ClientSecrectsException;
 import org.gneisenau.youtube.exceptions.PreUploadException;
@@ -39,13 +38,10 @@ import com.google.api.client.googleapis.media.MediaHttpUploader;
 import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.services.youtube.YouTube;
-import com.google.api.services.youtube.model.ContentRating;
 import com.google.api.services.youtube.model.PlaylistItem;
 import com.google.api.services.youtube.model.PlaylistItemSnippet;
 import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.Video;
-import com.google.api.services.youtube.model.VideoAgeGating;
-import com.google.api.services.youtube.model.VideoContentDetails;
 import com.google.api.services.youtube.model.VideoListResponse;
 import com.google.api.services.youtube.model.VideoSnippet;
 import com.google.api.services.youtube.model.VideoStatus;
@@ -222,7 +218,6 @@ public class VideoHandler {
 		// not contain a video, then the specified video ID was not found.
 		List<Video> videoList = listResponse.getItems();
 		if (videoList.isEmpty()) {
-			logger.error("Can't find a video with ID: " + youtubeId);
 			throw new ReleaseException("VideoID konnte auf Youtube nicht gefunden werden: " + youtubeId);
 		}
 

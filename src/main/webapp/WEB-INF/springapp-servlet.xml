@@ -11,6 +11,7 @@
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
+	<aop:aspectj-autoproxy />
 	<tx:annotation-driven />
 	<context:component-scan base-package="org.gneisenau" />
 	<mvc:annotation-driven />
@@ -124,6 +125,14 @@
 					<constructor-arg value="${twitter.appId}" />
 					<constructor-arg value="${twitter.appSecret}" />
 				</bean>
+				<!-- <bean
+					class="org.springframework.social.youtube.connect.YoutubeConnectionFactory">
+					<constructor-arg value="${google.appId}" />
+					<constructor-arg value="${google.appSecret}" />
+					<constructor-arg value="YouTubeUploader" />
+					<property name="scope"
+						value="https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.upload profile" />
+				</bean> -->
 				<bean
 					class="org.springframework.social.google.connect.GoogleConnectionFactory">
 					<constructor-arg value="${google.appId}" />
@@ -144,8 +153,12 @@
 		class="org.springframework.social.security.AuthenticationNameUserIdSource" />
 
 
-	<!-- <bean class="org.dozer.spring.DozerBeanMapperFactoryBean">
-		<property name="mappingFiles" value="classpath*:/*mapping.xml" />
-	</bean> -->
+	<bean class="org.dozer.DozerBeanMapper">
+		<property name="mappingFiles">
+			<list>
+				<value>dozerMapping.xml</value>
+			</list>
+		</property>
+	</bean>
 </beans>
 

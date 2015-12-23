@@ -18,14 +18,14 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.log4j.Logger;
-import org.gneisenau.youtube.controller.IOService;
 import org.gneisenau.youtube.exceptions.AuthorizeException;
 import org.gneisenau.youtube.exceptions.PreUploadException;
 import org.gneisenau.youtube.exceptions.UploadException;
 import org.gneisenau.youtube.model.UploadState;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -57,7 +57,6 @@ public class ImageHandler {
 	@Value("${youtube.app.name}")
 	private String youtubeAppName;
 
-	private static final Logger logger = Logger.getLogger(ImageHandler.class);
 	/**
 	 * Define a global instance of a Youtube object, which will be used to make
 	 * YouTube Data API requests.

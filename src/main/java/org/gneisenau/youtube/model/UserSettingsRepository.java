@@ -21,6 +21,7 @@ public class UserSettingsRepository {
 	@Autowired
 	private SecurityUtil secUtil;
 
+	@SuppressWarnings("unchecked")
 	public List<UserSettings> findAll() {
 		Query query = em.createQuery("from UserSettings");
 		return query.getResultList();

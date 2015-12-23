@@ -13,12 +13,12 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
-import org.apache.log4j.Logger;
-import org.gneisenau.youtube.controller.IOService;
 import org.gneisenau.youtube.exceptions.AuthorizeException;
 import org.gneisenau.youtube.exceptions.ClientSecrectsException;
 import org.gneisenau.youtube.exceptions.SecretsStoreException;
 import org.gneisenau.youtube.model.UserSettingsRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -39,7 +39,7 @@ public class YoutubeHandler {
 	private Auth auth;
 	@Value("${youtube.app.name}")
 	private String youtubeAppName;
-	private static final Logger logger = Logger.getLogger(YoutubeHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(YoutubeHandler.class);
 
 	private static final String API_KEY = "AIzaSyD9GYNNMLGXfc8OeZx0etSYvU94STP9hrM";
 
@@ -83,7 +83,7 @@ public class YoutubeHandler {
 				}
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error("", e);
 		}
 		return playlistMap;
 	}
@@ -103,7 +103,7 @@ public class YoutubeHandler {
 					categories.put(result.getString("id"), result.getJsonObject("snippet").getString("title"));
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				logger.error("", e);
 			}
 		}
 		return categories;

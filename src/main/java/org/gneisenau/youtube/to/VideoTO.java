@@ -1,9 +1,10 @@
 package org.gneisenau.youtube.to;
 
-import javax.validation.constraints.Pattern;
+import java.util.List;
 
-import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.gneisenau.youtube.model.PrivacySetting;
+import org.gneisenau.youtube.model.State;
+import org.gneisenau.youtube.model.UploadState;
 
 public class VideoTO {
 
@@ -11,6 +12,7 @@ public class VideoTO {
 	private String title;
 	private String playlist;
 	private String tags;
+	private String video;
 	private String timestamp;
 	private String publisher;
 	private String published;
@@ -18,7 +20,123 @@ public class VideoTO {
 	private String developer;
 	private String categoryId;
 	private String gerne;
+	private List<String> errors;
 	private boolean ageRestricted;
+	private PrivacySetting privacySetting;
+	private State state;
+	private String youtubeId;
+	private UploadState thumbnailUploadState;
+	private String thumbnailUrl;
+	private UploadState videoUploadState;
+	private String videoUrl;
+	private String channelId;
+	private String playlistId;
+	private String category;
+	private String username;
+
+	public String getVideo() {
+		return video;
+	}
+
+	public void setVideo(String video) {
+		this.video = video;
+	}
+
+	public PrivacySetting getPrivacySetting() {
+		return privacySetting;
+	}
+
+	public void setPrivacySetting(PrivacySetting privacySetting) {
+		this.privacySetting = privacySetting;
+	}
+
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
+
+	public String getYoutubeId() {
+		return youtubeId;
+	}
+
+	public void setYoutubeId(String youtubeId) {
+		this.youtubeId = youtubeId;
+	}
+
+	public UploadState getThumbnailUploadState() {
+		return thumbnailUploadState;
+	}
+
+	public void setThumbnailUploadState(UploadState thumbnailUploadState) {
+		this.thumbnailUploadState = thumbnailUploadState;
+	}
+
+	public String getThumbnailUrl() {
+		return thumbnailUrl;
+	}
+
+	public void setThumbnailUrl(String thumbnailUrl) {
+		this.thumbnailUrl = thumbnailUrl;
+	}
+
+	public UploadState getVideoUploadState() {
+		return videoUploadState;
+	}
+
+	public void setVideoUploadState(UploadState videoUploadState) {
+		this.videoUploadState = videoUploadState;
+	}
+
+	public String getVideoUrl() {
+		return videoUrl;
+	}
+
+	public void setVideoUrl(String videoUrl) {
+		this.videoUrl = videoUrl;
+	}
+
+	public String getChannelId() {
+		return channelId;
+	}
+
+	public void setChannelId(String channelId) {
+		this.channelId = channelId;
+	}
+
+	public String getPlaylistId() {
+		return playlistId;
+	}
+
+	public void setPlaylistId(String playlistId) {
+		this.playlistId = playlistId;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public List<String> getErrors() {
+		return errors;
+	}
+
+	public void setErrors(List<String> errors) {
+		this.errors = errors;
+	}
 
 	public boolean isAgeRestricted() {
 		return ageRestricted;

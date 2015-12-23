@@ -42,7 +42,6 @@ public class VideoProcessingScheduler {
 	@Autowired
 	private MailSendService mailService;
 
-	private static final Logger logger = Logger.getLogger(VideoProcessingScheduler.class);
 
 	@Scheduled(fixedDelay = 60000) // every hour
 	@Transactional

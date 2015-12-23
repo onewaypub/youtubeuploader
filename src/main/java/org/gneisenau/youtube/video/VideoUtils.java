@@ -6,10 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.exec.ExecuteException;
-import org.apache.log4j.Logger;
 import org.gneisenau.youtube.controller.IOService;
 import org.gneisenau.youtube.exceptions.VideoMergeException;
 import org.gneisenau.youtube.exceptions.VideoTranscodeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 @PropertySource("file:${user.home}/youtubeuploader.properties")
 public class VideoUtils {
 
-	private static final Logger logger = Logger.getLogger(VideoUtils.class);
+	private static final Logger logger = LoggerFactory.getLogger(VideoUtils.class);
 	@Autowired
 	IOService ioService;
 
@@ -28,7 +29,7 @@ public class VideoUtils {
 				+ outputFile.getAbsolutePath();
 		String newFile = outputFile.getAbsolutePath();
 		try {
-			ioService.executeCommandLine(line);
+			ioService.executeCommandLineWithReturn(line);
 		} catch (IOException e) {
 			logger.warn("Error on exit ffmpeg with errorcode", e);
 			return inputFile.getPath();
@@ -52,14 +53,14 @@ public class VideoUtils {
 				first = false;
 				String line = ffmpeg + " -i " + f + " -c copy -bsf:v h264_mp4toannexb -f mpegts " + file.getName();
 				try {
-					ioService.executeCommandLine(line);
+					ioService.executeCommandLineWithReturn(line);
 				} catch (IOException e) {
 					throw new VideoTranscodeException(e);
 				}
 			}
 			String line = ffmpeg + " -i \"concat:" + concatList + "\" -c copy -bsf:a aac_adtstoasc  " + target;
 			try {
-				ioService.executeCommandLine(line);
+				ioService.executeCommandLineWithReturn(line);
 			} catch (IOException e) {
 				throw new VideoMergeException(e);
 			}

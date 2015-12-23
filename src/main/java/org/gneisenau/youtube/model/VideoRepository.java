@@ -1,7 +1,5 @@
 package org.gneisenau.youtube.model;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -18,6 +16,7 @@ public class VideoRepository {
 	@PersistenceContext
 	private EntityManager em;
 
+	@SuppressWarnings("unchecked")
 	public List<Video> findAll() {
 		Query query = em.createQuery("from Video");
 		return query.getResultList();

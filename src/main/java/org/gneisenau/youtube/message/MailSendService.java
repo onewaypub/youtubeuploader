@@ -4,11 +4,11 @@ import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
-import org.apache.log4j.Logger;
-import org.gneisenau.youtube.controller.IOService;
 import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.UserSettings;
 import org.gneisenau.youtube.model.UserSettingsRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -21,7 +21,7 @@ public class MailSendService {
 	private static String youtubeActivationMessage = "Der Youtube Upoad Service muß in Youtube authorisiert werden.\n\nBitte öffne folgende URL in einem Browser und logge Dich mit deinen Benutzerdaten ein\n\n";
 	private static String youtubeActivationTitle = "Authorisierung des Youtube Upoad Service";
 
-	private static final Logger logger = Logger.getLogger(MailSendService.class);
+	private static final Logger logger = LoggerFactory.getLogger(MailSendService.class);
 	@Autowired
 	private UserSettingsRepository userSettingsDAO;
 
@@ -45,7 +45,7 @@ public class MailSendService {
 			setMailTo(email, username);
 			email.send();
 		} catch (EmailException e) {
-			logger.error(e);
+			logger.error("", e);
 		}
 	}
 
@@ -62,7 +62,7 @@ public class MailSendService {
 			setMailTo(email, username);
 			email.send();
 		} catch (EmailException e) {
-			logger.error(e);
+			logger.error("", e);
 		}
 	}
 
@@ -85,7 +85,7 @@ public class MailSendService {
 			setMailTo(email, username);
 			email.send();
 		} catch (EmailException e) {
-			logger.error(e);
+			logger.error("", e);
 		}
 	}
 

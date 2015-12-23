@@ -11,8 +11,8 @@ import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
-import org.apache.commons.lang.SystemUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 @PropertySource("file:${user.home}/youtubeuploader.properties")
 public class IOService {
 
-	private static final Logger logger = Logger.getLogger(IOService.class);
+	private static final Logger logger = LoggerFactory.getLogger(IOService.class);
 	@Value("${ffmpeg.home}")
 	private String ffmpegHome;
 	@Value("${home.temp.dir}")
@@ -38,10 +38,8 @@ public class IOService {
 		ExecuteWatchdog watchdog = new ExecuteWatchdog(7200000);
 		executor.setWatchdog(watchdog);
 		executor.setWorkingDirectory(new File(getTemporaryProcessingFolder()));
-		System.out.println(getTemporaryProcessingFolder());
 		int exitValue = executor.execute(cmdLine);
 		if (exitValue != 0) {
-			logger.error("Error on exit ffmpeg with exitcode:" + exitValue);
 			throw new ExecuteException("Error running command", exitValue);
 		}
 
@@ -57,13 +55,13 @@ public class IOService {
 		executor.setStreamHandler(streamHandler);
 		executor.setWatchdog(watchdog);
 		executor.setWorkingDirectory(new File(getTemporaryProcessingFolder()));
-		System.out.println(getTemporaryProcessingFolder());
 		int exitValue = executor.execute(cmdLine);
 		if (exitValue != 0) {
-			logger.error("Error on exit ffmpeg with exitcode:" + exitValue);
 			throw new ExecuteException("Error running command", exitValue);
 		}
-		return (outputStream.toString());
+		String output = outputStream.toString();
+		logger.debug(output);
+		return output;
 	}
 
 	public String getTemporaryFolder() {

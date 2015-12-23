@@ -12,8 +12,6 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
-import org.apache.log4j.Logger;
-import org.gneisenau.youtube.controller.IOService;
 import org.gneisenau.youtube.exceptions.AuthorizeException;
 import org.gneisenau.youtube.exceptions.ClientSecrectsException;
 import org.gneisenau.youtube.exceptions.PreUploadException;
@@ -31,6 +29,8 @@ import org.gneisenau.youtube.model.UserSettings;
 import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -52,7 +52,7 @@ public class YoutubeScheduler {
 	@Autowired
 	private MailSendService mailService;
 
-	private static final Logger logger = Logger.getLogger(YoutubeScheduler.class);
+	private static final Logger logger = LoggerFactory.getLogger(YoutubeScheduler.class);
 
 	@Scheduled(fixedDelay = 60000) // every hour
 	@Transactional
@@ -74,13 +74,13 @@ public class YoutubeScheduler {
 					handleError(v, "Video konnte auf der Festplatt nicht mehr gefunden werden", null);
 					continue;
 				} catch (AuthorizeException e) {
-					handleError(v, "Authorisierung bei Youttube fehlgeschlagen", e.getMessage());
+					handleError(v, "Authorisierung bei Youttube fehlgeschlagen", e);
 					continue;
 				} catch (PreUploadException e) {
-					handleError(v, "Vorbereitung des Videos für Youtube fehlgeschlagen", e.getMessage());
+					handleError(v, "Vorbereitung des Videos für Youtube fehlgeschlagen", e);
 					continue;
 				} catch (UploadException e) {
-					handleError(v, "Das Video konnte nicht hochgeladen werden", e.getMessage());
+					handleError(v, "Das Video konnte nicht hochgeladen werden", e);
 					continue;
 				}
 				try {
@@ -89,13 +89,13 @@ public class YoutubeScheduler {
 					handleError(v, "Das Thumbnail konnte auf der Festplatt nicht mehr gefunden werden", null);
 					continue;
 				} catch (PreUploadException e) {
-					handleError(v, "Vorbereitung des Thumbnails für Youtube fehlgeschlagen", e.getMessage());
+					handleError(v, "Vorbereitung des Thumbnails für Youtube fehlgeschlagen", e);
 					continue;
 				} catch (AuthorizeException e) {
-					handleError(v, "Authorisierung bei Youttube fehlgeschlagen", e.getMessage());
+					handleError(v, "Authorisierung bei Youtube fehlgeschlagen", e);
 					continue;
 				} catch (UploadException e) {
-					handleError(v, "Das Thumbnails konnte nicht hochgeladen werden", e.getMessage());
+					handleError(v, "Das Thumbnails konnte nicht hochgeladen werden", e);
 					continue;
 				}
 				v.setState(State.WaitForListing);
@@ -104,14 +104,14 @@ public class YoutubeScheduler {
 					mailService.sendStatusMail(v.getTitle(), v.getState(), v.getUsername());
 				}
 			} catch (Throwable e) {
-				logger.error(e);
 				throw e;
 			}
 		}
 	}
 
-	private void handleError(Video v, String message, String returnJSON) {
-		if (returnJSON != null) {
+	private void handleError(Video v, String message, Exception e) {
+		if (e != null) {
+			String returnJSON = e.getMessage();
 			try {
 				ByteArrayInputStream is = new ByteArrayInputStream(returnJSON.getBytes());
 				JsonReader rdr = Json.createReader(is);
@@ -119,11 +119,11 @@ public class YoutubeScheduler {
 				JsonObject obj = rdr.readObject();
 				String results = obj.getString("message");
 				message = message + " - " + results;
-			} catch (Exception e) {
-				logger.error(e);
+			} catch (Exception ex) {
+				logger.error("",ex);
 			}
-
 		}
+		logger.error("", e);
 		List<String> errors = v.getErrors();
 		if (errors == null)
 			errors = new ArrayList<String>();
@@ -153,20 +153,15 @@ public class YoutubeScheduler {
 				mailService.sendStatusMail(v.getTitle(), v.getState(), v.getUsername());
 				videoDAO.persist(v);
 			} catch ( ReleaseException e) {
-				handleError(v, "Fehler beim Freigeben des Videos", e.getMessage());
-				logger.error(e);
+				handleError(v, "Fehler beim Freigeben des Videos", e);
 			}catch ( AuthorizeException e) {
-				handleError(v, "Fehler beim Freigeben des Videos", e.getMessage());
-				logger.error(e);
+				handleError(v, "Fehler beim Freigeben des Videos", e);
 			}catch (ClientSecrectsException e) {
-				handleError(v, "Fehler beim Freigeben des Videos", e.getMessage());
-				logger.error(e);
+				handleError(v, "Fehler beim Freigeben des Videos", e);
 			}catch (SecretsStoreException e) {
-				handleError(v, "Fehler beim Freigeben des Videos", e.getMessage());
-				logger.error(e);
+				handleError(v, "Fehler beim Freigeben des Videos", e);
 			} catch (IOException e) {
 				handleError(v, "Fehler beim Freigeben des Videos", null);
-				logger.error(e);
 			}
 		}
 	}
@@ -181,7 +176,7 @@ public class YoutubeScheduler {
 				}
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error("",e);
 		}
 	}
 
