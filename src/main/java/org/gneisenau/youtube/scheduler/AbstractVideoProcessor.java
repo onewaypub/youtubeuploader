@@ -8,7 +8,6 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
-import org.gneisenau.youtube.controller.IOService;
 import org.gneisenau.youtube.handler.Auth;
 import org.gneisenau.youtube.handler.ImageHandler;
 import org.gneisenau.youtube.handler.VideoHandler;
@@ -16,6 +15,7 @@ import org.gneisenau.youtube.message.MailSendService;
 import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.gneisenau.youtube.model.Video;
+import org.gneisenau.youtube.utils.IOService;
 import org.gneisenau.youtube.video.VideoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,27 +24,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.Ordered;
 
-@PropertySource("file:${user.home}/youtubeuploader.properties")
 abstract class AbstractVideoProcessor implements VideoProcessor, Ordered {
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	protected UserSettingsRepository userSettingsDAO;
-	@Autowired
-	protected IOService ioService;
-	@Value("${tomcat.home.dir}")
-	protected String introOutroDir;
 
 	@Autowired
-	protected VideoUtils videoProcessor;
-	@Autowired
 	protected MailSendService mailService;
-	@Autowired
-	protected ImageHandler imgUploader;
-	@Autowired
-	protected VideoHandler vidUploader;
-	@Autowired
-	protected Auth auth;
 
 	@Override
 	public int getOrder() {
@@ -74,7 +61,7 @@ abstract class AbstractVideoProcessor implements VideoProcessor, Ordered {
 				String results = obj.getString("message");
 				message = message + " - " + results;
 			} catch (Exception ex) {
-				logger.error("",ex);
+				logger.error("", ex);
 			}
 		}
 		logger.error("", e);

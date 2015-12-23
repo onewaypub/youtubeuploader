@@ -1,4 +1,4 @@
-package org.gneisenau.youtube.controller;
+package org.gneisenau.youtube.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

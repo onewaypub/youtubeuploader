@@ -9,12 +9,25 @@ import org.gneisenau.youtube.exceptions.VideoMergeException;
 import org.gneisenau.youtube.exceptions.VideoTranscodeException;
 import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.Video;
+import org.gneisenau.youtube.utils.IOService;
+import org.gneisenau.youtube.video.VideoUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@PropertySource("file:${user.home}/youtubeuploader.properties")
 class IntroOutroProcessor extends AbstractVideoProcessor {
+
+	@Autowired
+	private VideoUtils videoProcessor;
+	@Autowired
+	protected IOService ioService;
+	@Value("${tomcat.home.dir}")
+	protected String introOutroDir;
 
 	@Override
 	@Transactional

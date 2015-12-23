@@ -6,12 +6,16 @@ import java.io.IOException;
 import org.apache.commons.exec.ExecuteException;
 import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.Video;
+import org.gneisenau.youtube.video.VideoUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
 @Component
 class TranscodeProcessor extends AbstractVideoProcessor {
 
+	@Autowired
+	private VideoUtils videoProcessor;
 
 	@Override
 	public void process(Video v) {

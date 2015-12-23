@@ -34,6 +34,7 @@ import org.gneisenau.youtube.model.VideoRepository;
 import org.gneisenau.youtube.security.SecurityUtil;
 import org.gneisenau.youtube.to.FileMeta;
 import org.gneisenau.youtube.to.VideoTO;
+import org.gneisenau.youtube.utils.IOService;
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,30 +120,15 @@ public class UploadController {
 			fileMeta.setFileType(mpf.getContentType());
 
 			try {
-				// fileMeta.setBytes(mpf.getBytes());
-
-				// copy file to local disk (make sure the path "e.g.
-				// D:/temp/files" exists)
-				String name = "D:/TEMP/" + File.separator + UUID.randomUUID().toString();
-				InputStream thumbnialInputStream = mpf.getInputStream();
-				String fileName = mpf.getOriginalFilename();
-				fileName = name + fileName;
-				BufferedOutputStream thumbnailOutputStream = new BufferedOutputStream(
-						new FileOutputStream(new File(fileName)));
-				IOUtils.copy(thumbnialInputStream, thumbnailOutputStream);
-				thumbnailOutputStream.close();
-				thumbnialInputStream.close();
+				String fileName = "D:/TEMP/" + File.separator + UUID.randomUUID().toString() + mpf.getOriginalFilename();
+				writeMultipart2File(mpf, fileName);
 
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("", e);
 			}
 			// 2.4 add to files
 			files.add(fileMeta);
 		}
-		// result will be like this
-		// [{"fileName":"app_engine-85x77.png","fileSize":"8
-		// Kb","fileType":"image/png"},...]
 		return files;
 	}
 

@@ -7,13 +7,18 @@ import java.io.FileNotFoundException;
 import org.gneisenau.youtube.exceptions.AuthorizeException;
 import org.gneisenau.youtube.exceptions.PreUploadException;
 import org.gneisenau.youtube.exceptions.UploadException;
+import org.gneisenau.youtube.handler.VideoHandler;
 import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.UploadState;
 import org.gneisenau.youtube.model.Video;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 class VideoUploadProcessor extends AbstractVideoProcessor {
+
+	@Autowired
+	protected VideoHandler vidUploader;
 
 	@Override
 	public void process(Video v) {
