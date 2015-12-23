@@ -1,4 +1,4 @@
-package org.gneisenau.youtube.scheduler;
+package org.gneisenau.youtube.processor;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,9 +28,12 @@ public class VideoChain {
 	public void execute(List<Video> videos) {
 		for (Video v : videos) {
 			for (AbstractVideoProcessor chainItem : videoProcessingChain) {
-				chainItem.process(v);
+				int process = chainItem.process(v);
 				videoDAO.persist(v);
 				videoDAO.flush();
+				if(VideoProcessor.STOP == process){
+					break;
+				}
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-package org.gneisenau.youtube.scheduler;
+package org.gneisenau.youtube.processor;
 
 import org.gneisenau.youtube.model.Video;
 import org.springframework.stereotype.Component;
@@ -7,7 +7,8 @@ import org.springframework.stereotype.Component;
 class CleanUpProcessor extends AbstractVideoProcessor{
 
 	@Override
-	public void process(Video v) {		
+	public int process(Video v) {		
+		return VideoProcessor.CONTINUE;
 	}
 
 

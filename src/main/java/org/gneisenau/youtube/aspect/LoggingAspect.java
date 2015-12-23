@@ -7,7 +7,9 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 @Aspect
 public class LoggingAspect {
 
@@ -20,16 +22,7 @@ public class LoggingAspect {
 	// System.err.println("before " + joinPoint);
 	// }
 
-	@Around("execution(* org.gneisenau.youtube..* (..))")
-	public void generalTraceLogVoid(ProceedingJoinPoint joinPoint) throws Throwable {
-		Logger localLog = LoggerFactory.getLogger(joinPoint.getClass());
-		if (localLog.isTraceEnabled()) {
-			localLog.trace("", joinPoint.getArgs());
-		}
-		joinPoint.proceed();
-	}
-
-	@Around("execution(* org.gneisenau.youtube..* (..))")
+	@Around("execution(* org.gneisenau.youtube..*(..))")
 	public Object generalTraceLog(ProceedingJoinPoint joinPoint) throws Throwable {
 		Logger localLog = LoggerFactory.getLogger(joinPoint.getClass());
 		if (localLog.isTraceEnabled()) {
@@ -43,15 +36,16 @@ public class LoggingAspect {
 	}
 
 	@Around("execution(* org.gneisenau.youtube..* (..))")
-	public void generalDebugLogVoid(ProceedingJoinPoint joinPoint) throws Throwable {
+	public Object generalDebugLogVoid(ProceedingJoinPoint joinPoint) throws Throwable {
 		Logger localLog = LoggerFactory.getLogger(joinPoint.getClass());
 		if (localLog.isDebugEnabled()) {
 			localLog.debug("Entering method " + joinPoint.getSignature() + " in class " + joinPoint.getClass());
 		}
-		joinPoint.proceed();
+		Object o = joinPoint.proceed();
 		if (localLog.isDebugEnabled()) {
 			localLog.debug("Exiting method " + joinPoint.getSignature() + " in class " + joinPoint.getClass());
 		}
+		return o;
 	}
 
 	@Around("execution(* org.gneisenau.youtube..* (..))")

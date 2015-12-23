@@ -1,4 +1,4 @@
-package org.gneisenau.youtube.scheduler;
+package org.gneisenau.youtube.processor;
 
 import java.util.List;
 

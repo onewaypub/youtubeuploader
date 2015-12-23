@@ -1,4 +1,4 @@
-package org.gneisenau.youtube.scheduler;
+package org.gneisenau.youtube.processor;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,10 +21,10 @@ class VideoUploadProcessor extends AbstractVideoProcessor {
 	protected VideoHandler vidUploader;
 
 	@Override
-	public void process(Video v) {
+	public int process(Video v) {
 		String mail = userSettingsDAO.findByUserName(v.getUsername()).getMailTo();
 		if (mail != null && mail.trim().length() == 0) {
-			return;
+			return VideoProcessor.CONTINUE;
 		}
 		File video = new File(v.getVideo());
 		try {
@@ -33,21 +33,22 @@ class VideoUploadProcessor extends AbstractVideoProcessor {
 				uploadVideo(v, video);
 			} catch (FileNotFoundException e) {
 				handleError(v, "Video konnte auf der Festplatt nicht mehr gefunden werden", null);
-				return;
+				return VideoProcessor.STOP;
 			} catch (AuthorizeException e) {
 				handleError(v, "Authorisierung bei Youttube fehlgeschlagen", e);
-				return;
+				return VideoProcessor.STOP;
 			} catch (PreUploadException e) {
 				handleError(v, "Vorbereitung des Videos für Youtube fehlgeschlagen", e);
-				return;
+				return VideoProcessor.STOP;
 			} catch (UploadException e) {
 				handleError(v, "Das Video konnte nicht hochgeladen werden", e);
-				return;
+				return VideoProcessor.STOP;
 			}
 			v.setState(State.WaitForListing);
 			if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyReleaseState()) {
 				mailService.sendStatusMail(v.getTitle(), v.getState(), v.getUsername());
 			}
+			return VideoProcessor.CONTINUE;
 		} catch (Throwable e) {
 			throw e;
 		}

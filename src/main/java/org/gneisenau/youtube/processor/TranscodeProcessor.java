@@ -1,4 +1,4 @@
-package org.gneisenau.youtube.scheduler;
+package org.gneisenau.youtube.processor;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +18,7 @@ class TranscodeProcessor extends AbstractVideoProcessor {
 	private VideoUtils videoProcessor;
 
 	@Override
-	public void process(Video v) {
+	public int process(Video v) {
 		File transcodedFile = null;
 		try {
 			v.setState(State.OnProcessing);
@@ -27,11 +27,12 @@ class TranscodeProcessor extends AbstractVideoProcessor {
 				videoProcessor.transcode(new File(v.getVideo()), transcodedFile);
 			} catch (ExecuteException e) {
 				handleError(v, "Fehler beim Ausführen des Transcodings");
-				return;
+				return VideoProcessor.STOP;
 			} catch (IOException e) {
 				handleError(v, "Fehler beim Zugriff auf die Videodateien während des Transcodings");
-				return;
+				return VideoProcessor.STOP;
 			}
+			return VideoProcessor.CONTINUE;
 		} finally {
 			transcodedFile.delete();
 		}

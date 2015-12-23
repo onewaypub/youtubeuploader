@@ -1,4 +1,4 @@
-package org.gneisenau.youtube.scheduler;
+package org.gneisenau.youtube.processor;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,7 @@ class IntroOutroProcessor extends AbstractVideoProcessor {
 
 	@Override
 	@Transactional
-	public void process(Video v) {
+	public int process(Video v) {
 		// Merge Videos
 		File oldFile = new File(v.getVideo());
 		File intro = new File(introOutroDir + "/intro.mp4");
@@ -50,13 +50,13 @@ class IntroOutroProcessor extends AbstractVideoProcessor {
 			videoProcessor.merge(newFile.getAbsolutePath(), files);
 		} catch (IOException e) {
 			handleError(v, "Fehler beim Zugriff auf die zusammenzuführenden Videodatei während des Merges");
-			return;
+			return VideoProcessor.STOP;
 		} catch (VideoTranscodeException e) {
 			handleError(v, "Zusammenzuführenden Videodateien könnten nicht transcodiert werden ");
-			return;
+			return VideoProcessor.STOP;
 		} catch (VideoMergeException e) {
 			handleError(v, "Fehler beim Merge der Videodateien");
-			return;
+			return VideoProcessor.STOP;
 		}
 		v.setVideo(newFile.getAbsolutePath());
 		v.setState(State.WaitForUpload);
@@ -64,6 +64,7 @@ class IntroOutroProcessor extends AbstractVideoProcessor {
 			mailService.sendStatusMail(v.getTitle(), v.getState(), v.getUsername());
 		}
 		oldFile.delete();
+		return VideoProcessor.CONTINUE;
 	}
 
 	@Override
