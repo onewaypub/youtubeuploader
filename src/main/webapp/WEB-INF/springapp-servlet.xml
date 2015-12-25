@@ -14,7 +14,15 @@
 	<aop:aspectj-autoproxy />
 	<tx:annotation-driven />
 	<context:component-scan base-package="org.gneisenau" />
+	<mvc:default-servlet-handler />
 	<mvc:annotation-driven />
+
+	<!-- resources exclusions from servlet mapping -->
+	<mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/" />
+	<mvc:resources mapping="/resources/**" location="/resources/"/>
+	<mvc:resources mapping="/css/**" location="/css/" />
+	<mvc:resources mapping="/img/**" location="/img/" />
+	<mvc:resources mapping="/js/**" location="/js/" />
 
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -74,8 +82,9 @@
 
 	<sec:http auto-config="true">
 		<sec:intercept-url pattern="/" access="permitAll" />
-		<sec:intercept-url pattern="/*.do" access="hasRole('USER')" />
+		<sec:intercept-url pattern="/*" access="hasRole('USER')" />
 		<sec:form-login authentication-failure-url="/Access_Denied" />
+		<!-- <sec:csrf disabled="true"/> -->
 	</sec:http>
 
 	<sec:authentication-manager>
@@ -125,14 +134,10 @@
 					<constructor-arg value="${twitter.appId}" />
 					<constructor-arg value="${twitter.appSecret}" />
 				</bean>
-				<!-- <bean
-					class="org.springframework.social.youtube.connect.YoutubeConnectionFactory">
-					<constructor-arg value="${google.appId}" />
-					<constructor-arg value="${google.appSecret}" />
-					<constructor-arg value="YouTubeUploader" />
-					<property name="scope"
-						value="https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.upload profile" />
-				</bean> -->
+				<!-- <bean class="org.springframework.social.youtube.connect.YoutubeConnectionFactory"> 
+					<constructor-arg value="${google.appId}" /> <constructor-arg value="${google.appSecret}" 
+					/> <constructor-arg value="YouTubeUploader" /> <property name="scope" value="https://www.googleapis.com/auth/youtube 
+					https://www.googleapis.com/auth/youtube.upload profile" /> </bean> -->
 				<bean
 					class="org.springframework.social.google.connect.GoogleConnectionFactory">
 					<constructor-arg value="${google.appId}" />

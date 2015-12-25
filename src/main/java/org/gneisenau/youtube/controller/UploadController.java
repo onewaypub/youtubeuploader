@@ -1,22 +1,16 @@
 package org.gneisenau.youtube.controller;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
@@ -27,18 +21,18 @@ import javax.validation.Valid;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.dozer.DozerBeanMapper;
-import org.gneisenau.youtube.handler.YoutubeHandler;
 import org.gneisenau.youtube.model.PrivacySetting;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
 import org.gneisenau.youtube.security.SecurityUtil;
-import org.gneisenau.youtube.to.FileMeta;
 import org.gneisenau.youtube.to.VideoTO;
 import org.gneisenau.youtube.utils.IOService;
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -52,8 +46,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.google.api.client.util.IOUtils;
-
 @Controller
 public class UploadController {
 
@@ -62,74 +54,46 @@ public class UploadController {
 	private static final Logger logger = LoggerFactory.getLogger(UploadController.class);
 	@Autowired
 	private SecurityUtil secUtil;
-//	@Autowired
-//	private ConnectionRepository connectionRepository;
+	// @Autowired
+	// private ConnectionRepository connectionRepository;
 
 	@Autowired
 	private DozerBeanMapper dozerBeanMapper;
 	@Autowired
 	private VideoRepository videoDAO;
 	@Autowired
-	private YoutubeHandler youtubeService;
-	@Autowired
 	private IOService ioUtils;
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView init(HttpServletRequest request, HttpServletResponse response) {
-		ModelAndView model = getCurrentVideoList();
-		Map<String, String> playlists = null;
-		playlists = youtubeService.getPlaylists(secUtil.getPrincipal());
-
-//		Connection<Google> findPrimaryConnection = connectionRepository.findPrimaryConnection(Google.class);
-//		Connection<Twitter> findPrimaryConnection2 = connectionRepository.findPrimaryConnection(Twitter.class);
-
-		model.addObject("playlist", playlists);
-		Map<String, String> categories;
-		categories = youtubeService.getCategories();
-		model.addObject("categories", categories);
-		model.addObject("random", new Random().nextInt());
+		ModelAndView model = new ModelAndView("index");
 		return model;
 	}
 
-	LinkedList<FileMeta> files = new LinkedList<FileMeta>();
-	FileMeta fileMeta = null;
+	@RequestMapping(value = "/videos", method = RequestMethod.GET, produces = { "application/json; charset=utf-8" })
+	public @ResponseBody List<VideoTO> getVideos() {
+		List<Video> list = videoDAO.findAll();
+		List<VideoTO> videos = new ArrayList<VideoTO>();
+		for (Video v : list) {
+			videos.add(dozerBeanMapper.map(v, VideoTO.class));
+		}
+		return videos;
+	}
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public @ResponseBody LinkedList<FileMeta> upload(MultipartHttpServletRequest request,
-			HttpServletResponse response) {
-
-		// 1. build an iterator
-		Iterator<String> itr = request.getFileNames();
-		MultipartFile mpf = null;
-
-		// 2. get each file
-		while (itr.hasNext()) {
-
-			// 2.1 get next MultipartFile
-			mpf = request.getFile(itr.next());
-			System.out.println(mpf.getOriginalFilename() + " uploaded! " + files.size());
-
-			// 2.2 if files > 10 remove the first from the list
-			if (files.size() >= 10)
-				files.pop();
-
-			// 2.3 create new fileMeta
-			fileMeta = new FileMeta();
-			fileMeta.setFileName(mpf.getOriginalFilename());
-			fileMeta.setFileSize(mpf.getSize() / 1024 + " Kb");
-			fileMeta.setFileType(mpf.getContentType());
-
-			try {
-				String fileName = "D:/TEMP/" + File.separator + UUID.randomUUID().toString() + mpf.getOriginalFilename();
-				writeMultipart2File(mpf, fileName);
-
-			} catch (IOException e) {
-				logger.error("", e);
+	public ResponseEntity<String> uploadFile(MultipartHttpServletRequest request) {
+		try {
+			Iterator<String> itr = request.getFileNames();
+			while (itr.hasNext()) {
+				String uploadedFile = itr.next();
+				MultipartFile file = request.getFile(uploadedFile);
+				String filename = file.getOriginalFilename();
+				ioUtils.writeMultipart2File(file, filename);
 			}
-			// 2.4 add to files
-			files.add(fileMeta);
+		} catch (Exception e) {
+			return new ResponseEntity<>("{}", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return files;
+		return new ResponseEntity<>("{}", HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/getThumbnailImage/{id}")
@@ -166,13 +130,6 @@ public class UploadController {
 		return "redirect:/list.do";
 	}
 
-	@RequestMapping(value = "/modify", method = RequestMethod.POST)
-	public String modifyTags(@RequestParam("video") MultipartFile videofile,
-			@RequestParam("thumbnail") MultipartFile thumbnailfile, @RequestParam("state") String videostate,
-			@RequestParam("tags") String videotags, @RequestParam("timestamp") String timestamp) {
-		return "redirect:/list.do";
-	}
-
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public String handleFileUpload(@Valid VideoTO to, @RequestPart("video") MultipartFile videofile,
 			@RequestPart("thumbnail") MultipartFile thumbnailfile, BindingResult result, Model m) {
@@ -180,11 +137,11 @@ public class UploadController {
 		try {
 			String videoFileName = videofile.getOriginalFilename();
 			videoFileName = name + videoFileName;
-			writeMultipart2File(videofile, videoFileName);
+			ioUtils.writeMultipart2File(videofile, videoFileName);
 
 			String thumbnailFileName = thumbnailfile.getOriginalFilename();
 			thumbnailFileName = name + thumbnailFileName;
-			writeMultipart2File(thumbnailfile, thumbnailFileName);
+			ioUtils.writeMultipart2File(thumbnailfile, thumbnailFileName);
 
 			PrivacySetting privacySetting = PrivacySetting.Unlisted;
 			Date date = DateUtils.parseDate(to.getTimestamp(), dateTimePatterns);
@@ -207,19 +164,9 @@ public class UploadController {
 			video.setReleaseDate(date);
 			videoDAO.persist(video);
 		} catch (Exception e) {
-			logger.error("",e);
+			logger.error("", e);
 		}
 		return "redirect:/list.do";
-	}
-
-	private void writeMultipart2File(MultipartFile file, String fileName)
-			throws IOException, FileNotFoundException {
-		InputStream inputStream = file.getInputStream();
-		BufferedOutputStream outputStream = new BufferedOutputStream(
-				new FileOutputStream(new File(fileName)));
-		IOUtils.copy(inputStream, outputStream);
-		outputStream.close();
-		inputStream.close();
 	}
 
 	private ModelAndView getCurrentVideoList() {

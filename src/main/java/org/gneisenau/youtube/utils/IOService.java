@@ -1,8 +1,12 @@
 package org.gneisenau.youtube.utils;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +20,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.google.api.client.util.IOUtils;
 
 @Service
 @PropertySource("file:${user.home}/youtubeuploader.properties")
@@ -103,5 +110,17 @@ public class IOService {
 		}
 		return files;
 	}
+	
+	public void writeMultipart2File(MultipartFile file, String fileName)
+			throws IOException, FileNotFoundException {
+		InputStream inputStream = file.getInputStream();
+		BufferedOutputStream outputStream = new BufferedOutputStream(
+				new FileOutputStream(new File(fileName)));
+		IOUtils.copy(inputStream, outputStream);
+		outputStream.close();
+		inputStream.close();
+	}
+
+
 
 }

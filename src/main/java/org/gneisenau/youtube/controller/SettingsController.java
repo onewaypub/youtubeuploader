@@ -50,22 +50,6 @@ public class SettingsController {
 
 		dozerBeanMapper.map(to, settings);
 
-		// settings.setMailTo(to.getMailTo());
-		// settings.setNotifyProcessedState(to.isNotifyProcessedState());
-		// settings.setNotifyReleaseState(to.isNotifyReleaseState());
-		// settings.setNotifyUploadState(to.isNotifyUploadState());
-		// settings.setNotifyErrorState(to.isNotifyErrorState());
-		// String tags = to.getDefaultTags();
-		// String[] tagList = tags.split(",");
-		// List<String> tagsCollection = new ArrayList<String>();
-		// CollectionUtils.addAll(tagsCollection, tagList);
-		// settings.setDefaultTags(tagsCollection);
-		// settings.setVideoFooter(to.getVideoFooter());
-		// settings.setPostOnFacebook(to.isPostOnFacebook());
-		// settings.setPostOnTwitter(to.isPostOnTwitter());
-		// settings.setFacebookPost(to.getFacebookPost());
-		// settings.setTwitterPost(to.getTwitterPost());
-
 		userSettingsDAO.persist(settings);
 		return "redirect:/list.do";
 	}
@@ -83,11 +67,6 @@ public class SettingsController {
 	@RequestMapping(value = "/connectToGoogle", method = RequestMethod.POST)
 	public String connectGoogle() {
 		return "redirect:/connect/google.do";
-	}
-
-	@RequestMapping(value = "/connectToYoutube", method = RequestMethod.POST)
-	public String connectYoutube() {
-		return "redirect:/connect/youtube.do";
 	}
 
 	@RequestMapping(value = "/connectedToFacebook", method = RequestMethod.POST)

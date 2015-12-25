@@ -25,7 +25,7 @@ public class SecurityController {
 		if (auth != null) {
 			new SecurityContextLogoutHandler().logout(request, response, auth);
 		}
-		return "redirect:/list.do";
+		return "redirect:/list";
 	}
 
 	@RequestMapping(value = "/Access_Denied", method = RequestMethod.GET)
