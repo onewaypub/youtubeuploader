@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.dozer.DozerConverter;
 
 public class CommaSeperatedStringToListConverter extends DozerConverter<String, List<String>>{
-
+	
 	public CommaSeperatedStringToListConverter(Class<String> prototypeA, Class<List<String>> prototypeB) {
 		super(prototypeA, prototypeB);
 	}

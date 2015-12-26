@@ -60,6 +60,9 @@ public class UploadController {
 	@Autowired
 	private DozerBeanMapper dozerBeanMapper;
 	@Autowired
+	private WebsocketController websocketController;
+	
+	@Autowired
 	private VideoRepository videoDAO;
 	@Autowired
 	private IOService ioUtils;
@@ -88,11 +91,15 @@ public class UploadController {
 				String uploadedFile = itr.next();
 				MultipartFile file = request.getFile(uploadedFile);
 				String filename = file.getOriginalFilename();
-				ioUtils.writeMultipart2File(file, filename);
+				//ioUtils.writeMultipart2File(file, filename);
 			}
 		} catch (Exception e) {
 			return new ResponseEntity<>("{}", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		Video v = new Video();
+		v.setTitle("test");
+		v.setDescription("test");
+		websocketController.sendNewVideo(v);
 		return new ResponseEntity<>("{}", HttpStatus.OK);
 	}
 
@@ -128,56 +135,6 @@ public class UploadController {
 	public String deleteVideo(@RequestParam(name = "id") String id) {
 		videoDAO.delete(Long.valueOf(id));
 		return "redirect:/list.do";
-	}
-
-	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String handleFileUpload(@Valid VideoTO to, @RequestPart("video") MultipartFile videofile,
-			@RequestPart("thumbnail") MultipartFile thumbnailfile, BindingResult result, Model m) {
-		String name = ioUtils.getTemporaryFolder() + File.separator + UUID.randomUUID().toString();
-		try {
-			String videoFileName = videofile.getOriginalFilename();
-			videoFileName = name + videoFileName;
-			ioUtils.writeMultipart2File(videofile, videoFileName);
-
-			String thumbnailFileName = thumbnailfile.getOriginalFilename();
-			thumbnailFileName = name + thumbnailFileName;
-			ioUtils.writeMultipart2File(thumbnailfile, thumbnailFileName);
-
-			PrivacySetting privacySetting = PrivacySetting.Unlisted;
-			Date date = DateUtils.parseDate(to.getTimestamp(), dateTimePatterns);
-			DateUtils.parseDate(to.getPublished(), datePatterns);
-
-			String[] tagsArray = to.getTags().split(",");
-			String[] trimmedArray = new String[tagsArray.length];
-			for (int i = 0; i < tagsArray.length; i++) {
-				trimmedArray[i] = tagsArray[i].trim();
-			}
-			List<String> tags = new ArrayList<String>();
-			CollectionUtils.addAll(tags, trimmedArray);
-			tags.add("Peaches");
-			tags.add("PeachesLP");
-			tags.add("Let's play");
-
-			Video video = dozerBeanMapper.map(to, Video.class);
-			video.setPrivacySetting(privacySetting);
-			video.setTags(tags);
-			video.setReleaseDate(date);
-			videoDAO.persist(video);
-		} catch (Exception e) {
-			logger.error("", e);
-		}
-		return "redirect:/list.do";
-	}
-
-	private ModelAndView getCurrentVideoList() {
-		List<Video> videos = videoDAO.findAll();
-		List<VideoTO> videoToList = new ArrayList<VideoTO>();
-		for (Video v : videos) {
-			videoToList.add(dozerBeanMapper.map(v, VideoTO.class));
-		}
-		ModelAndView model = new ModelAndView("index");
-		model.addObject("videolist", videos);
-		return model;
 	}
 
 }

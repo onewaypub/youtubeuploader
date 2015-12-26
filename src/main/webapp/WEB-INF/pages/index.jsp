@@ -3,7 +3,7 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <!DOCTYPE html>
-<html ng-app="youtubeuploader">
+<html ng-app="chatApp">
 <head lang="de">
 <meta charset="UTF-8">
 <link rel="stylesheet" href="webjars/bootstrap/3.3.6/css/bootstrap.css">
@@ -21,13 +21,13 @@
 	</script>
 </c:if>
 </head>
-<body ng-controller="VideoController" ng-cloak>
+<body ng-controller="ChatCtrl" ng-cloak>
 	<div class="row">
 		<div class="container">
 			<div>
 				<div class="col-xs-6 col-xs-offset-3">
 					<div class="well">
-						<form action="/upload" class="dropzone" dropzone="" id="dropzone">
+						<form action="upload" class="dropzone" dropzone="" id="dropzone">
 							<div class="dz-default dz-message">Videos hier hereinziehen</div>
 						</form>
 					</div>
@@ -39,6 +39,12 @@
 		</div>
 	</div>
 	<div class="row">
+			<p ng-repeat="message in messages | orderBy:'time':true"
+			class="message">
+			<time>{{message.time | date:'HH:mm'}}</time>
+			<span ng-class="{self: message.self}">{{message.message}}</span>
+		</p>
+	
 		<div id="videoList" class="col-sm-offset-1 col-sm-10">
 			<div class="input-group">
 				<input class="form-control" id="search" name="search"
@@ -51,7 +57,7 @@
 			</div>
 			<div class="list-group">
 				<div class="list-group-item">
-					<div ng-repeat="video in videos | filter:query"
+					<div ng-repeat="message in messages | filter:query"
 						class="list-group-item" style="margin-top: 16px">
 						<div class="row-picture">
 							<img class="circle" src="/getThumbnailImage/{{video.id}}"
@@ -78,7 +84,12 @@
 		src="webjars/angularjs/1.4.8/angular-resource.min.js"></script>
 	<script type="text/javascript"
 		src="webjars/bootstrap-material-design/0.3.0/dist/js/material.js"></script>
+	<script type="text/javascript" src="webjars/lodash/3.10.1/lodash.js"></script>
+	<script type="text/javascript" src="resources/js/stomp.js"></script>
+	<script type="text/javascript" src="resources/js/socks.js"></script>
 	<script type="text/javascript" src="resources/js/app.js"></script>
+	<script type="text/javascript" src="resources/js/appController.js"></script>
+	<script type="text/javascript" src="resources/js/appService.js"></script>
 	<script type="text/javascript" src="resources/dropzone/dropzone.js"></script>
 	<script type="text/javascript">
 		Dropzone.options.dropzone = {
@@ -99,3 +110,4 @@
 	</script>
 </body>
 </html>
+ 

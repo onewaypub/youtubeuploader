@@ -15,12 +15,17 @@ import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.google.api.client.util.IOUtils;
 
@@ -110,17 +115,29 @@ public class IOService {
 		}
 		return files;
 	}
-	
-	public void writeMultipart2File(MultipartFile file, String fileName)
-			throws IOException, FileNotFoundException {
-		InputStream inputStream = file.getInputStream();
-		BufferedOutputStream outputStream = new BufferedOutputStream(
-				new FileOutputStream(new File(fileName)));
-		IOUtils.copy(inputStream, outputStream);
-		outputStream.close();
-		inputStream.close();
+
+	public List<File> writeMultipart2Files(MultipartHttpServletRequest request, File directory)
+			throws IOException, FileNotFoundException, FileUploadException {
+		// Create a new file upload handler
+		ServletFileUpload upload = new ServletFileUpload();
+		List<File> files = new ArrayList<File>();
+		// Parse the request
+		FileItemIterator iter = upload.getItemIterator(request);
+		while (iter.hasNext()) {
+			FileItemStream item = iter.next();
+			String name = item.getFieldName();
+			File newFile = new File(directory.getAbsolutePath() + File.separatorChar + name);
+			InputStream inputStream = item.openStream();
+			BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(newFile));
+			try {
+				IOUtils.copy(inputStream, outputStream);
+			} finally {
+				outputStream.close();
+				inputStream.close();
+			}
+			files.add(newFile);
+		}
+		return files;
 	}
-
-
 
 }
