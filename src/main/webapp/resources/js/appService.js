@@ -7,7 +7,7 @@ angular.module("chatApp.services").service("ChatService",
 			}, messageIds = [];
 
 			service.RECONNECT_TIMEOUT = 30000;
-			service.SOCKET_URL = "/YouTubeUploader";
+			service.SOCKET_URL = "/YouTubeUploader/chat";
 			service.CHAT_TOPIC = "/topic/message";
 			service.CHAT_BROKER = "/app/chat";
 
