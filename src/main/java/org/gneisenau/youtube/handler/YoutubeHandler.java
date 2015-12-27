@@ -44,6 +44,8 @@ public class YoutubeHandler {
 	private static final String API_KEY = "AIzaSyD9GYNNMLGXfc8OeZx0etSYvU94STP9hrM";
 
 	private Map<String, String> categories = new HashMap<String, String>();
+	private long lastUpdate = 0;
+	private long nextUpdateDelta = 1800000;//every 30 min
 
 	/**
 	 * Create a playlist and add it to the authorized account.
@@ -89,6 +91,9 @@ public class YoutubeHandler {
 	}
 
 	public Map<String, String> getCategories() {
+		if(lastUpdate == 0 || System.currentTimeMillis() - lastUpdate > nextUpdateDelta){
+			categories.clear();
+		}
 		if (categories.size() == 0) {
 			URL url;
 			try {
@@ -102,6 +107,7 @@ public class YoutubeHandler {
 				for (JsonObject result : results.getValuesAs(JsonObject.class)) {
 					categories.put(result.getString("id"), result.getJsonObject("snippet").getString("title"));
 				}
+				lastUpdate = System.currentTimeMillis();
 			} catch (Exception e) {
 				logger.error("", e);
 			}

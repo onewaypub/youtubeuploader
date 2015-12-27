@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.google.api.client.util.IOUtils;
@@ -41,6 +40,10 @@ public class IOService {
 
 	public String findFFMPEG() throws ExecuteException, IOException {
 		return ffmpegHome;
+	}
+	
+	public long getFileSize(File f){
+		return f.length();
 	}
 
 	public void executeCommandLine(String line) throws ExecuteException, IOException {
@@ -71,9 +74,7 @@ public class IOService {
 		if (exitValue != 0) {
 			throw new ExecuteException("Error running command", exitValue);
 		}
-		String output = outputStream.toString();
-		logger.debug(output);
-		return output;
+		return outputStream.toString();
 	}
 
 	public String getTemporaryFolder() {

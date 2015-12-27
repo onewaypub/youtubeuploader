@@ -13,6 +13,7 @@ import org.gneisenau.youtube.utils.IOService;
 import org.gneisenau.youtube.video.VideoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,10 @@ class IntroOutroProcessor extends AbstractVideoProcessor {
 	protected IOService ioService;
 	@Value("${tomcat.home.dir}")
 	protected String introOutroDir;
+	@Autowired
+	public IntroOutroProcessor(ApplicationEventPublisher publisher) {
+		super(publisher);
+	}
 
 	@Override
 	@Transactional
@@ -71,5 +76,5 @@ class IntroOutroProcessor extends AbstractVideoProcessor {
 	public int getOrder() {
 		return Ordered.LOWEST_PRECEDENCE;
 	}
-
+	
 }

@@ -8,7 +8,7 @@ angular.module("videoApp.services").service("VideoService",
 
 			service.RECONNECT_TIMEOUT = 30000;
 			service.SOCKET_URL = "/YouTubeUploader/chat";
-			service.CHAT_TOPIC = "/topic/message";
+			service.EVENT_TOPIC = "/topic/event";
 			service.CHAT_BROKER = "/app/chat";
 
 			service.receive = function() {
@@ -26,11 +26,25 @@ angular.module("videoApp.services").service("VideoService",
 				messageIds.push(id);
 			};
 			
-	        service.getAll = function () {
+	        service.getAllVideos = function () {
 	            var videoResource = $resource('videos', {}, {
 	                query: {method: 'GET', params: {}, isArray: true}
 	            });
 	            return videoResource.query();
+	        }
+
+	        service.getPlaylist = function () {
+	            var playlistResource = $resource('playlist', {}, {
+	                query: {method: 'GET', params: {}, isArray: true}
+	            });
+	            return playlistResource.query();
+	        }
+
+	        service.getCategorylist = function () {
+	            var categoryResource = $resource('categorylist', {}, {
+	                query: {method: 'GET', params: {}, isArray: true}
+	            });
+	            return categoryResource.query();
 	        }
 
 			var reconnect = function() {
@@ -39,14 +53,14 @@ angular.module("videoApp.services").service("VideoService",
 				}, this.RECONNECT_TIMEOUT);
 			};
 
-			var getMessage = function(data) {
-				var message = JSON.parse(data);
-				return message;
+			var getJSON = function(data) {
+				var event = JSON.parse(data);
+				return event;
 			};
 
 			var startListener = function() {
-				socket.stomp.subscribe(service.CHAT_TOPIC, function(data) {
-					listener.notify(getMessage(data.body));
+				socket.stomp.subscribe(service.EVENT_TOPIC, function(data) {
+					listener.notify(getJSON(data.body));
 				});
 			};
 			
@@ -61,15 +75,3 @@ angular.module("videoApp.services").service("VideoService",
 			return service;
 		});
 
-/*angular
-.module('myApp', ['ngResource'])
-angular.module("videoApp.services").service('VideoListService', function ($log, $resource) {
-    return {
-        getAll: function () {
-            var userResource = $resource('users', {}, {
-                query: {method: 'GET', params: {}, isArray: true}
-            });
-            return userResource.query();
-        }
-    }
-})*/

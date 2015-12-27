@@ -143,6 +143,6 @@
 			<a>privacySetting</a>
 			<b>privacySetting</b>
 		</field>
-	</mapping>
+	<field><a>id</a><b>id</b></field></mapping>
 </mappings> 
       

@@ -8,20 +8,15 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
-import org.gneisenau.youtube.handler.Auth;
-import org.gneisenau.youtube.handler.ImageHandler;
-import org.gneisenau.youtube.handler.VideoHandler;
+import org.gneisenau.youtube.events.StatusUpdateEvent;
 import org.gneisenau.youtube.message.MailSendService;
 import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.gneisenau.youtube.model.Video;
-import org.gneisenau.youtube.utils.IOService;
-import org.gneisenau.youtube.video.VideoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.Ordered;
 
 abstract class AbstractVideoProcessor implements VideoProcessor, Ordered {
@@ -37,6 +32,18 @@ abstract class AbstractVideoProcessor implements VideoProcessor, Ordered {
 	public int getOrder() {
 		return Ordered.LOWEST_PRECEDENCE;
 	}
+
+	private final ApplicationEventPublisher publisher;
+
+	@Autowired
+	public AbstractVideoProcessor(ApplicationEventPublisher publisher) {
+		this.publisher = publisher;
+	}
+
+	public void publishEvent(StatusUpdateEvent event){
+		this.publisher.publishEvent(event);
+	}
+
 
 	protected void handleError(Video v, String message) {
 		List<String> errors = v.getErrors();

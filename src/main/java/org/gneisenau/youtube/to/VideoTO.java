@@ -8,6 +8,7 @@ import org.gneisenau.youtube.model.UploadState;
 
 public class VideoTO {
 
+	private Long id;
 	private String description;
 	private String title;
 	private String playlist;
@@ -33,6 +34,14 @@ public class VideoTO {
 	private String playlistId;
 	private String category;
 	private String username;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getVideo() {
 		return video;

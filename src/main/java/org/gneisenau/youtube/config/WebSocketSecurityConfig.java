@@ -15,46 +15,11 @@
  */
 package org.gneisenau.youtube.config;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.SmartInitializingSingleton;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
-import org.springframework.messaging.simp.annotation.support.SimpAnnotationMethodMessageHandler;
-import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.security.access.AccessDecisionVoter;
-import org.springframework.security.access.expression.SecurityExpressionHandler;
-import org.springframework.security.access.vote.AffirmativeBased;
-import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
-import org.springframework.security.messaging.access.expression.MessageExpressionVoter;
-import org.springframework.security.messaging.access.intercept.ChannelSecurityInterceptor;
-import org.springframework.security.messaging.access.intercept.MessageSecurityMetadataSource;
-import org.springframework.security.messaging.context.AuthenticationPrincipalArgumentResolver;
-import org.springframework.security.messaging.context.SecurityContextChannelInterceptor;
-import org.springframework.security.messaging.web.csrf.CsrfChannelInterceptor;
-import org.springframework.security.messaging.web.socket.server.CsrfTokenHandshakeInterceptor;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.util.PathMatcher;
-import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
-import org.springframework.web.socket.server.HandshakeInterceptor;
-import org.springframework.web.socket.server.support.WebSocketHttpRequestHandler;
-import org.springframework.web.socket.sockjs.SockJsService;
-import org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler;
-import org.springframework.web.socket.sockjs.transport.TransportHandlingSockJsService;
 
 /**
  * Allows configuring WebSocket Authorization.

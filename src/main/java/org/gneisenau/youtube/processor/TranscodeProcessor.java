@@ -8,6 +8,7 @@ import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.video.VideoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,11 @@ class TranscodeProcessor extends AbstractVideoProcessor {
 
 	@Autowired
 	private VideoUtils videoProcessor;
+
+	@Autowired
+	public TranscodeProcessor(ApplicationEventPublisher publisher) {
+		super(publisher);
+	}
 
 	@Override
 	public int process(Video v) {
