@@ -17,11 +17,23 @@ public class WebsocketController {
     @Autowired
     private SimpMessagingTemplate template;
     
-	@MessageMapping("/chat")
-	@SendTo("/topic/message")
+	@MessageMapping("/addvideo")
+	public void init(Video v) {
+		 VideoTO videoTO = dozerBeanMapper.map(v, VideoTO.class);
+		 videoTO.setTitle("test");
+		 videoTO.setDescription("test");
+		 template.convertAndSend("/topic/message", videoTO);
+	}
+	
 	public void sendNewVideo(Video v) {
 		 VideoTO videoTO = dozerBeanMapper.map(v, VideoTO.class);
-		 template.convertAndSend("/topic/message", "test");
+		 template.convertAndSend("/topic/addVideo", "test");
 	}
+
+	public void delete(Video v) {
+		 VideoTO videoTO = dozerBeanMapper.map(v, VideoTO.class);
+		 template.convertAndSend("/topic/deleteVideo", "test");
+	}
+
 
 }

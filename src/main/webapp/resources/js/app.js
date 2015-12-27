@@ -1,4 +1,4 @@
-angular.module("chatApp", [ "chatApp.controllers", "chatApp.services" ]);
+angular.module("videoApp", [ "videoApp.controllers", "videoApp.services" ]);
 
-angular.module("chatApp.controllers", []);
-angular.module("chatApp.services", []);
+angular.module("videoApp.controllers", []);
+angular.module("videoApp.services", []);

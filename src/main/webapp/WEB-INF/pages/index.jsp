@@ -3,7 +3,7 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <!DOCTYPE html>
-<html ng-app="chatApp">
+<html ng-app="videoApp">
 <head lang="de">
 <meta charset="UTF-8">
 <link rel="stylesheet" href="webjars/bootstrap/3.3.6/css/bootstrap.css">
@@ -21,14 +21,17 @@
 	</script>
 </c:if>
 </head>
-<body ng-controller="ChatCtrl" ng-cloak>
+<body>
+	<br />
 	<div class="row">
 		<div class="container">
 			<div>
 				<div class="col-xs-6 col-xs-offset-3">
 					<div class="well">
 						<form action="upload" class="dropzone" dropzone="" id="dropzone">
-							<div class="dz-default dz-message">Videos hier hereinziehen</div>
+							<div class="dz-default dz-message">
+								<h3>Videos hier hereinziehen</h3>
+							</div>
 						</form>
 					</div>
 				</div>
@@ -38,13 +41,8 @@
 			</div>
 		</div>
 	</div>
-	<div class="row">
-			<p ng-repeat="message in messages | orderBy:'time':true"
-			class="message">
-			<time>{{message.time | date:'HH:mm'}}</time>
-			<span ng-class="{self: message.self}">{{message.message}}</span>
-		</p>
-	
+	<br />
+	<div ng-controller="VideoCtrl" ng-cloak class="row">
 		<div id="videoList" class="col-sm-offset-1 col-sm-10">
 			<div class="input-group">
 				<input class="form-control" id="search" name="search"
@@ -57,20 +55,127 @@
 			</div>
 			<div class="list-group">
 				<div class="list-group-item">
-					<div ng-repeat="message in messages | filter:query"
+					<div ng-repeat="video in videos | filter:query"
 						class="list-group-item" style="margin-top: 16px">
-						<div class="row-picture">
-							<img class="circle" src="/getThumbnailImage/{{video.id}}"
-								alt="icon">
+						<div class="row">
+							<div class="col-md-1"></div>
+							<div class="col-md-10">
+								<div class="form-group">
+									<label for="title">Titel</label><input type="text"
+										name="title" class="form-control" id="title"
+										placeholder="Titel" value="{{video.title}}">
+								</div>
+								<div class="form-group">
+									<label for="description">Beschreibung</label>
+									<textarea class="form-control" rows="3"
+										placeholder="Beschreibung" name="description" id="description">{{video.description}}</textarea>
+								</div>
+							</div>
+							<div class="col-md-1"></div>
 						</div>
-						<div class="row-content">
-							<h4 class="list-group-item-heading">{{video.id}}
-								{{video.title}}</h4>
-
-							<p class="list-group-item-text">
-								<i class="glyphicon glyphicon-envelope"></i>
-								{{video.description}}
-							</p>
+						<div class="row">
+							<div class="col-md-1"></div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="tags">Tags (z.B. tag1,tag2,tag3)</label> <input
+										type="text" name="tags" class="form-control" id="tags"
+										placeholder="Tags" value="{{video.tags}}">
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="relasedate">Veröffentlichungsdatum (z.B.
+										12.12.2015 10:00)</label> <input
+										pattern="^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d [012]{0,1}[0-9]:[0-6][0-9]$"
+										type="datetime" class="form-control" id="timestamp"
+										name="timestamp" placeholder="Veröffentlichungsdatum"
+										 value="{{video.releaseDate}}">
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="relasedate">Youtube Kategorie</label><select
+										class="form-control" id="categoryId" name="categoryId"
+										 value="{{video.categoryId}}">
+										<option id="-1" value="-1">-</option>
+										<c:forEach var="categoryItem" items="${categories}">
+											<option id="${categoryItem.key}" value="${categoryItem.key}">${categoryItem.value}</option>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-1"></div>
+						</div>
+						<div class="row">
+							<div class="col-md-1"></div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="relasedate">Spieletitel</label> <input type="text"
+										name="shorttitle" class="form-control" id="shorttitle"
+										placeholder="shorttitle" value="{{video.shorttitle}}">
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="relasedate">Genre</label> <input type="text"
+										name="gerne" class="form-control" id="gerne"
+										placeholder="Genre" value="{{video.genre}}">
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="relasedate">Entwickler</label> <input type="text"
+										name="developer" class="form-control" id="developer"
+										placeholder="Entwickler" value="{{video.developer}}">
+								</div>
+							</div>
+							<div class="col-md-1"></div>
+						</div>
+						<div class="row">
+							<div class="col-md-1"></div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="relasedate">Publisher</label> <input type="text"
+										name="publisher" class="form-control" id="publisher"
+										placeholder="publisher" value="{{video.publisher}}">
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="relasedate">Spiele-Veröffentlichung (z.B.
+										12.12.2015)</label> <input
+										pattern="^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d$"
+										type="text" name="published" class="form-control"
+										id="published" placeholder="Veröffentlichung" value="{{video.published}}">
+								</div>
+							</div>
+							<div class="col-md-3">
+								<c:if test="${not empty playlist}">
+									<div class="form-group">
+										<label for="sel1">Playlist</label> <select
+											class="form-control" id="playlist" name="playlist"
+											 value="{{video.playlist}}">
+											<c:forEach var="playlistItem" items="${playlist}">
+												<option id="${playlistItem.key}" value="${playlistItem.key}">${playlistItem.value}</option>
+											</c:forEach>
+										</select>
+									</div>
+								</c:if>
+							</div>
+							<div class="col-md-1"></div>
+						</div>
+						<div class="row">
+							<div class="col-md-1"></div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="relasedate">Alterbeschränkung</label> <input
+										type="checkbox" name="ageRestricted" class="form-control"
+										id="ageRestricted"  value="{{video.ageRestricted}}"></input>
+								</div>
+							</div>
+							<div class="col-md-4"></div>
+							<div class="col-md-3"></div>
+							<div class="col-md-1"></div>
 						</div>
 					</div>
 				</div>
@@ -110,4 +215,3 @@
 	</script>
 </body>
 </html>
- 

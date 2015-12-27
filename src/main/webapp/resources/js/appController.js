@@ -1,15 +1,18 @@
-angular.module("chatApp.controllers").controller("ChatCtrl",
-		function($scope, ChatService) {
-			$scope.messages = [];
+angular.module("videoApp.controllers").controller("VideoCtrl",
+		function($scope, VideoService) {
+			$scope.videos = [];
 			$scope.message = "";
 			$scope.max = 140;
 
 			$scope.addMessage = function() {
-				ChatService.send($scope.message);
+				VideoService.send($scope.message);
 				$scope.message = "";
 			};
+			
+			
 
-			ChatService.receive().then(null, null, function(message) {
-				$scope.messages.push(message);
+			VideoService.receive().then(null, null, function(video) {
+				$scope.videos.push(video);
 			});
 		});
+

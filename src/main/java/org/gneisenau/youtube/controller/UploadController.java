@@ -97,9 +97,10 @@ public class UploadController {
 			return new ResponseEntity<>("{}", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		Video v = new Video();
-		v.setTitle("test");
-		v.setDescription("test");
-		websocketController.sendNewVideo(v);
+		v.setTitle("test" + System.currentTimeMillis());
+		v.setDescription("test beschreibung" + System.currentTimeMillis());
+		videoDAO.persist(v);
+		websocketController.init(v);
 		return new ResponseEntity<>("{}", HttpStatus.OK);
 	}
 

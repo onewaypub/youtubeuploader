@@ -1,4 +1,4 @@
-angular.module("chatApp.services").service("ChatService",
+angular.module("videoApp.services").service("VideoService",
 		function($q, $timeout) {
 
 			var service = {}, listener = $q.defer(), socket = {
@@ -25,7 +25,7 @@ angular.module("chatApp.services").service("ChatService",
 				}));
 				messageIds.push(id);
 			};
-
+			
 			var reconnect = function() {
 				$timeout(function() {
 					initialize();
@@ -33,14 +33,8 @@ angular.module("chatApp.services").service("ChatService",
 			};
 
 			var getMessage = function(data) {
-				var message = JSON.parse(data), out = {};
-				out.message = message.message;
-				out.time = new Date(message.time);
-				if (_.contains(messageIds, message.id)) {
-					out.self = true;
-					messageIds = _.remove(messageIds, message.id);
-				}
-				return out;
+				var message = JSON.parse(data);
+				return message;
 			};
 
 			var startListener = function() {
@@ -48,7 +42,7 @@ angular.module("chatApp.services").service("ChatService",
 					listener.notify(getMessage(data.body));
 				});
 			};
-
+			
 			var initialize = function() {
 				socket.client = new SockJS(service.SOCKET_URL);
 				socket.stomp = Stomp.over(socket.client);
