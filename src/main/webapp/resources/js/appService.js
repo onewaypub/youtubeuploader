@@ -1,5 +1,5 @@
 angular.module("videoApp.services").service("VideoService",
-		function($q, $timeout) {
+		function($q, $timeout, $resource) {
 
 			var service = {}, listener = $q.defer(), socket = {
 				client : null,
@@ -26,6 +26,13 @@ angular.module("videoApp.services").service("VideoService",
 				messageIds.push(id);
 			};
 			
+	        service.getAll = function () {
+	            var videoResource = $resource('videos', {}, {
+	                query: {method: 'GET', params: {}, isArray: true}
+	            });
+	            return videoResource.query();
+	        }
+
 			var reconnect = function() {
 				$timeout(function() {
 					initialize();
@@ -53,3 +60,16 @@ angular.module("videoApp.services").service("VideoService",
 			initialize();
 			return service;
 		});
+
+/*angular
+.module('myApp', ['ngResource'])
+angular.module("videoApp.services").service('VideoListService', function ($log, $resource) {
+    return {
+        getAll: function () {
+            var userResource = $resource('users', {}, {
+                query: {method: 'GET', params: {}, isArray: true}
+            });
+            return userResource.query();
+        }
+    }
+})*/
