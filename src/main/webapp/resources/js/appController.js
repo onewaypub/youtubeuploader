@@ -11,6 +11,10 @@ angular.module("videoApp.controllers").controller("VideoCtrl",
 				$scope.message = "";
 			};*/
 			
+			$scope.saveVideo = function(video){
+				VideoService.saveVideo(video);
+			}
+			
 			$scope.deleteVideo = function(video){
 				VideoService.deleteVideo(video.id);
 			}

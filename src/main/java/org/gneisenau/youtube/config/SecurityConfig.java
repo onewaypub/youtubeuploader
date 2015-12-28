@@ -33,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		http.csrf().disable();
 		http.authorizeRequests().antMatchers("/").permitAll().antMatchers("/*").access("hasRole('USER')").and()
 				.formLogin().and().exceptionHandling().accessDeniedPage("/Access_Denied");
 	}

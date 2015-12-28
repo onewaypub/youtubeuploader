@@ -15,6 +15,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.dozer.DozerBeanMapper;
 import org.gneisenau.youtube.handler.YoutubeHandler;
@@ -27,9 +28,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +42,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class UploadController {
@@ -82,8 +90,8 @@ public class UploadController {
 		return videos;
 	}
 
-	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public ResponseEntity<String> uploadFile(MultipartHttpServletRequest request) {
+	@RequestMapping(value = "/upload/video", method = RequestMethod.POST)
+	public ResponseEntity<String> uploadVideoFile(MultipartHttpServletRequest request) {
 		try {
 			Iterator<String> itr = request.getFileNames();
 			while (itr.hasNext()) {
@@ -100,12 +108,12 @@ public class UploadController {
 		v.setDescription("test beschreibung" + System.currentTimeMillis());
 		videoDAO.persist(v);
 		VideoTO to = dozerBeanMapper.map(v, VideoTO.class);
-		websocketController.sendNewVideo(to);
+		websocketController.notifyNewVideo(to);
 		return new ResponseEntity<>("{}", HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/getThumbnailImage/{id}")
-	public void getUserImage(HttpServletResponse response, @PathVariable("id") long id) throws IOException {
+	@RequestMapping(value = "/getThumbnailImage/{id}", method = RequestMethod.GET)
+	public void getThumbnail(HttpServletResponse response, @PathVariable("id") long id) throws IOException {
 		response.setContentType("image/jpeg");
 		Video v = videoDAO.findById(id);
 		File f = new File(v.getThumbnail());
@@ -119,7 +127,16 @@ public class UploadController {
 		org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
 	}
 
-	@RequestMapping(value = "/getVideo/{id}")
+	@RequestMapping(value = "/update/video", method = RequestMethod.POST)
+	public ResponseEntity<String> saveVideo(@RequestBody String jSONVideo) throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		VideoTO video = mapper.readValue(jSONVideo, VideoTO.class);
+		Video v = dozerBeanMapper.map(video, Video.class);
+		videoDAO.persist(v);
+		return new ResponseEntity<>("{}", HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/getVideo/{id}", method = RequestMethod.GET)
 	public void getVideoStream(HttpServletResponse response, @PathVariable("id") long id) throws IOException {
 		Video v = videoDAO.findById(id);
 		File f = new File(v.getVideo());
@@ -137,7 +154,7 @@ public class UploadController {
 		Video video = videoDAO.findById(Long.valueOf(id));
 		VideoTO videoTO = dozerBeanMapper.map(video, VideoTO.class);
 		videoDAO.delete(Long.valueOf(id));
-		websocketController.delete(videoTO);
+		websocketController.notifyDeleteVideo(videoTO);
 		return new ResponseEntity<>("{}", HttpStatus.OK);
 	}
 

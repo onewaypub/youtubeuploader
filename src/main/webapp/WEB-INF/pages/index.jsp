@@ -13,14 +13,14 @@
 <link href="resources/dropzone/basic.css" rel="stylesheet" />
 <link href="resources/dropzone/dropzone.css" rel="stylesheet" />
 <title></title>
-<sec:csrfMetaTags />
+<%-- <sec:csrfMetaTags />
 <c:if test="${!empty _csrf.token}">
 	<script type="text/javascript">
 		var csrfParameter = $("meta[name='_csrf_parameter']").attr("content");
 		var csrfHeader = $("meta[name='_csrf_header']").attr("content");
 		var csrfToken = $("meta[name='_csrf']").attr("content");
 	</script>
-</c:if>
+</c:if> --%>
 </head>
 <body>
 	<br />
@@ -29,7 +29,7 @@
 			<div>
 				<div class="col-xs-6 col-xs-offset-3">
 					<div class="well">
-						<form action="upload" class="dropzone" dropzone="" id="dropzone">
+						<form action="upload/video" class="dropzone" dropzone="" id="dropzone">
 							<div class="dz-default dz-message">
 								<h3>Videos hier hereinziehen</h3>
 							</div>
@@ -70,6 +70,8 @@
 											<div class="col-md-1">
 												<div class="glyphicon glyphicon-remove"
 													ng-click="deleteVideo(video)"></div>
+												<div class="glyphicon glyphicon-ok"
+													ng-click="saveVideo(video)"></div>
 											</div>
 										</div>
 									</div>

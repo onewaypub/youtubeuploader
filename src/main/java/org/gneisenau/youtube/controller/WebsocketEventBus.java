@@ -17,12 +17,12 @@ public class WebsocketEventBus {
 	@Autowired
 	private SimpMessagingTemplate template;
 
-	public void sendNewVideo(VideoTO v) {
+	public void notifyNewVideo(VideoTO v) {
 		EventTO addVideoTO = new EventTO(v, new VideoAddEvent(v.getId(), this));
 		template.convertAndSend("/topic/event", addVideoTO);
 	}
 
-	public void delete(VideoTO v) {
+	public void notifyDeleteVideo(VideoTO v) {
 		EventTO deleteVideoTO = new EventTO(v, new VideoDeleteEvent(v.getId(), this));
 		template.convertAndSend("/topic/event", deleteVideoTO);
 	}

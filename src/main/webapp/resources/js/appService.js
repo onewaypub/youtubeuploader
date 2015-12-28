@@ -54,6 +54,14 @@ angular.module("videoApp.services").service("VideoService",
 	            return deleteResource.query();
 	        }
 
+	        service.saveVideo = function (video) {
+	            var saveResource = $resource('update/video', {}, {
+	                query: {method: 'POST', params: {}, isArray: true}
+	            });
+	            saveResource.save({}, video);
+	            return saveResource.query();
+	        }
+
 			var reconnect = function() {
 				$timeout(function() {
 					initialize();
