@@ -7,6 +7,7 @@ import org.gneisenau.youtube.events.FFMpegProgressEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,13 +26,10 @@ public class FFMpegController {
 		this.publisher.publishEvent(event);
 	}
 
-	@RequestMapping(value = "/ffmpeg/stats", method = RequestMethod.GET)
-	public @ResponseBody void generateReport(HttpServletRequest request, HttpServletResponse response) {
-
-		
-		//FFMpegProgressEvent event = new FFMpegProgressEvent(this);
-		//publishEvent(event);
-
+	@RequestMapping(value = "/ffmpeg/stats/{id}", method = RequestMethod.GET)
+	public @ResponseBody void generateReport(@PathVariable("id") long id, HttpServletRequest request, HttpServletResponse response) {
+		FFMpegProgressEvent event = new FFMpegProgressEvent(id, this);
+		publishEvent(event);
 	}
 
 }

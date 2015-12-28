@@ -8,10 +8,17 @@ public class FFMpegProgressEvent extends ApplicationEvent{
 	 * 
 	 */
 	private static final long serialVersionUID = -2437287377674102448L;
+	private long id;
 
-	public FFMpegProgressEvent(Object source) {
+	public FFMpegProgressEvent(long id, Object source) {
 		super(source);
-		// TODO Auto-generated constructor stub
+		this.id = id;
 	}
+
+	public long getId() {
+		return id;
+	}
+	
+	
 
 }

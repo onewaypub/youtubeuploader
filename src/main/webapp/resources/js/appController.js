@@ -10,12 +10,21 @@ angular.module("videoApp.controllers").controller("VideoCtrl",
 				VideoService.send($scope.message);
 				$scope.message = "";
 			};*/
+			
+			$scope.deleteVideo = function(video){
+				VideoService.deleteVideo(video.id);
+			}
 
 			VideoService.receive().then(null, null, function(event) {
 				if(event.typ === 'VideoAddEvent'){
 					$scope.videos.push(event.o);
 				} else if(event.typ === 'VideoDeleteEvent'){
-					$scope.videos.splice( $scope.videos.indexOf(event.o), 1 );
+					for (var i = 0; i < $scope.videos.length; i++) {
+					   if(event.o.id === $scope.videos[i].id){
+						   $scope.videos.splice( i, 1 );
+						   break;
+					   }
+					}				
 				} else if(event.typ === 'StatusUpdateEvent'){
 					
 				}

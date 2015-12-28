@@ -63,7 +63,15 @@
 							<div class="accordion-heading">
 								<div class="row">
 									<div class="col-md-1">
-										<label for="title">Titel</label>
+										<div class="row">
+											<div class="col-md-11">
+												<label for="title">ID: {{video.id}} - Titel</label>
+											</div>
+											<div class="col-md-1">
+												<div class="glyphicon glyphicon-remove"
+													ng-click="deleteVideo(video)"></div>
+											</div>
+										</div>
 									</div>
 									<div class="col-md-10">
 										<input type="text" name="title" class="form-control"
@@ -74,8 +82,7 @@
 											data-parent="#accordion" href="#collapse{{video.id}}">Details</a>
 									</div>
 								</div>
-								<div id="collapse{{video.id}}"
-									class="accordion-body collapse">
+								<div id="collapse{{video.id}}" class="accordion-body collapse">
 									<div class="accordion-inner" style="background: white">
 										<div class="row">
 											<div class="col-md-1"></div>
@@ -110,7 +117,8 @@
 												<div class="form-group">
 													<label for="relasedate">Youtube Kategorie</label><select
 														class="form-control" id="categoryId" name="categoryId"
-														ng-model="video.categoryId" ng-options="category in categories">
+														ng-model="video.categoryId"
+														ng-options="category in categories">
 														<option id="-1" value="-1">-- Kategorie wählen --</option>
 													</select>
 												</div>

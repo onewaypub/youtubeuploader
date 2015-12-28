@@ -132,8 +132,8 @@ public class UploadController {
 		org.apache.commons.io.IOUtils.copy(video, response.getOutputStream());
 	}
 
-	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public ResponseEntity<String> deleteVideo(@RequestParam(name = "id") String id) {
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+	public ResponseEntity<String> deleteVideo(@PathVariable("id") long id) {
 		Video video = videoDAO.findById(Long.valueOf(id));
 		VideoTO videoTO = dozerBeanMapper.map(video, VideoTO.class);
 		videoDAO.delete(Long.valueOf(id));

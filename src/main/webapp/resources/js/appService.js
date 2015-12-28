@@ -47,6 +47,13 @@ angular.module("videoApp.services").service("VideoService",
 	            return categoryResource.query();
 	        }
 
+	        service.deleteVideo = function (index) {
+	            var deleteResource = $resource('delete/' + index, {}, {
+	                query: {method: 'GET', params: {}, isArray: true}
+	            });
+	            return deleteResource.query();
+	        }
+
 			var reconnect = function() {
 				$timeout(function() {
 					initialize();
