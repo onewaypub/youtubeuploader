@@ -7,8 +7,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -19,11 +22,15 @@ import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.google.api.client.util.IOUtils;
@@ -41,23 +48,9 @@ public class IOService {
 	public String findFFMPEG() throws ExecuteException, IOException {
 		return ffmpegHome;
 	}
-	
-	public long getFileSize(File f){
+
+	public long getFileSize(File f) {
 		return f.length();
-	}
-
-	public void executeCommandLine(String line) throws ExecuteException, IOException {
-		CommandLine cmdLine = CommandLine.parse(line);
-		DefaultExecutor executor = new DefaultExecutor();
-		executor.setExitValue(0);
-		ExecuteWatchdog watchdog = new ExecuteWatchdog(7200000);
-		executor.setWatchdog(watchdog);
-		executor.setWorkingDirectory(new File(getTemporaryProcessingFolder()));
-		int exitValue = executor.execute(cmdLine);
-		if (exitValue != 0) {
-			throw new ExecuteException("Error running command", exitValue);
-		}
-
 	}
 
 	public String executeCommandLineWithReturn(String line) throws ExecuteException, IOException {
@@ -118,27 +111,45 @@ public class IOService {
 	}
 
 	public List<File> writeMultipart2Files(MultipartHttpServletRequest request, File directory)
-			throws IOException, FileNotFoundException, FileUploadException {
+			throws FileUploadException, IOException {
 		// Create a new file upload handler
-		ServletFileUpload upload = new ServletFileUpload();
 		List<File> files = new ArrayList<File>();
-		// Parse the request
-		FileItemIterator iter = upload.getItemIterator(request);
-		while (iter.hasNext()) {
-			FileItemStream item = iter.next();
-			String name = item.getFieldName();
-			File newFile = new File(directory.getAbsolutePath() + File.separatorChar + name);
-			InputStream inputStream = item.openStream();
-			BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(newFile));
-			try {
-				IOUtils.copy(inputStream, outputStream);
-			} finally {
-				outputStream.close();
-				inputStream.close();
+		try {
+			Map<String, MultipartFile> fileMap = request.getFileMap();
+			for (Entry<String, MultipartFile> e : fileMap.entrySet()) {
+				String name = e.getValue().getOriginalFilename();
+
+				String path2save = directory.getAbsolutePath() + File.separatorChar;
+				File newFile = new File(path2save + name);
+				if (newFile.exists()) {
+					newFile = new File(path2save + addMilliSecondsToFilename(name));
+				}
+				InputStream inputStream = e.getValue().getInputStream();
+				BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(newFile));
+				try {
+					IOUtils.copy(inputStream, outputStream);
+				} finally {
+					outputStream.close();
+					inputStream.close();
+				}
+				files.add(newFile);
 			}
-			files.add(newFile);
+		} catch (IOException e) {
+			// Cleanup on exception
+			for (File f : files) {
+				if (f.exists()) {
+					f.delete();
+				}
+			}
+			throw e;
 		}
 		return files;
+	}
+
+	private String addMilliSecondsToFilename(String name) {
+		String baseName = FilenameUtils.getBaseName(name);
+		String extension = FilenameUtils.getExtension(name);
+		return baseName + System.currentTimeMillis() + "." + extension;
 	}
 
 }

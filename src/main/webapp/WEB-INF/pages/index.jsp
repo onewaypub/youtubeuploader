@@ -29,7 +29,8 @@
 			<div>
 				<div class="col-xs-6 col-xs-offset-3">
 					<div class="well">
-						<form action="upload/video" class="dropzone" dropzone="" id="dropzone">
+						<form action="upload/video" class="dropzone" dropzone=""
+							id="dropzone" enctype="multipart/form-data">
 							<div class="dz-default dz-message">
 								<h3>Videos hier hereinziehen</h3>
 							</div>
@@ -65,19 +66,69 @@
 									<div class="col-md-1">
 										<div class="row">
 											<div class="col-md-11">
-												<label for="title">ID: {{video.id}} - Titel</label>
+												<label for="title">ID: {{video.id}}</label>
 											</div>
 											<div class="col-md-1">
 												<div class="glyphicon glyphicon-remove"
 													ng-click="deleteVideo(video)"></div>
-												<div class="glyphicon glyphicon-ok"
-													ng-click="saveVideo(video)"></div>
 											</div>
 										</div>
 									</div>
-									<div class="col-md-10">
-										<input type="text" name="title" class="form-control"
-											id="title" placeholder="Titel" ng-model="video.title">
+									<div class="col-md-4">
+										<label for="title">Titel</label><input type="text"
+											name="title" class="form-control" id="title"
+											placeholder="Titel" ng-model="video.title">
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label for="timestamp">Veröffentlichungsdatum</label> <input
+												ng-pattern="^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d [012]{0,1}[0-9]:[0-6][0-9]$"
+												type="datetime" class="form-control" id="timestamp"
+												name="timestamp" placeholder="z.B. 12.12.2015 10:00"
+												ng-model="video.releaseDate">
+										</div>
+									</div>
+									<div class="col-md-1">
+										<label for="title">Status</label><br />{{video.state}}
+									</div>
+									<div class="col-md-2">
+										<br />
+										<div class="progress progress-striped active">
+											<div style="width: {{video.process}}%" class="progress-bar"></div>
+										</div>
+										<div style="display: none;" id="source-button"
+											class="btn btn-primary btn-xs">&lt; &gt;</div>
+									</div>
+									<div class="col-md-1">
+										<!-- Button trigger modal -->
+										<button type="button" class="btn btn-raised btn-xs"
+											data-toggle="modal" data-target="#myModal">Videovorschau</button>
+
+										<!-- Modal -->
+										<div class="modal fade" id="myModal" tabindex="-1"
+											role="dialog" aria-labelledby="myModalLabel">
+											<div class="modal-dialog" role="document" style="width: 1225px;">
+												<div class="modal-content">
+													<div class="modal-header">
+														<button type="button" class="close" data-dismiss="modal"
+															aria-label="Close">
+															<span aria-hidden="true">&times;</span>
+														</button>
+														<h4 class="modal-title" id="myModalLabel">Videovorschau</h4>
+													</div>
+													<div class="modal-body">
+														<video name="video{{video.id}}" controls height="648" width="1176"
+															class="embed-responsive-item" preload="none"
+															src="http://techslides.com/demos/sample-videos/small.mp4"
+															type="video/mp4"></video>
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-default"
+															data-dismiss="modal">Close</button>
+													</div>
+												</div>
+											</div>
+										</div>
 									</div>
 									<div class="col-md-1">
 										<a class="accordion-toggle" data-toggle="collapse"
@@ -100,28 +151,17 @@
 											<div class="col-md-1"></div>
 											<div class="col-md-3">
 												<div class="form-group">
-													<label for="tags">Tags (z.B. tag1,tag2,tag3)</label> <input
-														type="text" name="tags" class="form-control" id="tags"
-														placeholder="Tags" ng-model="video.tags">
-												</div>
-											</div>
-											<div class="col-md-4">
-												<div class="form-group">
-													<label for="relasedate">Veröffentlichungsdatum
-														(z.B. 12.12.2015 10:00)</label> <input
-														ng-pattern="^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d [012]{0,1}[0-9]:[0-6][0-9]$"
-														type="datetime" class="form-control" id="timestamp"
-														name="timestamp" placeholder="Veröffentlichungsdatum"
-														ng-model="video.releaseDate">
+													<label for="tags">Tags</label> <input type="text"
+														name="tags" class="form-control" id="tags"
+														placeholder="z.B. tag1,tag2,tag3" ng-model="video.tags">
 												</div>
 											</div>
 											<div class="col-md-3">
 												<div class="form-group">
-													<label for="relasedate">Youtube Kategorie</label><select
+													<label for="categoryId">Youtube Kategorie</label><select
 														class="form-control" id="categoryId" name="categoryId"
 														ng-model="video.categoryId"
 														ng-options="category in categories">
-														<option id="-1" value="-1">-- Kategorie wählen --</option>
 													</select>
 												</div>
 											</div>
@@ -166,27 +206,24 @@
 											</div>
 											<div class="col-md-4">
 												<div class="form-group">
-													<label for="relasedate">Spiele-Veröffentlichung
-														(z.B. 12.12.2015)</label> <input
+													<label for="relasedate">Spiele-Veröffentlichung</label> <input
 														ng-pattern="^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d$"
 														type="text" name="published" class="form-control"
-														id="published" placeholder="Veröffentlichung"
+														id="published" placeholder="z.B. 12.12.2015"
 														ng-model="video.published">
 												</div>
 											</div>
 											<div class="col-md-3">
-												<c:if test="${not empty playlist}">
-													<div class="form-group">
-														<label for="sel1">Playlist</label> <select
-															class="form-control" id="playlist" name="playlist"
-															ng-model="video.playlist">
-															<c:forEach var="playlistItem" items="${playlist}">
-																<option id="${playlistItem.key}"
-																	value="${playlistItem.key}">${playlistItem.value}</option>
-															</c:forEach>
-														</select>
-													</div>
-												</c:if>
+												<div class="form-group">
+													<label for="sel1">Playlist</label> <select
+														class="form-control" id="playlist" name="playlist"
+														ng-model="video.playlist">
+														<c:forEach var="playlistItem" items="${playlist}">
+															<option id="${playlistItem.key}"
+																value="${playlistItem.key}">${playlistItem.value}</option>
+														</c:forEach>
+													</select>
+												</div>
 											</div>
 											<div class="col-md-1"></div>
 										</div>
@@ -228,10 +265,10 @@
 		<script type="text/javascript" src="resources/js/app.js"></script>
 		<script type="text/javascript" src="resources/js/appController.js"></script>
 		<script type="text/javascript" src="resources/js/appService.js"></script>
+		<script type="text/javascript" src="resources/js/ng-video.js"></script>
 		<script type="text/javascript" src="resources/dropzone/dropzone.js"></script>
 		<script type="text/javascript">
 			Dropzone.options.dropzone = {
-				paramName : "file", // The name that will be used to transfer the file
 				maxFilesize : 10000, // MB
 				headers : {
 					"X-CSRF-TOKEN" : "${_csrf.token}"

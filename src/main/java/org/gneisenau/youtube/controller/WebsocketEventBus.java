@@ -3,6 +3,8 @@ package org.gneisenau.youtube.controller;
 import org.gneisenau.youtube.events.StatusUpdateEvent;
 import org.gneisenau.youtube.events.VideoAddEvent;
 import org.gneisenau.youtube.events.VideoDeleteEvent;
+import org.gneisenau.youtube.model.Video;
+import org.gneisenau.youtube.model.VideoRepository;
 import org.gneisenau.youtube.to.EventTO;
 import org.gneisenau.youtube.to.StatusEventTO;
 import org.gneisenau.youtube.to.VideoTO;
@@ -16,6 +18,8 @@ public class WebsocketEventBus {
 
 	@Autowired
 	private SimpMessagingTemplate template;
+	@Autowired
+	private VideoRepository videoDAO;
 
 	public void notifyNewVideo(VideoTO v) {
 		EventTO addVideoTO = new EventTO(v, new VideoAddEvent(v.getId(), this));
@@ -29,9 +33,9 @@ public class WebsocketEventBus {
 
 	@TransactionalEventListener
 	public void onApplicationEvent(StatusUpdateEvent event) {
-		StatusEventTO statusTO = new StatusEventTO(event);
+		Video video = videoDAO.findById(event.getId());
+		StatusEventTO statusTO = new StatusEventTO(video, event);
 		template.convertAndSend("/topic/event", statusTO);
-
 	}
 
 }

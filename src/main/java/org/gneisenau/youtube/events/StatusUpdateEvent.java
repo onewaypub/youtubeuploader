@@ -12,13 +12,13 @@ public class StatusUpdateEvent extends ApplicationEvent {
 
 	private int percentage;
 	private State state;
-	private long videoId;
+	private long id;
 
 	public StatusUpdateEvent(long videoId, State state, int percentage, Object source) {
 		super(source);
 		this.percentage = percentage;
 		this.state = state;
-		this.videoId = videoId;
+		this.id = videoId;
 	}
 
 	public int getPercentage() {
@@ -29,13 +29,13 @@ public class StatusUpdateEvent extends ApplicationEvent {
 		return state;
 	}
 
-	public long getVideoId() {
-		return videoId;
+	public long getId() {
+		return id;
 	}
 
 	@Override
 	public String toString() {
-		return "StatusUpdateEvent [percentage=" + percentage + ", state=" + state + ", videoId=" + videoId + "]";
+		return "StatusUpdateEvent [percentage=" + percentage + ", state=" + state + ", id=" + id + "]";
 	}
 
 

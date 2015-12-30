@@ -2,23 +2,14 @@ package org.gneisenau.youtube.to;
 
 import org.gneisenau.youtube.events.StatusUpdateEvent;
 
-public class StatusEventTO {
-	private long videoId;
+public class StatusEventTO extends EventTO{
 	private String status;
 	private int percent;
 
-	public StatusEventTO(StatusUpdateEvent event) {
-		this.videoId = event.getVideoId();
+	public StatusEventTO(Object o, StatusUpdateEvent event) {
+		super(o, event);
 		this.status = event.getState().getDisplayName();
 		this.percent = event.getPercentage();
-	}
-
-	public long getVideoId() {
-		return videoId;
-	}
-
-	public void setVideoId(long videoId) {
-		this.videoId = videoId;
 	}
 
 	public String getStatus() {

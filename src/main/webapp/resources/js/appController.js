@@ -1,15 +1,8 @@
-angular.module("videoApp.controllers").controller("VideoCtrl",
+angular.module("videoApp.controllers").controller("VideoCtrl",  
 		function($scope, VideoService) {
 			$scope.videos = [];
 			$scope.playlist = [];
 			$scope.categories = [];
-			/*$scope.message = "";
-			$scope.max = 140;
-
-			$scope.addMessage = function() {
-				VideoService.send($scope.message);
-				$scope.message = "";
-			};*/
 			
 			$scope.saveVideo = function(video){
 				VideoService.saveVideo(video);
@@ -18,7 +11,7 @@ angular.module("videoApp.controllers").controller("VideoCtrl",
 			$scope.deleteVideo = function(video){
 				VideoService.deleteVideo(video.id);
 			}
-
+			
 			VideoService.receive().then(null, null, function(event) {
 				if(event.typ === 'VideoAddEvent'){
 					$scope.videos.push(event.o);
@@ -30,7 +23,13 @@ angular.module("videoApp.controllers").controller("VideoCtrl",
 					   }
 					}				
 				} else if(event.typ === 'StatusUpdateEvent'){
-					
+					for (var i = 0; i < $scope.videos.length; i++) {
+						   if(event.o.id === $scope.videos[i].id){
+							   $scope.videos[i].process = event.percent;
+							   $scope.videos[i].state = event.status;
+							   break;
+						   }
+						}				
 				}
 			});
 			

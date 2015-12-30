@@ -25,10 +25,9 @@ public class VideoTO {
 	private boolean ageRestricted;
 	private PrivacySetting privacySetting;
 	private State state;
+	private int process;
 	private String youtubeId;
-	private UploadState thumbnailUploadState;
 	private String thumbnailUrl;
-	private UploadState videoUploadState;
 	private String videoUrl;
 	private String channelId;
 	private String playlistId;
@@ -75,28 +74,12 @@ public class VideoTO {
 		this.youtubeId = youtubeId;
 	}
 
-	public UploadState getThumbnailUploadState() {
-		return thumbnailUploadState;
-	}
-
-	public void setThumbnailUploadState(UploadState thumbnailUploadState) {
-		this.thumbnailUploadState = thumbnailUploadState;
-	}
-
 	public String getThumbnailUrl() {
 		return thumbnailUrl;
 	}
 
 	public void setThumbnailUrl(String thumbnailUrl) {
 		this.thumbnailUrl = thumbnailUrl;
-	}
-
-	public UploadState getVideoUploadState() {
-		return videoUploadState;
-	}
-
-	public void setVideoUploadState(UploadState videoUploadState) {
-		this.videoUploadState = videoUploadState;
 	}
 
 	public String getVideoUrl() {

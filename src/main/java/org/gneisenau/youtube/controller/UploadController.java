@@ -5,24 +5,34 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.fileupload.FileUpload;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.dozer.DozerBeanMapper;
 import org.gneisenau.youtube.handler.YoutubeHandler;
+import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
+import org.gneisenau.youtube.processor.VideoProcessor;
 import org.gneisenau.youtube.security.SecurityUtil;
 import org.gneisenau.youtube.to.VideoTO;
+import org.gneisenau.youtube.utils.IOService;
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,13 +65,17 @@ public class UploadController {
 	@Autowired
 	private SecurityUtil secUtil;
 	@Autowired
+	private IOService ioUtils;
+	@Autowired
 	private YoutubeHandler youtubeHandler;
 	@Autowired
 	private DozerBeanMapper dozerBeanMapper;
 	@Autowired
-	private WebsocketEventBus websocketController;
+	private WebsocketEventBus websocketEventBus;
 	@Autowired
 	private VideoRepository videoDAO;
+	@Autowired
+	private VideoProcessor chain;
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView init(HttpServletRequest request, HttpServletResponse response) {
@@ -92,23 +106,27 @@ public class UploadController {
 
 	@RequestMapping(value = "/upload/video", method = RequestMethod.POST)
 	public ResponseEntity<String> uploadVideoFile(MultipartHttpServletRequest request) {
+		List<File> newFiles = null;
 		try {
-			Iterator<String> itr = request.getFileNames();
-			while (itr.hasNext()) {
-				String uploadedFile = itr.next();
-				MultipartFile file = request.getFile(uploadedFile);
-				String filename = file.getOriginalFilename();
-				// ioUtils.writeMultipart2File(file, filename);
-			}
+			File outputDir = new File(ioUtils.getTemporaryFolder());
+			newFiles = ioUtils.writeMultipart2Files(request, outputDir);
 		} catch (Exception e) {
 			return new ResponseEntity<>("{}", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		Video v = new Video();
-		v.setTitle("test" + System.currentTimeMillis());
-		v.setDescription("test beschreibung" + System.currentTimeMillis());
-		videoDAO.persist(v);
-		VideoTO to = dozerBeanMapper.map(v, VideoTO.class);
-		websocketController.notifyNewVideo(to);
+		for (File f : newFiles) {
+			Video v = new Video();
+			v.setTitle(FilenameUtils.getBaseName(f.getAbsolutePath()));
+			v.setVideo(f.getAbsolutePath());
+			v.setState(State.WaitForProcessing);
+			videoDAO.persist(v);
+			VideoTO to = dozerBeanMapper.map(v, VideoTO.class);
+			websocketEventBus.notifyNewVideo(to);
+			//List<Video> videos = videoDAO.findAllWaitForPorcessing();
+			List<Video> videos = new ArrayList<Video>();
+			videos.add(v);
+			chain.execute(videos);
+		}
+		
 		return new ResponseEntity<>("{}", HttpStatus.OK);
 	}
 
@@ -154,7 +172,7 @@ public class UploadController {
 		Video video = videoDAO.findById(Long.valueOf(id));
 		VideoTO videoTO = dozerBeanMapper.map(video, VideoTO.class);
 		videoDAO.delete(Long.valueOf(id));
-		websocketController.notifyDeleteVideo(videoTO);
+		websocketEventBus.notifyDeleteVideo(videoTO);
 		return new ResponseEntity<>("{}", HttpStatus.OK);
 	}
 
