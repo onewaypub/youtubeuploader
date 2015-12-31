@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @PropertySource("file:${user.home}/youtubeuploader.properties")
-class IntroOutroProcessor extends AbstractVideoProcessor {
+public class IntroOutroProcessor extends AbstractVideoProcessor {
 
 	@Autowired
 	private VideoUtils videoProcessor;

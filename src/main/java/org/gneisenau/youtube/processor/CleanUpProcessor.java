@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-@Component
-class CleanUpProcessor extends AbstractVideoProcessor{
+//@Component
+public class CleanUpProcessor extends AbstractVideoProcessor{
 
 	@Autowired
 	public CleanUpProcessor(ApplicationEventPublisher publisher) {

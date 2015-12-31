@@ -13,7 +13,7 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
 @Component
-class TranscodeProcessor extends AbstractVideoProcessor {
+public class TranscodeProcessor extends AbstractVideoProcessor {
 
 	@Autowired
 	private VideoUtils videoProcessor;

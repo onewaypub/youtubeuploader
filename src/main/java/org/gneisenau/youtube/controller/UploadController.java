@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -29,8 +30,10 @@ import org.gneisenau.youtube.handler.YoutubeHandler;
 import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
+import org.gneisenau.youtube.processor.VideoChain;
 import org.gneisenau.youtube.processor.VideoProcessor;
 import org.gneisenau.youtube.security.SecurityUtil;
+import org.gneisenau.youtube.to.ValueTO;
 import org.gneisenau.youtube.to.VideoTO;
 import org.gneisenau.youtube.utils.IOService;
 import org.imgscalr.Scalr;
@@ -75,7 +78,7 @@ public class UploadController {
 	@Autowired
 	private VideoRepository videoDAO;
 	@Autowired
-	private VideoProcessor chain;
+	private VideoChain chain;
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView init(HttpServletRequest request, HttpServletResponse response) {
@@ -85,13 +88,23 @@ public class UploadController {
 
 	@RequestMapping(value = "/categorylist", method = RequestMethod.GET, produces = {
 			"application/json; charset=utf-8" })
-	public @ResponseBody Map<String, String> getCategoryList() {
-		return youtubeHandler.getCategories();
+	public @ResponseBody List<ValueTO> getCategoryList() {
+		Map<String, String> cats = youtubeHandler.getCategories();
+		List<ValueTO> values = new ArrayList<ValueTO>();
+		for (Entry<String, String> entry : cats.entrySet()) {
+			values.add(new ValueTO(entry.getKey(), entry.getValue()));
+		}
+		return values;
 	}
 
 	@RequestMapping(value = "/playlist", method = RequestMethod.GET, produces = { "application/json; charset=utf-8" })
-	public @ResponseBody Map<String, String> getPlaylist() {
-		return youtubeHandler.getPlaylists(secUtil.getPrincipal());
+	public @ResponseBody List<ValueTO> getPlaylist() {
+		Map<String, String> playlist = youtubeHandler.getPlaylists(secUtil.getPrincipal());
+		List<ValueTO> values = new ArrayList<ValueTO>();
+		for (Entry<String, String> entry : playlist.entrySet()) {
+			values.add(new ValueTO(entry.getKey(), entry.getValue()));
+		}
+		return values;
 	}
 
 	@RequestMapping(value = "/videos", method = RequestMethod.GET, produces = { "application/json; charset=utf-8" })
@@ -118,15 +131,16 @@ public class UploadController {
 			v.setTitle(FilenameUtils.getBaseName(f.getAbsolutePath()));
 			v.setVideo(f.getAbsolutePath());
 			v.setState(State.WaitForProcessing);
+			v.setUsername(secUtil.getPrincipal());
 			videoDAO.persist(v);
 			VideoTO to = dozerBeanMapper.map(v, VideoTO.class);
 			websocketEventBus.notifyNewVideo(to);
-			//List<Video> videos = videoDAO.findAllWaitForPorcessing();
+			// List<Video> videos = videoDAO.findAllWaitForPorcessing();
 			List<Video> videos = new ArrayList<Video>();
 			videos.add(v);
 			chain.execute(videos);
 		}
-		
+
 		return new ResponseEntity<>("{}", HttpStatus.OK);
 	}
 
@@ -154,7 +168,7 @@ public class UploadController {
 		return new ResponseEntity<>("{}", HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/getVideo/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getVideo/{id}.mp4", method = RequestMethod.GET)
 	public void getVideoStream(HttpServletResponse response, @PathVariable("id") long id) throws IOException {
 		Video v = videoDAO.findById(id);
 		File f = new File(v.getVideo());

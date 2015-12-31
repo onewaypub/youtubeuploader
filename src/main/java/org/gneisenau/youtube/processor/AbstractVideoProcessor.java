@@ -18,8 +18,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.Ordered;
+import org.springframework.stereotype.Component;
 
-abstract class AbstractVideoProcessor implements VideoProcessor, Ordered {
+@Component
+public abstract class AbstractVideoProcessor implements VideoProcessor, Ordered {
 
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired

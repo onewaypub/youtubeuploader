@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.gneisenau.youtube.events.StatusUpdateEvent;
 import org.gneisenau.youtube.exceptions.AuthorizeException;
 import org.gneisenau.youtube.exceptions.PreUploadException;
@@ -18,8 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-@Component
-class VideoUploadProcessor extends AbstractVideoProcessor {
+//@Component
+public class VideoUploadProcessor extends AbstractVideoProcessor {
 
 	@Autowired
 	protected VideoHandler vidUploader;
@@ -49,7 +52,9 @@ class VideoUploadProcessor extends AbstractVideoProcessor {
 				}
 			});
 			try {
-				String id = vidUploader.upload(v.getId(), v.getPrivacySetting(), inputStream, v.getTags(), v.getTitle(),
+				List<String> tags = new ArrayList<String>();
+				CollectionUtils.addAll(tags, v.getTags().split(","));
+				String id = vidUploader.upload(v.getId(), v.getPrivacySetting(), inputStream, tags, v.getTitle(),
 						createDescription(v), v.getChannelId(), v.getCategoryId(), v.getPlaylistId(), v.getUsername(),
 						v.isAgeRestricted());
 				v.setYoutubeId(id);

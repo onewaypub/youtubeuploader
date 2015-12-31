@@ -24,7 +24,7 @@ public class VideoUtils {
 	IOService ioService;
 
 	public String transcode(File inputFile, File outputFile) throws ExecuteException, IOException {
-		String line = ioService.findFFMPEG() + " -i " + inputFile.getAbsolutePath()
+		String line = ioService.findFFMPEG() + " -threads 3 -i " + inputFile.getAbsolutePath()
 				+ " -codec:v libx264 -bf 2 -flags +cgop -pix_fmt yuv420p -codec:a aac -strict -2 -b:a 384k -r:a 48000 -movflags faststart "
 				+ outputFile.getAbsolutePath();
 		String newFile = outputFile.getAbsolutePath();
@@ -51,14 +51,14 @@ public class VideoUtils {
 				counter++;
 				concatList = concatList + (first ? "" : "|") + file.getName();
 				first = false;
-				String line = ffmpeg + " -i " + f + " -c copy -bsf:v h264_mp4toannexb -f mpegts " + file.getName();
+				String line = ffmpeg + " -threads 3 -i " + f + " -c copy -bsf:v h264_mp4toannexb -f mpegts " + file.getName();
 				try {
 					ioService.executeCommandLineWithReturn(line);
 				} catch (IOException e) {
 					throw new VideoTranscodeException(e);
 				}
 			}
-			String line = ffmpeg + " -i \"concat:" + concatList + "\" -c copy -bsf:a aac_adtstoasc  " + target;
+			String line = ffmpeg + " -threads 3 -i \"concat:" + concatList + "\" -c copy -bsf:a aac_adtstoasc  " + target;
 			try {
 				ioService.executeCommandLineWithReturn(line);
 			} catch (IOException e) {

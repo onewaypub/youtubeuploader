@@ -6,12 +6,14 @@
 <html ng-app="videoApp">
 <head lang="de">
 <meta charset="UTF-8">
-<link rel="stylesheet" href="css/accordion.css">
+<link rel="stylesheet" href="css/shadow.css">
 <link rel="stylesheet" href="webjars/bootstrap/3.3.6/css/bootstrap.css">
 <link rel="stylesheet"
 	href="webjars/bootstrap-material-design/0.3.0/dist/css/material.css">
 <link href="resources/dropzone/basic.css" rel="stylesheet" />
 <link href="resources/dropzone/dropzone.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
 <title></title>
 <%-- <sec:csrfMetaTags />
 <c:if test="${!empty _csrf.token}">
@@ -56,23 +58,15 @@
 				</span>
 			</div>
 			<div class="list-group">
-				<div class="list-group-item">
+				<div class="list-group-item box-shadow--3dp">
 					<div class="accordion accordion-caret" id="accordion">
-						<div class="accordion-group warning"
+						<div class="accordion-group"
 							ng-repeat="video in videos | filter:query">
 							<br />
 							<div class="accordion-heading">
 								<div class="row">
 									<div class="col-md-1">
-										<div class="row">
-											<div class="col-md-11">
-												<label for="title">ID: {{video.id}}</label>
-											</div>
-											<div class="col-md-1">
-												<div class="glyphicon glyphicon-remove"
-													ng-click="deleteVideo(video)"></div>
-											</div>
-										</div>
+										<i ng-click="deleteVideo(video)" class="material-icons" style="cursor: default;">delete</i>
 									</div>
 									<div class="col-md-4">
 										<label for="title">Titel</label><input type="text"
@@ -94,7 +88,7 @@
 									<div class="col-md-2">
 										<br />
 										<div class="progress progress-striped active">
-											<div style="width: {{video.process}}%" class="progress-bar"></div>
+											<div style="width: {{video.process" class="progress-bar"></div>
 										</div>
 										<div style="display: none;" id="source-button"
 											class="btn btn-primary btn-xs">&lt; &gt;</div>
@@ -102,25 +96,30 @@
 									<div class="col-md-1">
 										<!-- Button trigger modal -->
 										<button type="button" class="btn btn-raised btn-xs"
-											data-toggle="modal" data-target="#myModal">Videovorschau</button>
+											data-toggle="modal" data-target="#myModal">
+											<i class="material-icons">video_library</i>
+										</button>
 
 										<!-- Modal -->
 										<div class="modal fade" id="myModal" tabindex="-1"
 											role="dialog" aria-labelledby="myModalLabel">
-											<div class="modal-dialog" role="document" style="width: 1225px;">
+											<div class="modal-dialog" role="document"
+												style="width: 1225px;">
 												<div class="modal-content">
 													<div class="modal-header">
 														<button type="button" class="close" data-dismiss="modal"
 															aria-label="Close">
 															<span aria-hidden="true">&times;</span>
 														</button>
-														<h4 class="modal-title" id="myModalLabel">Videovorschau</h4>
+														<h4 class="modal-title" id="myModalLabel">
+															<i class="material-icons">details</i>
+														</h4>
 													</div>
 													<div class="modal-body">
-														<video name="video{{video.id}}" controls height="648" width="1176"
+														<!-- <video controls height="648" width="1176"
 															class="embed-responsive-item" preload="none"
-															src="http://techslides.com/demos/sample-videos/small.mp4"
-															type="video/mp4"></video>
+															ng-src=""></video> -->
+														<a href="getVideo/{{video.id}}.mp4">Video Link</a>
 													</div>
 													<div class="modal-footer">
 														<button type="button" class="btn btn-default"
@@ -131,19 +130,19 @@
 										</div>
 									</div>
 									<div class="col-md-1">
-										<a class="accordion-toggle" data-toggle="collapse"
-											data-parent="#accordion" href="#collapse{{video.id}}">Details</a>
+										<a data-toggle="collapse" data-parent="#accordion"
+											href="#collapse{{video.id}}"><i class="material-icons">details</i></a>
 									</div>
 								</div>
 								<div id="collapse{{video.id}}" class="accordion-body collapse">
-									<div class="accordion-inner" style="background: white">
+									<div class="accordion-inner">
 										<div class="row">
 											<div class="col-md-1"></div>
 											<div class="col-md-10">
 												<label for="description">Beschreibung</label>
 												<textarea class="form-control" rows="3"
-													placeholder="Beschreibung" name="description"
-													id="description" ng-model="video.description"></textarea>
+													placeholder="Beschreibung" name="description" id=ription
+													" ng-model="video.description"></textarea>
 											</div>
 											<div class="col-md-1"></div>
 										</div>
@@ -160,8 +159,8 @@
 												<div class="form-group">
 													<label for="categoryId">Youtube Kategorie</label><select
 														class="form-control" id="categoryId" name="categoryId"
-														ng-model="video.categoryId"
-														ng-options="category in categories">
+														ng-model="video.categoryId">
+														<option ng-repeat="category in cats" id="{{category.id}}">{{category.value}}</option>
 													</select>
 												</div>
 											</div>
@@ -218,10 +217,8 @@
 													<label for="sel1">Playlist</label> <select
 														class="form-control" id="playlist" name="playlist"
 														ng-model="video.playlist">
-														<c:forEach var="playlistItem" items="${playlist}">
-															<option id="${playlistItem.key}"
-																value="${playlistItem.key}">${playlistItem.value}</option>
-														</c:forEach>
+														<option ng-repeat="playlistitem in playlist"
+															id="{{playlistitem.id}}">{{playlistitem.value}}</option>
 													</select>
 												</div>
 											</div>
@@ -265,7 +262,6 @@
 		<script type="text/javascript" src="resources/js/app.js"></script>
 		<script type="text/javascript" src="resources/js/appController.js"></script>
 		<script type="text/javascript" src="resources/js/appService.js"></script>
-		<script type="text/javascript" src="resources/js/ng-video.js"></script>
 		<script type="text/javascript" src="resources/dropzone/dropzone.js"></script>
 		<script type="text/javascript">
 			Dropzone.options.dropzone = {

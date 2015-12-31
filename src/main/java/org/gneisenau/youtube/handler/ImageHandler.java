@@ -119,48 +119,6 @@ public class ImageHandler {
 		// time and bandwidth in the event of network failures.
 		uploader.setDirectUploadEnabled(false);
 
-		// Set the upload state for the thumbnail image.
-		MediaHttpUploaderProgressListener progressListener = new MediaHttpUploaderProgressListener() {
-			@Override
-			public void progressChanged(MediaHttpUploader uploader) throws IOException {
-				Video video = videoDAO.findById(id);
-				switch (uploader.getUploadState()) {
-				// This value is set before the initiation request is
-				// sent.
-				case INITIATION_STARTED:
-					video.setThumbnailUploadState(UploadState.INITIATION_STARTED);
-					videoDAO.persist(video);
-					break;
-				// This value is set after the initiation request
-				// completes.
-				case INITIATION_COMPLETE:
-					video.setThumbnailUploadState(UploadState.INITIATION_COMPLETE);
-					videoDAO.persist(video);
-					break;
-				// This value is set after a media file chunk is
-				// uploaded.
-				case MEDIA_IN_PROGRESS:
-					video.setThumbnailUploadState(UploadState.MEDIA_IN_PROGRESS);
-					videoDAO.persist(video);
-					// System.out.println("Upload percentage: " +
-					// uploader.getProgress());
-					break;
-				// This value is set after the entire media file has
-				// been successfully uploaded.
-				case MEDIA_COMPLETE:
-					video.setThumbnailUploadState(UploadState.MEDIA_COMPLETE);
-					videoDAO.persist(video);
-					break;
-				// This value indicates that the upload process has
-				// not started yet.
-				case NOT_STARTED:
-					video.setThumbnailUploadState(UploadState.NOT_STARTED);
-					videoDAO.persist(video);
-					break;
-				}
-			}
-		};
-		uploader.setProgressListener(progressListener);
 
 		// Upload the image and set it as the specified video's thumbnail.
 		ThumbnailSetResponse setResponse;

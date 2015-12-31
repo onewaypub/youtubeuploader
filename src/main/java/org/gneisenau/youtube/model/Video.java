@@ -20,9 +20,7 @@ public class Video {
 	private String video;
 	private String thumbnail;
 	private Date releaseDate;
-	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name = "tags")
-	private List<String> tags;
+	private String tags;
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "errors")
 	private List<String> errors;
@@ -79,11 +77,11 @@ public class Video {
 		this.releaseDate = releaseDate;
 	}
 
-	public List<String> getTags() {
+	public String getTags() {
 		return tags;
 	}
 
-	public void setTags(List<String> tags) {
+	public void setTags(String tags) {
 		this.tags = tags;
 	}
 

@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-@Component
-class VideoThumbnailUploadProcessor extends AbstractVideoProcessor {
+//@Component
+public class VideoThumbnailUploadProcessor extends AbstractVideoProcessor {
 
 	@Autowired
 	private ImageHandler imgUploader;

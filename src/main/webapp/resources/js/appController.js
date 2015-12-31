@@ -2,7 +2,7 @@ angular.module("videoApp.controllers").controller("VideoCtrl",
 		function($scope, VideoService) {
 			$scope.videos = [];
 			$scope.playlist = [];
-			$scope.categories = [];
+			$scope.cats = [];
 			
 			$scope.saveVideo = function(video){
 				VideoService.saveVideo(video);
@@ -34,7 +34,8 @@ angular.module("videoApp.controllers").controller("VideoCtrl",
 			});
 			
 			$scope.videos = VideoService.getAllVideos();
-			$scope.categories = VideoService.getCategorylist();
+			$scope.cats = VideoService.getCategorylist();
 			$scope.playlist = VideoService.getPlaylist();
+			
 		});
 

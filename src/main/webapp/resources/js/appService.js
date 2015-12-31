@@ -44,7 +44,8 @@ angular.module("videoApp.services").service("VideoService",
 	            var categoryResource = $resource('categorylist', {}, {
 	                query: {method: 'GET', params: {}, isArray: true}
 	            });
-	            return categoryResource.query();
+	            var c = categoryResource.query();
+	            return c;
 	        }
 
 	        service.deleteVideo = function (index) {
