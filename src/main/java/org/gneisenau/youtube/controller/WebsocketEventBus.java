@@ -9,6 +9,7 @@ import org.gneisenau.youtube.to.EventTO;
 import org.gneisenau.youtube.to.StatusEventTO;
 import org.gneisenau.youtube.to.VideoTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -31,7 +32,7 @@ public class WebsocketEventBus {
 		template.convertAndSend("/topic/event", deleteVideoTO);
 	}
 
-	@TransactionalEventListener
+	@EventListener
 	public void onApplicationEvent(StatusUpdateEvent event) {
 		Video video = videoDAO.findById(event.getId());
 		StatusEventTO statusTO = new StatusEventTO(video, event);

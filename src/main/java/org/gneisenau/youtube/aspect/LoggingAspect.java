@@ -26,11 +26,16 @@ public class LoggingAspect {
 	public Object generalTraceLog(ProceedingJoinPoint joinPoint) throws Throwable {
 		Logger localLog = LoggerFactory.getLogger(joinPoint.getClass());
 		if (localLog.isTraceEnabled()) {
-			localLog.trace("", joinPoint.getArgs());
+			Object[] args = joinPoint.getArgs();
+			if (args !=  null && args.length > 0) {
+				localLog.trace("", args);
+			}
 		}
 		Object o = joinPoint.proceed();
 		if (localLog.isTraceEnabled()) {
-			localLog.trace("", o);
+			if (o != null) {
+				localLog.trace("", o);
+			}
 		}
 		return o;
 	}

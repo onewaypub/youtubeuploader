@@ -77,8 +77,6 @@ public class UploadController {
 	private WebsocketEventBus websocketEventBus;
 	@Autowired
 	private VideoRepository videoDAO;
-	@Autowired
-	private VideoChain chain;
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView init(HttpServletRequest request, HttpServletResponse response) {
@@ -135,10 +133,6 @@ public class UploadController {
 			videoDAO.persist(v);
 			VideoTO to = dozerBeanMapper.map(v, VideoTO.class);
 			websocketEventBus.notifyNewVideo(to);
-			// List<Video> videos = videoDAO.findAllWaitForPorcessing();
-			List<Video> videos = new ArrayList<Video>();
-			videos.add(v);
-			chain.execute(videos);
 		}
 
 		return new ResponseEntity<>("{}", HttpStatus.OK);

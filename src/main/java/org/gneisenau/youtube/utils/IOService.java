@@ -124,14 +124,7 @@ public class IOService {
 				if (newFile.exists()) {
 					newFile = new File(path2save + addMilliSecondsToFilename(name));
 				}
-				InputStream inputStream = e.getValue().getInputStream();
-				BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(newFile));
-				try {
-					IOUtils.copy(inputStream, outputStream);
-				} finally {
-					outputStream.close();
-					inputStream.close();
-				}
+				e.getValue().transferTo(newFile);
 				files.add(newFile);
 			}
 		} catch (IOException e) {

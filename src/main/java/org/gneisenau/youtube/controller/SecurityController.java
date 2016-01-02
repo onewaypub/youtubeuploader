@@ -27,6 +27,11 @@ public class SecurityController {
 		}
 		return "redirect:/list";
 	}
+	
+	@RequestMapping("/login")
+	public String loginPage(HttpServletRequest request, HttpServletResponse response){
+		return "/login";
+	}
 
 	@RequestMapping(value = "/Access_Denied", method = RequestMethod.GET)
 	public String accessDeniedPage(ModelMap model) {

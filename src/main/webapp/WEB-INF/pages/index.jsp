@@ -66,7 +66,8 @@
 							<div class="accordion-heading">
 								<div class="row">
 									<div class="col-md-1">
-										<i ng-click="deleteVideo(video)" class="material-icons" style="cursor: default;">delete</i>
+										<i ng-click="deleteVideo(video)" class="material-icons"
+											style="cursor: default;">delete</i>
 									</div>
 									<div class="col-md-4">
 										<label for="title">Titel</label><input type="text"
@@ -112,7 +113,7 @@
 															<span aria-hidden="true">&times;</span>
 														</button>
 														<h4 class="modal-title" id="myModalLabel">
-															<i class="material-icons">details</i>
+															<i class="material-icons">video_library</i>
 														</h4>
 													</div>
 													<div class="modal-body">
@@ -131,7 +132,7 @@
 									</div>
 									<div class="col-md-1">
 										<a data-toggle="collapse" data-parent="#accordion"
-											href="#collapse{{video.id}}"><i class="material-icons">details</i></a>
+											href="#collapse{{video.id}}"><i class="material-icons" style="color: black;">details</i></a>
 									</div>
 								</div>
 								<div id="collapse{{video.id}}" class="accordion-body collapse">
@@ -146,6 +147,7 @@
 											</div>
 											<div class="col-md-1"></div>
 										</div>
+										<br/>
 										<div class="row">
 											<div class="col-md-1"></div>
 											<div class="col-md-3">

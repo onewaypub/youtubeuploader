@@ -27,7 +27,6 @@ public class TranscodeProcessor extends AbstractVideoProcessor {
 	public int process(Video v) {
 		File transcodedFile = null;
 		try {
-			v.setState(State.OnProcessing);
 			transcodedFile = new File(v.getVideo() + ".mp4");
 			try {
 				videoProcessor.transcode(new File(v.getVideo()), transcodedFile);

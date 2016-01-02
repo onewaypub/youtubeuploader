@@ -64,7 +64,6 @@ public class IntroOutroProcessor extends AbstractVideoProcessor {
 			return VideoProcessor.STOP;
 		}
 		v.setVideo(newFile.getAbsolutePath());
-		v.setState(State.WaitForUpload);
 		if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyProcessedState()) {
 			mailService.sendStatusMail(v.getTitle(), v.getState(), v.getUsername());
 		}

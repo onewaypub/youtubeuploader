@@ -1,15 +1,21 @@
 package org.gneisenau.youtube.config;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.dozer.DozerBeanMapper;
+import org.gneisenau.youtube.utils.IOService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -27,6 +33,9 @@ import org.springframework.web.servlet.view.JstlView;
 @Import({ JPAConfig.class, SchedulerConfig.class, SecurityConfig.class, SocialConfig.class, SecurityConfig.class,
 		UtilConfig.class, WebSocketSecurityConfig.class })
 public class WebAppConfig extends WebMvcConfigurerAdapter {
+
+	@Autowired
+	private IOService ioUtils;
 
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer properties() {
@@ -56,9 +65,11 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean(name = "multipartResolver")
-	public CommonsMultipartResolver createMultipartResolver() {
+	public CommonsMultipartResolver createMultipartResolver() throws IOException {
 		CommonsMultipartResolver resolver = new CommonsMultipartResolver();
 		resolver.setDefaultEncoding("utf-8");
+		FileSystemResource resource = new FileSystemResource(ioUtils.getTemporaryFolder());
+		resolver.setUploadTempDir(resource);
 		return resolver;
 	}
 

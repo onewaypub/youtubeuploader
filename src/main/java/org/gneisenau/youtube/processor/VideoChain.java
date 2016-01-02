@@ -40,7 +40,7 @@ public class VideoChain {
 
 	@Transactional
 	public void execute(List<Video> videos) {
-		int i = Math.round(90 / videoProcessingChain.size());
+		int i = Math.round(100 / videoProcessingChain.size());
 		
 		for (Video videoTemp : videos) {
 			Video v = videoDAO.findById(videoTemp.getId());
@@ -48,6 +48,7 @@ public class VideoChain {
 			publishEvent(event);			
 			for (VideoProcessor chainItem : videoProcessingChain) {
 				int process = chainItem.process(v);
+				
 				videoDAO.persist(v);
 				videoDAO.flush();
 				if(VideoProcessor.STOP == process){
@@ -58,8 +59,9 @@ public class VideoChain {
 				}
 				i = i + Math.round(100 / videoProcessingChain.size());
 			}
-			event = new StatusUpdateEvent(v.getId(), v.getState(), 100, v);
-			publishEvent(event);
+			v.setState(State.WaitForUpload);
+			videoDAO.persist(v);
+			videoDAO.flush();
 			event = new StatusUpdateEvent(v.getId(), v.getState(), 0, v);
 			publishEvent(event);
 		}
