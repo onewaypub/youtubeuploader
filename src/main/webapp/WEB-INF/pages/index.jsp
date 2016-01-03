@@ -66,8 +66,16 @@
 							<div class="accordion-heading">
 								<div class="row">
 									<div class="col-md-1">
-										<i ng-click="deleteVideo(video)" class="material-icons"
-											style="cursor: default;">delete</i>
+										<i ng-click="saveVideo(video)" class="material-icons"
+											data-toggle="tooltip" title="Video-Metadaten speichern"
+											style="cursor: default;">save</i><a data-toggle="collapse"
+											data-toggle="tooltip" title="Details anzeigen"
+											data-parent="#accordion" href="#collapse{{video.id}}"><i
+											class="material-icons" style="cursor: default; color: black;">details</i></a>
+										<i class="material-icons" data-toggle="modal"
+											data-target="#deleteModal" data-toggle="tooltip"
+											title="Video löschen" ng-really-message="Are you sure?"
+											ng-really-click="deleteVideo(video)" style="cursor: default;">delete</i>
 									</div>
 									<div class="col-md-4">
 										<label for="title">Titel</label><input type="text"
@@ -76,10 +84,10 @@
 									</div>
 									<div class="col-md-2">
 										<div class="form-group">
-											<label for="timestamp">Veröffentlichungsdatum</label> <input
+											<label for="releaseDate">Veröffentlichungsdatum</label> <input
 												ng-pattern="^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d [012]{0,1}[0-9]:[0-6][0-9]$"
-												type="datetime" class="form-control" id="timestamp"
-												name="timestamp" placeholder="z.B. 12.12.2015 10:00"
+												type="datetime" class="form-control" id="releaseDate"
+												name="releaseDate" placeholder="z.B. 12.12.2015 10:00"
 												ng-model="video.releaseDate">
 										</div>
 									</div>
@@ -130,10 +138,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="col-md-1">
-										<a data-toggle="collapse" data-parent="#accordion"
-											href="#collapse{{video.id}}"><i class="material-icons" style="color: black;">details</i></a>
-									</div>
+									<div class="col-md-1"></div>
 								</div>
 								<div id="collapse{{video.id}}" class="accordion-body collapse">
 									<div class="accordion-inner">
@@ -147,7 +152,7 @@
 											</div>
 											<div class="col-md-1"></div>
 										</div>
-										<br/>
+										<br />
 										<div class="row">
 											<div class="col-md-1"></div>
 											<div class="col-md-3">
@@ -264,6 +269,7 @@
 		<script type="text/javascript" src="resources/js/app.js"></script>
 		<script type="text/javascript" src="resources/js/appController.js"></script>
 		<script type="text/javascript" src="resources/js/appService.js"></script>
+		<script type="text/javascript" src="resources/js/appDirectives.js"></script>
 		<script type="text/javascript" src="resources/dropzone/dropzone.js"></script>
 		<script type="text/javascript">
 			Dropzone.options.dropzone = {
@@ -280,6 +286,11 @@
 					}
 				}
 			};
+		</script>
+		<script>
+			$(document).ready(function() {
+				$('[data-toggle="tooltip"]').tooltip();
+			});
 		</script>
 </body>
 </html>

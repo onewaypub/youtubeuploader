@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.gneisenau.youtube.exceptions.VideoMergeException;
 import org.gneisenau.youtube.exceptions.VideoTranscodeException;
 import org.gneisenau.youtube.model.State;
@@ -16,10 +17,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Order(value=2)
 @PropertySource("file:${user.home}/youtubeuploader.properties")
 public class IntroOutroProcessor extends AbstractVideoProcessor {
 
@@ -29,6 +32,7 @@ public class IntroOutroProcessor extends AbstractVideoProcessor {
 	protected IOService ioService;
 	@Value("${tomcat.home.dir}")
 	protected String introOutroDir;
+
 	@Autowired
 	public IntroOutroProcessor(ApplicationEventPublisher publisher) {
 		super(publisher);
@@ -41,7 +45,9 @@ public class IntroOutroProcessor extends AbstractVideoProcessor {
 		File oldFile = new File(v.getVideo());
 		File intro = new File(introOutroDir + "/intro.mp4");
 		File outro = new File(introOutroDir + "/outro.mp4");
-		File newFile = new File(ioService.getTemporaryFolder() + File.separator + System.currentTimeMillis() + ".mp4");
+		String baseName = FilenameUtils.getBaseName(v.getVideo());
+		String extension = FilenameUtils.getExtension(v.getVideo());
+		File newFile = new File(ioService.getTemporaryFolder() + File.separator + baseName + "_merged." + extension);
 
 		List<File> files = new ArrayList<File>();
 		if (intro != null) {
@@ -64,16 +70,8 @@ public class IntroOutroProcessor extends AbstractVideoProcessor {
 			return VideoProcessor.STOP;
 		}
 		v.setVideo(newFile.getAbsolutePath());
-		if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyProcessedState()) {
-			mailService.sendStatusMail(v.getTitle(), v.getState(), v.getUsername());
-		}
 		oldFile.delete();
 		return VideoProcessor.CONTINUE;
 	}
 
-	@Override
-	public int getOrder() {
-		return Ordered.LOWEST_PRECEDENCE;
-	}
-	
 }

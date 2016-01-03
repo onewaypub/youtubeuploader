@@ -53,8 +53,8 @@
 			<b>errors</b>
 		</field> -->
 		<field>
-			<a date-format="dd.MM.yyyy HH:mm">timestamp</a>
-			<b>releaseDate</b>
+			<a>releaseDate</a>
+			<b date-format="dd.MM.yyyy HH:mm">releaseDate</b>
 		</field>
 		<field>
 			<a>tags</a>
@@ -77,8 +77,8 @@
 			<b>ageRestricted</b>
 		</field>
 		<field>
-			<a>gerne</a>
-			<b>gerne</b>
+			<a>genre</a>
+			<b>genre</b>
 		</field>
 		<field>
 			<a>categoryId</a>
@@ -101,8 +101,8 @@
 			<b>category</b>
 		</field>
 		<field>
-			<a date-format="dd.MM.yyyy">published</a>
-			<b>published</b>
+			<a>published</a>
+			<b date-format="dd.MM.yyyy">published</b>
 		</field>
 		<field>
 			<a>publisher</a>
@@ -146,17 +146,11 @@
 	<mapping map-id="metadata" trim-strings="true" map-null="true" type="one-way">
 		<class-a>org.gneisenau.youtube.to.VideoTO</class-a>
 		<class-b>org.gneisenau.youtube.model.Video</class-b>
-		<field
-			custom-converter="org.gneisenau.youtube.utils.CommaSeperatedStringToListConverter">
-			<a>errors</a>
-			<b>errors</b>
+		<field>
+			<a>releaseDate</a>
+			<b date-format="dd.MM.yyyy HH:mm">releaseDate</b>
 		</field>
 		<field>
-			<a>timestamp</a>
-			<b>releaseDate</b>
-		</field>
-		<field
-			custom-converter="org.gneisenau.youtube.utils.CommaSeperatedStringToListConverter">
 			<a>tags</a>
 			<b>tags</b>
 		</field>
@@ -177,8 +171,8 @@
 			<b>ageRestricted</b>
 		</field>
 		<field>
-			<a>gerne</a>
-			<b>gerne</b>
+			<a>genre</a>
+			<b>genre</b>
 		</field>
 		<field>
 			<a>categoryId</a>
@@ -193,48 +187,20 @@
 			<b>shorttitle</b>
 		</field>
 		<field>
-			<a>video</a>
-			<b>video</b>
-		</field>
-		<field>
 			<a>category</a>
 			<b>category</b>
 		</field>
 		<field>
 			<a>published</a>
-			<b>published</b>
+			<b date-format="dd.MM.yyyy">published</b>
 		</field>
 		<field>
 			<a>publisher</a>
 			<b>publisher</b>
 		</field>
 		<field>
-			<a>username</a>
-			<b>username</b>
-		</field>
-		<field>
 			<a>channelId</a>
 			<b>channelId</b>
-		</field>
-		<field>
-			<a>videoUrl</a>
-			<b>videoUrl</b>
-		</field>
-		<field>
-			<a>thumbnailUrl</a>
-			<b>thumbnailUrl</b>
-		</field>
-		<field>
-			<a>youtubeId</a>
-			<b>youtubeId</b>
-		</field>
-		<field>
-			<a>state</a>
-			<b>state</b>
-		</field>
-		<field>
-			<a>privacySetting</a>
-			<b>privacySetting</b>
 		</field>
 		<field>
 			<a>id</a>

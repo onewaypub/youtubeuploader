@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-//@Component
-public class VideoThumbnailUploadProcessor extends AbstractVideoProcessor {
+@Component
+public class VideoThumbnailUploadProcessor extends AbstractYoutubeProcessor {
 
 	@Autowired
 	private ImageHandler imgUploader;
@@ -68,7 +68,7 @@ public class VideoThumbnailUploadProcessor extends AbstractVideoProcessor {
 				handleError(v, "Das Thumbnails konnte nicht hochgeladen werden", e);
 				return VideoProcessor.STOP;
 			}
-			v.setState(State.WaitForListing);
+			//v.setState(State.OnUpload.nextState());
 			if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyReleaseState()) {
 				mailService.sendStatusMail(v.getTitle(), v.getState(), v.getUsername());
 			}

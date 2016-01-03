@@ -21,8 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-//@Component
-public class VideoUploadProcessor extends AbstractVideoProcessor {
+@Component
+public class VideoUploadProcessor extends AbstractYoutubeProcessor {
 
 	@Autowired
 	protected VideoHandler vidUploader;
@@ -87,7 +87,7 @@ public class VideoUploadProcessor extends AbstractVideoProcessor {
 	}
 
 	private String createDescription(Video v) {
-		String desc = v.getDescription() + "\n\nTitel: " + v.getShorttitle() + "\nGenre: " + v.getGerne()
+		String desc = v.getDescription() + "\n\nTitel: " + v.getShorttitle() + "\nGenre: " + v.getGenre()
 				+ "\nEntwickler: " + v.getDeveloper() + "\nPublisher: " + v.getPublisher() + "\nVeröffentlichung: "
 				+ v.getPublished() + "\n\nhttps://www.facebook.com/pages/PeachesLp/781275711939550"
 				+ "\nhttps://twitter.com/Peaches_LP";

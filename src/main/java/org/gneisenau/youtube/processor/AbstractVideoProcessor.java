@@ -21,7 +21,7 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
 @Component
-public abstract class AbstractVideoProcessor implements VideoProcessor, Ordered {
+public abstract class AbstractVideoProcessor implements VideoProcessor {
 
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
@@ -29,11 +29,6 @@ public abstract class AbstractVideoProcessor implements VideoProcessor, Ordered 
 
 	@Autowired
 	protected MailSendService mailService;
-
-	@Override
-	public int getOrder() {
-		return Ordered.LOWEST_PRECEDENCE;
-	}
 
 	private final ApplicationEventPublisher publisher;
 

@@ -5,6 +5,9 @@ import java.util.List;
 import org.gneisenau.youtube.model.PrivacySetting;
 import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.UploadState;
+import org.gneisenau.youtube.utils.StateDeserializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 public class VideoTO {
 
@@ -14,16 +17,17 @@ public class VideoTO {
 	private String playlist;
 	private String tags;
 	private String video;
-	private String timestamp;
+	private String releaseDate;
 	private String publisher;
 	private String published;
 	private String shorttitle;
 	private String developer;
 	private String categoryId;
-	private String gerne;
+	private String genre;
 	private List<String> errors;
 	private boolean ageRestricted;
 	private PrivacySetting privacySetting;
+	@JsonDeserialize(using = StateDeserializer.class)
 	private State state;
 	private int process;
 	private String youtubeId;
@@ -170,14 +174,6 @@ public class VideoTO {
 		this.tags = tags;
 	}
 
-	public String getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-	}
-
 	public String getPublisher() {
 		return publisher;
 	}
@@ -218,20 +214,40 @@ public class VideoTO {
 		this.categoryId = categoryId;
 	}
 
-	public String getGerne() {
-		return gerne;
+	public String getReleaseDate() {
+		return releaseDate;
 	}
 
-	public void setGerne(String gerne) {
-		this.gerne = gerne;
+	public void setReleaseDate(String releaseDate) {
+		this.releaseDate = releaseDate;
+	}
+
+	public int getProcess() {
+		return process;
+	}
+
+	public void setProcess(int process) {
+		this.process = process;
+	}
+
+	public String getGenre() {
+		return genre;
+	}
+
+	public void setGenre(String genre) {
+		this.genre = genre;
 	}
 
 	@Override
 	public String toString() {
-		return "VideoTO [description=" + description + ", title=" + title + ", playlist=" + playlist + ", tags=" + tags
-				+ ", timestamp=" + timestamp + ", publisher=" + publisher + ", published=" + published + ", shorttitle="
-				+ shorttitle + ", developer=" + developer + ", categoryId=" + categoryId + ", gerne=" + gerne
-				+ ", ageRestricted=" + ageRestricted + "]";
+		return "VideoTO [id=" + id + ", description=" + description + ", title=" + title + ", playlist=" + playlist
+				+ ", tags=" + tags + ", video=" + video + ", releaseDate=" + releaseDate + ", publisher=" + publisher
+				+ ", published=" + published + ", shorttitle=" + shorttitle + ", developer=" + developer
+				+ ", categoryId=" + categoryId + ", genre=" + genre + ", errors=" + errors + ", ageRestricted="
+				+ ageRestricted + ", privacySetting=" + privacySetting + ", state=" + state + ", process=" + process
+				+ ", youtubeId=" + youtubeId + ", thumbnailUrl=" + thumbnailUrl + ", videoUrl=" + videoUrl
+				+ ", channelId=" + channelId + ", playlistId=" + playlistId + ", category=" + category + ", username="
+				+ username + "]";
 	}
 
 	@Override
@@ -239,17 +255,30 @@ public class VideoTO {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (ageRestricted ? 1231 : 1237);
+		result = prime * result + ((category == null) ? 0 : category.hashCode());
 		result = prime * result + ((categoryId == null) ? 0 : categoryId.hashCode());
+		result = prime * result + ((channelId == null) ? 0 : channelId.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((developer == null) ? 0 : developer.hashCode());
-		result = prime * result + ((gerne == null) ? 0 : gerne.hashCode());
+		result = prime * result + ((errors == null) ? 0 : errors.hashCode());
+		result = prime * result + ((genre == null) ? 0 : genre.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((playlist == null) ? 0 : playlist.hashCode());
+		result = prime * result + ((playlistId == null) ? 0 : playlistId.hashCode());
+		result = prime * result + ((privacySetting == null) ? 0 : privacySetting.hashCode());
+		result = prime * result + process;
 		result = prime * result + ((published == null) ? 0 : published.hashCode());
 		result = prime * result + ((publisher == null) ? 0 : publisher.hashCode());
+		result = prime * result + ((releaseDate == null) ? 0 : releaseDate.hashCode());
 		result = prime * result + ((shorttitle == null) ? 0 : shorttitle.hashCode());
+		result = prime * result + ((state == null) ? 0 : state.hashCode());
 		result = prime * result + ((tags == null) ? 0 : tags.hashCode());
-		result = prime * result + ((timestamp == null) ? 0 : timestamp.hashCode());
+		result = prime * result + ((thumbnailUrl == null) ? 0 : thumbnailUrl.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		result = prime * result + ((video == null) ? 0 : video.hashCode());
+		result = prime * result + ((videoUrl == null) ? 0 : videoUrl.hashCode());
+		result = prime * result + ((youtubeId == null) ? 0 : youtubeId.hashCode());
 		return result;
 	}
 
@@ -264,10 +293,20 @@ public class VideoTO {
 		VideoTO other = (VideoTO) obj;
 		if (ageRestricted != other.ageRestricted)
 			return false;
+		if (category == null) {
+			if (other.category != null)
+				return false;
+		} else if (!category.equals(other.category))
+			return false;
 		if (categoryId == null) {
 			if (other.categoryId != null)
 				return false;
 		} else if (!categoryId.equals(other.categoryId))
+			return false;
+		if (channelId == null) {
+			if (other.channelId != null)
+				return false;
+		} else if (!channelId.equals(other.channelId))
 			return false;
 		if (description == null) {
 			if (other.description != null)
@@ -279,15 +318,34 @@ public class VideoTO {
 				return false;
 		} else if (!developer.equals(other.developer))
 			return false;
-		if (gerne == null) {
-			if (other.gerne != null)
+		if (errors == null) {
+			if (other.errors != null)
 				return false;
-		} else if (!gerne.equals(other.gerne))
+		} else if (!errors.equals(other.errors))
+			return false;
+		if (genre == null) {
+			if (other.genre != null)
+				return false;
+		} else if (!genre.equals(other.genre))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
 			return false;
 		if (playlist == null) {
 			if (other.playlist != null)
 				return false;
 		} else if (!playlist.equals(other.playlist))
+			return false;
+		if (playlistId == null) {
+			if (other.playlistId != null)
+				return false;
+		} else if (!playlistId.equals(other.playlistId))
+			return false;
+		if (privacySetting != other.privacySetting)
+			return false;
+		if (process != other.process)
 			return false;
 		if (published == null) {
 			if (other.published != null)
@@ -299,25 +357,52 @@ public class VideoTO {
 				return false;
 		} else if (!publisher.equals(other.publisher))
 			return false;
+		if (releaseDate == null) {
+			if (other.releaseDate != null)
+				return false;
+		} else if (!releaseDate.equals(other.releaseDate))
+			return false;
 		if (shorttitle == null) {
 			if (other.shorttitle != null)
 				return false;
 		} else if (!shorttitle.equals(other.shorttitle))
+			return false;
+		if (state != other.state)
 			return false;
 		if (tags == null) {
 			if (other.tags != null)
 				return false;
 		} else if (!tags.equals(other.tags))
 			return false;
-		if (timestamp == null) {
-			if (other.timestamp != null)
+		if (thumbnailUrl == null) {
+			if (other.thumbnailUrl != null)
 				return false;
-		} else if (!timestamp.equals(other.timestamp))
+		} else if (!thumbnailUrl.equals(other.thumbnailUrl))
 			return false;
 		if (title == null) {
 			if (other.title != null)
 				return false;
 		} else if (!title.equals(other.title))
+			return false;
+		if (username == null) {
+			if (other.username != null)
+				return false;
+		} else if (!username.equals(other.username))
+			return false;
+		if (video == null) {
+			if (other.video != null)
+				return false;
+		} else if (!video.equals(other.video))
+			return false;
+		if (videoUrl == null) {
+			if (other.videoUrl != null)
+				return false;
+		} else if (!videoUrl.equals(other.videoUrl))
+			return false;
+		if (youtubeId == null) {
+			if (other.youtubeId != null)
+				return false;
+		} else if (!youtubeId.equals(other.youtubeId))
 			return false;
 		return true;
 	}

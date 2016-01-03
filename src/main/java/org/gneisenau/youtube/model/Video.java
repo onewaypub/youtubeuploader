@@ -39,7 +39,7 @@ public class Video {
 	private String publisher;
 	private String published;
 	private String developer;
-	private String gerne;
+	private String genre;
 	private String shorttitle;
 	private String category;
 	private String username;
@@ -213,12 +213,12 @@ public class Video {
 		this.developer = developer;
 	}
 
-	public String getGerne() {
-		return gerne;
+	public String getGenre() {
+		return genre;
 	}
 
-	public void setGerne(String gerne) {
-		this.gerne = gerne;
+	public void setGenre(String genre) {
+		this.genre = genre;
 	}
 
 	public String getShorttitle() {
@@ -261,7 +261,7 @@ public class Video {
 				+ thumbnailUrl + ", videoUploadState=" + videoUploadState + ", videoUrl=" + videoUrl + ", title="
 				+ title + ", description=" + description + ", categoryId=" + categoryId + ", channelId=" + channelId
 				+ ", playlistId=" + playlistId + ", publisher=" + publisher + ", published=" + published
-				+ ", developer=" + developer + ", gerne=" + gerne + ", shorttitle=" + shorttitle + ", category="
+				+ ", developer=" + developer + ", gerne=" + genre + ", shorttitle=" + shorttitle + ", category="
 				+ category + ", username=" + username + ", ageRestricted=" + ageRestricted + "]";
 	}
 
@@ -276,7 +276,7 @@ public class Video {
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((developer == null) ? 0 : developer.hashCode());
 		result = prime * result + ((errors == null) ? 0 : errors.hashCode());
-		result = prime * result + ((gerne == null) ? 0 : gerne.hashCode());
+		result = prime * result + ((genre == null) ? 0 : genre.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((playlistId == null) ? 0 : playlistId.hashCode());
 		result = prime * result + ((privacySetting == null) ? 0 : privacySetting.hashCode());
@@ -339,10 +339,10 @@ public class Video {
 				return false;
 		} else if (!errors.equals(other.errors))
 			return false;
-		if (gerne == null) {
-			if (other.gerne != null)
+		if (genre == null) {
+			if (other.genre != null)
 				return false;
-		} else if (!gerne.equals(other.gerne))
+		} else if (!genre.equals(other.genre))
 			return false;
 		if (id == null) {
 			if (other.id != null)

@@ -120,10 +120,7 @@ public class IOService {
 				String name = e.getValue().getOriginalFilename();
 
 				String path2save = directory.getAbsolutePath() + File.separatorChar;
-				File newFile = new File(path2save + name);
-				if (newFile.exists()) {
-					newFile = new File(path2save + addMilliSecondsToFilename(name));
-				}
+				File newFile = new File(path2save + addMilliSecondsToFilename(name));
 				e.getValue().transferTo(newFile);
 				files.add(newFile);
 			}
@@ -139,10 +136,10 @@ public class IOService {
 		return files;
 	}
 
-	private String addMilliSecondsToFilename(String name) {
+	public String addMilliSecondsToFilename(String name) {
 		String baseName = FilenameUtils.getBaseName(name);
 		String extension = FilenameUtils.getExtension(name);
-		return baseName + System.currentTimeMillis() + "." + extension;
+		return System.currentTimeMillis() + "_" + baseName + "." + extension;
 	}
 
 }

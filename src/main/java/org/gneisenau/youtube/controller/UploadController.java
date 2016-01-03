@@ -25,6 +25,7 @@ import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.dozer.DozerBeanMapper;
 import org.gneisenau.youtube.handler.YoutubeHandler;
 import org.gneisenau.youtube.model.State;
@@ -37,6 +38,7 @@ import org.gneisenau.youtube.to.ValueTO;
 import org.gneisenau.youtube.to.VideoTO;
 import org.gneisenau.youtube.utils.IOService;
 import org.imgscalr.Scalr;
+import org.mortbay.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,8 +59,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 @Controller
 public class UploadController {
@@ -110,29 +115,48 @@ public class UploadController {
 		List<Video> list = videoDAO.findAll();
 		List<VideoTO> videos = new ArrayList<VideoTO>();
 		for (Video v : list) {
-			videos.add(dozerBeanMapper.map(v, VideoTO.class));
+			VideoTO bean = dozerBeanMapper.map(v, VideoTO.class);
+			videos.add(bean);
+			
 		}
 		return videos;
 	}
 
 	@RequestMapping(value = "/upload/video", method = RequestMethod.POST)
 	public ResponseEntity<String> uploadVideoFile(MultipartHttpServletRequest request) {
-		List<File> newFiles = null;
 		try {
 			File outputDir = new File(ioUtils.getTemporaryFolder());
-			newFiles = ioUtils.writeMultipart2Files(request, outputDir);
+			// Create a new file upload handler
+			List<File> files = new ArrayList<File>();
+			try {
+				Map<String, MultipartFile> fileMap = request.getFileMap();
+				for (Entry<String, MultipartFile> e : fileMap.entrySet()) {
+					String name = e.getValue().getOriginalFilename();
+					String title = FilenameUtils.getBaseName(name);
+					String path2save = outputDir.getAbsolutePath() + File.separatorChar;
+					File newFile = new File(path2save + ioUtils.addMilliSecondsToFilename(name));
+					e.getValue().transferTo(newFile);
+					Video v = new Video();
+					v.setTitle(title);
+					v.setVideo(newFile.getAbsolutePath());
+					v.setState(State.WaitForProcessing);
+					v.setUsername(secUtil.getPrincipal());
+					videoDAO.persist(v);
+					VideoTO to = dozerBeanMapper.map(v, VideoTO.class);
+					websocketEventBus.notifyNewVideo(to);
+				}
+			} catch (IOException e) {
+				// Cleanup on exception
+				for (File f : files) {
+					if (f.exists()) {
+						f.delete();
+					}
+				}
+				throw e;
+			}
+
 		} catch (Exception e) {
 			return new ResponseEntity<>("{}", HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		for (File f : newFiles) {
-			Video v = new Video();
-			v.setTitle(FilenameUtils.getBaseName(f.getAbsolutePath()));
-			v.setVideo(f.getAbsolutePath());
-			v.setState(State.WaitForProcessing);
-			v.setUsername(secUtil.getPrincipal());
-			videoDAO.persist(v);
-			VideoTO to = dozerBeanMapper.map(v, VideoTO.class);
-			websocketEventBus.notifyNewVideo(to);
 		}
 
 		return new ResponseEntity<>("{}", HttpStatus.OK);
@@ -154,10 +178,21 @@ public class UploadController {
 	}
 
 	@RequestMapping(value = "/update/video", method = RequestMethod.POST)
+	@Transactional
 	public ResponseEntity<String> saveVideo(@RequestBody String jSONVideo) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		VideoTO video = mapper.readValue(jSONVideo, VideoTO.class);
-		Video v = dozerBeanMapper.map(video, Video.class);
+	    mapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
+	    VideoTO video = mapper.readValue(jSONVideo, VideoTO.class);
+		Long id = video.getId();
+		Video v = null;
+		if(id != null){
+			v = videoDAO.findById(id);
+		} 
+		if(v == null){
+			v = dozerBeanMapper.map(video, Video.class);
+		} else {
+			dozerBeanMapper.map(video, v, "metadata");
+		}
 		videoDAO.persist(v);
 		return new ResponseEntity<>("{}", HttpStatus.OK);
 	}
@@ -179,6 +214,14 @@ public class UploadController {
 	public ResponseEntity<String> deleteVideo(@PathVariable("id") long id) {
 		Video video = videoDAO.findById(Long.valueOf(id));
 		VideoTO videoTO = dozerBeanMapper.map(video, VideoTO.class);
+		if (video.getVideo() != null) {
+			File f = new File(video.getVideo());
+			f.delete();
+		}
+		if (video.getThumbnail() != null) {
+			File f = new File(video.getThumbnail());
+			f.delete();
+		}
 		videoDAO.delete(Long.valueOf(id));
 		websocketEventBus.notifyDeleteVideo(videoTO);
 		return new ResponseEntity<>("{}", HttpStatus.OK);

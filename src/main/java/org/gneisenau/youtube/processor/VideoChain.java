@@ -6,7 +6,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.gneisenau.youtube.events.StatusUpdateEvent;
+import org.gneisenau.youtube.message.MailSendService;
 import org.gneisenau.youtube.model.State;
+import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class VideoChain {
 	@Autowired
-	private List<AbstractVideoProcessor> videoProcessingChain;
+	private List<VideoProcessor> videoProcessingChain;
 	@Autowired
 	private VideoRepository videoDAO;
+	@Autowired
+	private UserSettingsRepository userSettingsDAO;
+	@Autowired
+	protected MailSendService mailService;
 
 	private final ApplicationEventPublisher publisher;
 
@@ -44,7 +50,7 @@ public class VideoChain {
 		
 		for (Video videoTemp : videos) {
 			Video v = videoDAO.findById(videoTemp.getId());
-			StatusUpdateEvent event = new StatusUpdateEvent(v.getId(), State.OnProcessing, 10, v);
+			StatusUpdateEvent event = new StatusUpdateEvent(v.getId(), State.OnProcessing, 0, v);
 			publishEvent(event);			
 			for (VideoProcessor chainItem : videoProcessingChain) {
 				int process = chainItem.process(v);
@@ -59,11 +65,14 @@ public class VideoChain {
 				}
 				i = i + Math.round(100 / videoProcessingChain.size());
 			}
-			v.setState(State.WaitForUpload);
+			v.setState(State.OnProcessing.nextState());
 			videoDAO.persist(v);
 			videoDAO.flush();
 			event = new StatusUpdateEvent(v.getId(), v.getState(), 0, v);
 			publishEvent(event);
+			if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyProcessedState()) {
+				mailService.sendStatusMail(v.getTitle(), v.getState(), v.getUsername());
+			}
 		}
 	}
 }
