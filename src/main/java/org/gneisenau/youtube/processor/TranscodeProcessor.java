@@ -4,14 +4,11 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.exec.ExecuteException;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.video.VideoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 

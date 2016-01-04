@@ -1,6 +1,5 @@
 package org.gneisenau.youtube.events;
 
-import org.gneisenau.youtube.model.State;
 import org.springframework.context.ApplicationEvent;
 
 public class VideoDeleteEvent extends ApplicationEvent {

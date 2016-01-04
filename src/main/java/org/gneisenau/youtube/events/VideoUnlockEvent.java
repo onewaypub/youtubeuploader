@@ -2,7 +2,7 @@ package org.gneisenau.youtube.events;
 
 import org.springframework.context.ApplicationEvent;
 
-public class VideoAddEvent extends ApplicationEvent {
+public class VideoUnlockEvent extends ApplicationEvent {
 
 	/**
 	 * 
@@ -11,7 +11,7 @@ public class VideoAddEvent extends ApplicationEvent {
 
 	private long videoId;
 
-	public VideoAddEvent(long videoId, Object source) {
+	public VideoUnlockEvent(long videoId, Object source) {
 		super(source);
 		this.videoId = videoId;
 	}

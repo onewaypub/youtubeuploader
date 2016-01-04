@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.gneisenau.youtube.model.PrivacySetting;
 import org.gneisenau.youtube.model.State;
-import org.gneisenau.youtube.model.UploadState;
 import org.gneisenau.youtube.utils.StateDeserializer;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -32,6 +31,8 @@ public class VideoTO {
 	private int process;
 	private String youtubeId;
 	private String thumbnailUrl;
+	private String localThumbnailUrl;
+	private String localVideoUrl;
 	private String videoUrl;
 	private String channelId;
 	private String playlistId;
@@ -238,6 +239,22 @@ public class VideoTO {
 		this.genre = genre;
 	}
 
+	public String getLocalThumbnailUrl() {
+		return localThumbnailUrl;
+	}
+
+	public void setLocalThumbnailUrl(String localThumbnailUrl) {
+		this.localThumbnailUrl = localThumbnailUrl;
+	}
+
+	public String getLocalVideoUrl() {
+		return localVideoUrl;
+	}
+
+	public void setLocalVideoUrl(String localVideoUrl) {
+		this.localVideoUrl = localVideoUrl;
+	}
+
 	@Override
 	public String toString() {
 		return "VideoTO [id=" + id + ", description=" + description + ", title=" + title + ", playlist=" + playlist
@@ -245,9 +262,9 @@ public class VideoTO {
 				+ ", published=" + published + ", shorttitle=" + shorttitle + ", developer=" + developer
 				+ ", categoryId=" + categoryId + ", genre=" + genre + ", errors=" + errors + ", ageRestricted="
 				+ ageRestricted + ", privacySetting=" + privacySetting + ", state=" + state + ", process=" + process
-				+ ", youtubeId=" + youtubeId + ", thumbnailUrl=" + thumbnailUrl + ", videoUrl=" + videoUrl
-				+ ", channelId=" + channelId + ", playlistId=" + playlistId + ", category=" + category + ", username="
-				+ username + "]";
+				+ ", youtubeId=" + youtubeId + ", thumbnailUrl=" + thumbnailUrl + ", localThumbnailUrl="
+				+ localThumbnailUrl + ", localVideoUrl=" + localVideoUrl + ", videoUrl=" + videoUrl + ", channelId="
+				+ channelId + ", playlistId=" + playlistId + ", category=" + category + ", username=" + username + "]";
 	}
 
 	@Override
@@ -263,6 +280,8 @@ public class VideoTO {
 		result = prime * result + ((errors == null) ? 0 : errors.hashCode());
 		result = prime * result + ((genre == null) ? 0 : genre.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((localThumbnailUrl == null) ? 0 : localThumbnailUrl.hashCode());
+		result = prime * result + ((localVideoUrl == null) ? 0 : localVideoUrl.hashCode());
 		result = prime * result + ((playlist == null) ? 0 : playlist.hashCode());
 		result = prime * result + ((playlistId == null) ? 0 : playlistId.hashCode());
 		result = prime * result + ((privacySetting == null) ? 0 : privacySetting.hashCode());
@@ -332,6 +351,16 @@ public class VideoTO {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
+			return false;
+		if (localThumbnailUrl == null) {
+			if (other.localThumbnailUrl != null)
+				return false;
+		} else if (!localThumbnailUrl.equals(other.localThumbnailUrl))
+			return false;
+		if (localVideoUrl == null) {
+			if (other.localVideoUrl != null)
+				return false;
+		} else if (!localVideoUrl.equals(other.localVideoUrl))
 			return false;
 		if (playlist == null) {
 			if (other.playlist != null)

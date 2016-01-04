@@ -12,6 +12,8 @@
 	href="webjars/bootstrap-material-design/0.3.0/dist/css/material.css">
 <link href="resources/dropzone/basic.css" rel="stylesheet" />
 <link href="resources/dropzone/dropzone.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.min.css"
+	rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
 	rel="stylesheet">
 <title></title>
@@ -68,14 +70,18 @@
 									<div class="col-md-1">
 										<i ng-click="saveVideo(video)" class="material-icons"
 											data-toggle="tooltip" title="Video-Metadaten speichern"
-											style="cursor: default;">save</i><a data-toggle="collapse"
-											data-toggle="tooltip" title="Details anzeigen"
-											data-parent="#accordion" href="#collapse{{video.id}}"><i
-											class="material-icons" style="cursor: default; color: black;">details</i></a>
-										<i class="material-icons" data-toggle="modal"
-											data-target="#deleteModal" data-toggle="tooltip"
+											style="cursor: default;">save</i><i class="material-icons"
+											data-toggle="tooltip" title="Thumbnail hinzufügen">add_a_photo</i><a
+											data-toggle="collapse" data-toggle="tooltip"
+											title="Details anzeigen" data-parent="#accordion"
+											href="#collapse{{video.id}}"><i class="material-icons"
+											style="cursor: default; color: #353535">details</i></a> <i
+											class="material-icons" data-toggle="tooltip"
 											title="Video löschen" ng-really-message="Are you sure?"
 											ng-really-click="deleteVideo(video)" style="cursor: default;">delete</i>
+									</div>
+									<div class="col-md-1">
+										<label for="title"><img src="{{video.localThumbnailUrl}}"/></label>
 									</div>
 									<div class="col-md-4">
 										<label for="title">Titel</label><input type="text"
@@ -85,7 +91,6 @@
 									<div class="col-md-2">
 										<div class="form-group">
 											<label for="releaseDate">Veröffentlichungsdatum</label> <input
-												ng-pattern="^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d [012]{0,1}[0-9]:[0-6][0-9]$"
 												type="datetime" class="form-control" id="releaseDate"
 												name="releaseDate" placeholder="z.B. 12.12.2015 10:00"
 												ng-model="video.releaseDate">
@@ -127,7 +132,7 @@
 													<div class="modal-body">
 														<!-- <video controls height="648" width="1176"
 															class="embed-responsive-item" preload="none"
-															ng-src=""></video> -->
+															src="{{video.localVideoUrl}}"></video> -->
 														<a href="getVideo/{{video.id}}.mp4">Video Link</a>
 													</div>
 													<div class="modal-footer">
@@ -231,7 +236,7 @@
 											</div>
 											<div class="col-md-1"></div>
 										</div>
-										<div class="row">
+										<!-- <div class="row">
 											<div class="col-md-1"></div>
 											<div class="col-md-3">
 												<div class="form-group">
@@ -243,7 +248,7 @@
 											<div class="col-md-4"></div>
 											<div class="col-md-3"></div>
 											<div class="col-md-1"></div>
-										</div>
+										</div> -->
 									</div>
 								</div>
 							</div>
@@ -271,6 +276,7 @@
 		<script type="text/javascript" src="resources/js/appService.js"></script>
 		<script type="text/javascript" src="resources/js/appDirectives.js"></script>
 		<script type="text/javascript" src="resources/dropzone/dropzone.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.min.js"></script>
 		<script type="text/javascript">
 			Dropzone.options.dropzone = {
 				maxFilesize : 10000, // MB

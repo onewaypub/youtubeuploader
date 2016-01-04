@@ -21,7 +21,6 @@ import java.io.InputStream;
 import org.gneisenau.youtube.exceptions.AuthorizeException;
 import org.gneisenau.youtube.exceptions.PreUploadException;
 import org.gneisenau.youtube.exceptions.UploadException;
-import org.gneisenau.youtube.model.UploadState;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ import org.springframework.stereotype.Service;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.media.MediaHttpUploader;
-import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.YouTube.Thumbnails.Set;

@@ -3,7 +3,6 @@ package org.gneisenau.youtube.processor;
 import org.gneisenau.youtube.model.Video;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Component;
 
 //@Component
 public class CleanUpProcessor extends AbstractVideoProcessor{

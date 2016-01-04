@@ -2,7 +2,7 @@ package org.gneisenau.youtube.events;
 
 import org.springframework.context.ApplicationEvent;
 
-public class VideoAddEvent extends ApplicationEvent {
+public class WarningEvent extends ApplicationEvent {
 
 	/**
 	 * 
@@ -10,8 +10,9 @@ public class VideoAddEvent extends ApplicationEvent {
 	private static final long serialVersionUID = 7091503442040706905L;
 
 	private long videoId;
+	private String text;
 
-	public VideoAddEvent(long videoId, Object source) {
+	public WarningEvent(long videoId, Object source) {
 		super(source);
 		this.videoId = videoId;
 	}
@@ -20,5 +21,8 @@ public class VideoAddEvent extends ApplicationEvent {
 		return videoId;
 	}
 
+	public String getText() {
+		return text;
+	}
 
 }
