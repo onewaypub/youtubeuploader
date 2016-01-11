@@ -1,5 +1,5 @@
 angular.module("videoApp.services").service("VideoService",
-		function($q, $timeout, $resource) {
+		function($q, $timeout, $resource, $http) {
 
 			var service = {}, listener = $q.defer(), socket = {
 				client : null,
@@ -62,6 +62,16 @@ angular.module("videoApp.services").service("VideoService",
 	            saveResource.save({}, video);
 	            return saveResource.query();
 	        }
+	        
+	        service.saveThumbnial = function (thumbnail, id) {
+	            var fd = new FormData();
+	            fd.append('file', thumbnail[0]);
+	            $http.post('upload/thumbnail/' + id, fd, {
+	                transformRequest: angular.identity,
+	                headers: {'Content-Type': undefined}
+	            });
+	        }
+
 
 			var reconnect = function() {
 				$timeout(function() {
