@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class NetworkUtils {
 
-	private Long currentUploadSpeed;
+	private long currentUploadSpeed;
 
 	@Around("execution(* org.gneisenau.youtube.handler.VideoHandler.upload (..))")
 	public Object measureUpload(ProceedingJoinPoint joinPoint) throws Throwable {

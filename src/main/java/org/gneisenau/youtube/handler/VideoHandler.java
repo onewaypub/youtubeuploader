@@ -104,16 +104,9 @@ public class VideoHandler {
 		VideoStatus status = new VideoStatus();
 		status.setPrivacyStatus(privacySetting.toString().toLowerCase());
 		videoObjectDefiningMetadata.setStatus(status);
+		
 		VideoSnippet snippet = new VideoSnippet();
-
-		snippet.setTitle(title);
-		snippet.setDescription(desc);
-		snippet.setTags(tags);
-		if (categoryId != null || categoryId != "-1") {
-			snippet.setCategoryId(categoryId);
-		}
-		snippet.setChannelId(channelId);
-
+		setMetadata(tags, title, desc, channelId, categoryId, snippet);
 		videoObjectDefiningMetadata.setSnippet(snippet);
 
 		InputStreamContent mediaContent = new InputStreamContent(VIDEO_FILE_FORMAT, content);
@@ -146,6 +139,19 @@ public class VideoHandler {
 		}
 		return returnedVideo.getId();
 	}
+
+
+	private void setMetadata(List<String> tags, String title, String desc, String channelId, String categoryId,
+			VideoSnippet snippet) {
+		snippet.setTitle(title);
+		snippet.setDescription(desc);
+		snippet.setChannelId(channelId);
+		snippet.setTags(tags);
+		if (categoryId != null || categoryId != "-1") {
+			snippet.setCategoryId(categoryId);
+		}
+	}
+
 
 	/**
 	 * Upload the user-selected video to the user's YouTube channel. The code
