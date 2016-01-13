@@ -25,7 +25,7 @@ public class WebsocketEventBus {
 	private VideoRepository videoDAO;
 
 	public void notifyNewVideo(VideoTO v) {
-		v.setLocalVideoUrl("getVideo/" + v.getId());
+		v.setLocalVideoUrl("getVideo/" + v.getId() + ".mp4");
 		v.setLocalThumbnailUrl("getThumbnailImage/" + v.getId());
 		EventTO addVideoTO = new EventTO(v, new VideoAddEvent(v.getId(), this));
 		template.convertAndSend("/topic/event", addVideoTO);

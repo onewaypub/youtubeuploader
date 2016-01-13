@@ -68,20 +68,16 @@
 							<div class="accordion-heading">
 								<div class="row">
 									<div class="col-md-1">
-										<i ng-click="saveVideo(video)" class="material-icons"
-											data-toggle="tooltip" title="Video-Metadaten speichern"
-											style="cursor: default;">save</i><i class="material-icons"
-											data-toggle="tooltip" title="Thumbnail hinzufügen">add_a_photo</i><a
-											data-toggle="collapse" data-toggle="tooltip"
-											title="Details anzeigen" data-parent="#accordion"
-											href="#collapse{{video.id}}"><i class="material-icons"
-											style="cursor: default; color: #353535">details</i></a> <i
-											class="material-icons" data-toggle="tooltip"
-											title="Video löschen" ng-really-message="Are you sure?"
-											ng-really-click="deleteVideo(video)" style="cursor: default;">delete</i>
+										<i ng-click="saveVideo(video)" class="material-icons" data-toggle="tooltip" title="Video-Metadaten speichern" style="cursor: default;">save</i>
+										<label for="file-input"><i class="material-icons" data-toggle="tooltip" title="Thumbnail hinzufügen">add_a_photo</i></label>
+										<input id="file-input"  type="file" accept="image/*" style="display: none;" onchange="angular.element(this).scope().saveThumbnail(this.files, angular.element(this).scope().video.id)"/>
+										<a data-toggle="collapse" data-toggle="tooltip"title="Details anzeigen" data-parent="#accordion" href="#collapse{{video.id}}">
+											<i class="material-icons" style="cursor: default; color: #353535">details</i>
+										</a> 
+										<i class="material-icons" data-toggle="tooltip" id="deleteButton{{video.id}}"title="Video löschen" ng-really-message="Are you sure?" ng-really-click="deleteVideo(video)" style="cursor: default;">delete</i>
 									</div>
 									<div class="col-md-1">
-										<label for="title"><img src="{{video.localThumbnailUrl}}"/></label>
+										<label for="title"><img src="{{video.localThumbnailUrl}}" height="55" width="55"/></label>
 									</div>
 									<div class="col-md-4">
 										<label for="title">Titel</label><input type="text"
@@ -130,10 +126,9 @@
 														</h4>
 													</div>
 													<div class="modal-body">
-														<!-- <video controls height="648" width="1176"
+														<video id="video{{video.id}}" controls height="648" width="1176"
 															class="embed-responsive-item" preload="none"
-															src="{{video.localVideoUrl}}"></video> -->
-														<a href="getVideo/{{video.id}}.mp4">Video Link</a>
+															src="{{video.localVideoUrl}}"></video>
 													</div>
 													<div class="modal-footer">
 														<button type="button" class="btn btn-default"

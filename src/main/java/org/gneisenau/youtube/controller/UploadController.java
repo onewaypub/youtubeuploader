@@ -115,7 +115,7 @@ public class UploadController {
 			List<Video> list = videoDAO.findAll();
 			for (Video v : list) {
 				VideoTO bean = dozerBeanMapper.map(v, VideoTO.class);
-				bean.setLocalVideoUrl("getVideo/" + bean.getId());
+				bean.setLocalVideoUrl("getVideo/" + bean.getId() + ".mp4");
 				bean.setLocalThumbnailUrl("getThumbnailImage/" + bean.getId());
 				videos.add(bean);
 			}
@@ -158,11 +158,43 @@ public class UploadController {
 				}
 			}
 			logger.error("Fehler beim Hochladen der Videos", e);
-			ErrorEvent event = new ErrorEvent("Fehler beim Hockladen des Videos", this);
+			ErrorEvent event = new ErrorEvent("Fehler beim Hochladen des Videos", this);
 			websocketEventBus.onApplicationEvent(event);
 		}
 		return new ResponseEntity<>("{}", HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/upload/thumbnail/{id}", method = RequestMethod.POST)
+	@Transactional
+	public ResponseEntity<String> uploadThumbnail(@PathVariable Long id, MultipartHttpServletRequest request) {
+		List<File> files = new ArrayList<File>();
+		try {
+			File outputDir = new File(ioUtils.getTemporaryFolder());
+			// Create a new file upload handler
+			Map<String, MultipartFile> fileMap = request.getFileMap();
+			for (Entry<String, MultipartFile> e : fileMap.entrySet()) {
+				String name = e.getValue().getOriginalFilename();
+				String path2save = outputDir.getAbsolutePath() + File.separatorChar;
+				File newFile = new File(path2save + ioUtils.addMilliSecondsToFilename(name));
+				e.getValue().transferTo(newFile);
+				Video v = videoDAO.findById(id);
+				v.setThumbnail(newFile.getAbsolutePath());
+				videoDAO.persist(v);
+			}
+		} catch (IOException e) {
+			// Cleanup on exception
+			for (File f : files) {
+				if (f.exists()) {
+					f.delete();
+				}
+			}
+			logger.error("Fehler beim Hochladen der Thumbnails", e);
+			ErrorEvent event = new ErrorEvent("Fehler beim Hochladen des Thumbnails", this);
+			websocketEventBus.onApplicationEvent(event);
+		}
+		return new ResponseEntity<>("{}", HttpStatus.OK);
+	}
+
 
 	@RequestMapping(value = "/getThumbnailImage/{id}", method = RequestMethod.GET)
 	public void getThumbnail(HttpServletResponse response, @PathVariable("id") long id) throws IOException {
