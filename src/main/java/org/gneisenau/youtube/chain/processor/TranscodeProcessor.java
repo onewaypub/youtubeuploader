@@ -37,7 +37,7 @@ public class TranscodeProcessor extends AbstractVideoProcessor {
 		}
 		File transcodedFile = new File(path + baseName + "_transcoded.mp4");
 		try {
-			videoProcessor.transcode(oldFile, transcodedFile);
+			videoProcessor.transcode(oldFile, transcodedFile, v.getId());
 			v.setVideo(transcodedFile.getAbsolutePath());
 			oldFile.delete();
 		} catch (ExecuteException e) {

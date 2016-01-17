@@ -98,7 +98,7 @@
 									<div class="col-md-2">
 										<br />
 										<div class="progress progress-striped active">
-											<div style="width: {{video.process" class="progress-bar"></div>
+											<div style="width: {{video.process}}%" class="progress-bar"></div>
 										</div>
 										<div style="display: none;" id="source-button"
 											class="btn btn-primary btn-xs">&lt; &gt;</div>
@@ -106,12 +106,12 @@
 									<div class="col-md-1">
 										<!-- Button trigger modal -->
 										<button type="button" class="btn btn-raised btn-xs"
-											data-toggle="modal" data-target="#myModal">
+											data-toggle="modal" data-target="#myModal{{video.id}}">
 											<i class="material-icons">video_library</i>
 										</button>
 
 										<!-- Modal -->
-										<div class="modal fade" id="myModal" tabindex="-1"
+										<div class="modal fade" id="myModal{{video.id}}" tabindex="-1"
 											role="dialog" aria-labelledby="myModalLabel">
 											<div class="modal-dialog" role="document"
 												style="width: 1225px;">

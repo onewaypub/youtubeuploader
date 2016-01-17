@@ -3,6 +3,7 @@ package org.gneisenau.youtube.utils;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,15 @@ public class IOService {
 
 	public String executeCommandLineWithReturn(String line) throws ExecuteException, IOException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		executeCmdLine(line, outputStream);
+		return outputStream.toString();
+	}
+
+	public String executeCommandLineWithReturn(String line, OutputStream outputStream) throws ExecuteException, IOException {
+		executeCmdLine(line, outputStream);
+		return outputStream.toString();
+	}
+	private void executeCmdLine(String line, OutputStream outputStream) throws ExecuteException, IOException {
 		CommandLine cmdLine = CommandLine.parse(line);
 		DefaultExecutor executor = new DefaultExecutor();
 		executor.setExitValue(0);
@@ -55,8 +65,8 @@ public class IOService {
 		if (exitValue != 0) {
 			throw new ExecuteException("Error running command", exitValue);
 		}
-		return outputStream.toString();
 	}
+
 
 	public String getTemporaryFolder() {
 		String tempDirPath = getSystemTemporaryFolder() + File.separator + "youtubeuploader";

@@ -27,15 +27,17 @@ public class StringListenerOutputStream extends ByteArrayOutputStream {
 		findPattern(b);
 		super.write(b);
 	}
-	
-	private void findPattern(int b) {
+
+	private synchronized void findPattern(int b) {
 		substr.append(b);
-		Matcher m = p.matcher(substr);
-		if (m.find()) {
-			String str = m.group(0);
-			StringFoundEvent event = new StringFoundEvent(this, str);
-			publishEvent(event);
-			substr = new StringBuffer();
+		if ((char) b == '\n') {
+			Matcher m = p.matcher(substr);
+			if (m.find()) {
+				String str = m.group(0);
+				StringFoundEvent event = new StringFoundEvent(this, str);
+				publishEvent(event);
+				substr = new StringBuffer();
+			}
 		}
 	}
 
