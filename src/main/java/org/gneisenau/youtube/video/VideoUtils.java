@@ -10,7 +10,6 @@ import org.gneisenau.youtube.events.StatusUpdateEvent;
 import org.gneisenau.youtube.exceptions.VideoMergeException;
 import org.gneisenau.youtube.exceptions.VideoTranscodeException;
 import org.gneisenau.youtube.utils.IOService;
-import org.gneisenau.youtube.utils.StringListenerOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
