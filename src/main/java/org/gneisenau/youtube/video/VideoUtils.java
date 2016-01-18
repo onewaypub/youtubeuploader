@@ -49,8 +49,8 @@ public class VideoUtils {
 	}
 
 	public String transcode(File inputFile, File outputFile, long id) throws ExecuteException, IOException {
-		// ioService.findFFMPEG() +
-		String line = "C:\\Progra~1\\ffmpeg\\bin\\ffmpeg.exe -i " + inputFile.getAbsolutePath()
+		// 
+		String line = ioService.findFFMPEG()+ " -i " + inputFile.getAbsolutePath()
 				+ " -codec:v libx264 -bf 2 -flags +cgop -pix_fmt yuv420p -codec:a aac -strict -2 -b:a 384k -r:a 48000 -movflags faststart "
 				+ outputFile.getAbsolutePath();
 		String newFile = outputFile.getAbsolutePath();
@@ -67,7 +67,7 @@ public class VideoUtils {
 	public void merge(String target, List<File> files)
 			throws VideoTranscodeException, VideoMergeException, ExecuteException, IOException {
 		List<File> streamFiles = new ArrayList<File>();
-		String ffmpeg = "C:\\Progra~1\\ffmpeg\\bin\\ffmpeg.exe"; // ioService.findFFMPEG();
+		String ffmpeg = ioService.findFFMPEG();
 		try {
 			long counter = System.currentTimeMillis();
 			String concatList = "";
