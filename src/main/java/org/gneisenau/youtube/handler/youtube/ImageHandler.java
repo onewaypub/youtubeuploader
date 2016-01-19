@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
-import org.gneisenau.youtube.handler.video.exceptions.PreUploadException;
 import org.gneisenau.youtube.handler.video.exceptions.UploadException;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
@@ -76,7 +75,7 @@ public class ImageHandler {
 	 * @throws UploadException
 	 */
 	public void upload(final Long id, String videoId, InputStream imageFile, String username, long length)
-			throws PreUploadException, AuthorizeException, UploadException {
+			throws AuthorizeException, UploadException {
 
 		// Authorize the request.
 		Credential credential;
@@ -101,7 +100,7 @@ public class ImageHandler {
 		try {
 			thumbnailSet = youtube.thumbnails().set(videoId, mediaContent);
 		} catch (IOException e) {
-			throw new PreUploadException(e);
+			throw new UploadException(e);
 		}
 
 		// Set the upload type and add an event listener.

@@ -14,8 +14,6 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
-import org.gneisenau.youtube.handler.video.exceptions.ClientSecrectsException;
-import org.gneisenau.youtube.handler.video.exceptions.SecretsStoreException;
 import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

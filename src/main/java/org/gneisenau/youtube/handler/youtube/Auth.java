@@ -9,8 +9,6 @@ import java.net.UnknownHostException;
 import java.util.List;
 
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
-import org.gneisenau.youtube.handler.video.exceptions.ClientSecrectsException;
-import org.gneisenau.youtube.handler.video.exceptions.SecretsStoreException;
 import org.gneisenau.youtube.message.MailSendService;
 import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +84,7 @@ public class Auth {
 	 * @throws AuthorizeException
 	 */
 	public synchronized Credential authorize(String credentialDatastore, String username)
-			throws ClientSecrectsException, SecretsStoreException, AuthorizeException {
+			throws AuthorizeException {
 
 		// Load client secrets.
 
@@ -98,7 +96,7 @@ public class Auth {
 		try {
 			clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, clientSecretReader);
 		} catch (IOException e) {
-			throw new ClientSecrectsException(e);
+			throw new AuthorizeException(e);
 		}
 
 		// This creates the credentials datastore at
@@ -109,7 +107,7 @@ public class Auth {
 			fileDataStoreFactory = new FileDataStoreFactory(new File(tomcatHomeDir + "/" + CREDENTIALS_DIRECTORY));
 			datastore = fileDataStoreFactory.getDataStore(credentialDatastore);
 		} catch (IOException e) {
-			throw new SecretsStoreException(e);
+			throw new AuthorizeException(e);
 		}
 
 		// Collection<String> scopes = new ArrayList<String>();

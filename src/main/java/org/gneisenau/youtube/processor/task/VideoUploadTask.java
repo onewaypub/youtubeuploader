@@ -10,7 +10,6 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.gneisenau.youtube.events.StatusUpdateEvent;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
-import org.gneisenau.youtube.handler.video.exceptions.PreUploadException;
 import org.gneisenau.youtube.handler.video.exceptions.UploadException;
 import org.gneisenau.youtube.handler.youtube.ProgressAwareInputStream;
 import org.gneisenau.youtube.handler.youtube.VideoHandler;
@@ -69,9 +68,6 @@ public class VideoUploadTask extends AbstractYoutubeTask {
 			return VideoTask.STOP;
 		} catch (AuthorizeException e) {
 			handleError(v, "Authorisierung bei Youttube fehlgeschlagen", e);
-			return VideoTask.STOP;
-		} catch (PreUploadException e) {
-			handleError(v, "Vorbereitung des Videos für Youtube fehlgeschlagen", e);
 			return VideoTask.STOP;
 		} catch (UploadException e) {
 			handleError(v, "Das Video konnte nicht hochgeladen werden", e);

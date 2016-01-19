@@ -20,10 +20,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
-import org.gneisenau.youtube.handler.video.exceptions.ClientSecrectsException;
-import org.gneisenau.youtube.handler.video.exceptions.PreUploadException;
-import org.gneisenau.youtube.handler.video.exceptions.ReleaseException;
-import org.gneisenau.youtube.handler.video.exceptions.SecretsStoreException;
+import org.gneisenau.youtube.handler.video.exceptions.NotFoundException;
+import org.gneisenau.youtube.handler.video.exceptions.UpdateException;
 import org.gneisenau.youtube.handler.video.exceptions.UploadException;
 import org.gneisenau.youtube.model.PrivacySetting;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +86,7 @@ public class VideoHandler {
 	 */
 	public String upload(final Long id, PrivacySetting privacySetting, InputStream content, List<String> tags,
 			String title, String desc, String channelId, String categoryId, String playlistId, String username,
-			boolean ageRestricted) throws AuthorizeException, PreUploadException, UploadException {
+			boolean ageRestricted) throws AuthorizeException, UploadException {
 
 		initYoutube(username);
 
@@ -116,7 +114,7 @@ public class VideoHandler {
 
 	public String updateMetadata(final Long id, PrivacySetting privacySetting, String youtubeId, List<String> tags,
 			String title, String desc, String channelId, String categoryId, String playlistId, String username,
-			boolean ageRestricted) throws AuthorizeException, IOException, ReleaseException, PreUploadException, UploadException {
+			boolean ageRestricted) throws AuthorizeException, UpdateException, NotFoundException {
 
 		initYoutube(username);
 
@@ -132,7 +130,7 @@ public class VideoHandler {
 	}
 
 	public void release(String youtubeId, PrivacySetting privacySetting, String username)
-			throws ClientSecrectsException, SecretsStoreException, AuthorizeException, IOException, ReleaseException {
+			throws AuthorizeException, UpdateException, NotFoundException {
 
 		initYoutube(username);
 
@@ -140,19 +138,23 @@ public class VideoHandler {
 
 		setVideoStatus(privacySetting, video);
 
-		YouTube.Videos.Update updateVideosRequest = youtube.videos().update("status", video);
-		updateVideosRequest.execute();
+		YouTube.Videos.Update updateVideosRequest;
+		try {
+			updateVideosRequest = youtube.videos().update("status", video);
+			updateVideosRequest.execute();
+		} catch (IOException e) {
+			throw new UpdateException(e);
+		}
 
 	}
 
-	private Video insert(Video videoObjectDefiningMetadata, InputStreamContent mediaContent)
-			throws PreUploadException, UploadException {
+	private Video insert(Video videoObjectDefiningMetadata, InputStreamContent mediaContent) throws UploadException {
 		YouTube.Videos.Insert videoInsert;
 		try {
 			videoInsert = youtube.videos().insert("snippet,statistics,status", videoObjectDefiningMetadata,
 					mediaContent);
 		} catch (IOException e) {
-			throw new PreUploadException(e);
+			throw new UploadException(e);
 		}
 
 		Video returnedVideo;
@@ -164,19 +166,19 @@ public class VideoHandler {
 		return returnedVideo;
 	}
 
-	private Video updateVideo(Video video) throws PreUploadException, UploadException {
+	private Video updateVideo(Video video) throws UpdateException {
 		Update videoUpdate;
 		try {
 			videoUpdate = youtube.videos().update("snippet", video);
 		} catch (IOException e) {
-			throw new PreUploadException(e);
+			throw new UpdateException(e);
 		}
 
 		Video returnedVideo;
 		try {
 			returnedVideo = videoUpdate.execute();
 		} catch (IOException e) {
-			throw new UploadException(e);
+			throw new UpdateException(e);
 		}
 		return returnedVideo;
 	}
@@ -210,13 +212,19 @@ public class VideoHandler {
 		video.setStatus(status);
 	}
 
-	private Video getVideoFromYoutube(String youtubeId) throws IOException, ReleaseException {
-		YouTube.Videos.List listVideosRequest = youtube.videos().list("snippet").setId(youtubeId);
-		VideoListResponse listResponse = listVideosRequest.execute();
+	private Video getVideoFromYoutube(String youtubeId) throws NotFoundException {
+		YouTube.Videos.List listVideosRequest;
+		List<Video> videoList;
+		try {
+			listVideosRequest = youtube.videos().list("snippet").setId(youtubeId);
+			VideoListResponse listResponse = listVideosRequest.execute();
+			videoList = listResponse.getItems();
+		} catch (IOException e) {
+			throw new NotFoundException(e);
+		}
 
-		List<Video> videoList = listResponse.getItems();
 		if (videoList.isEmpty()) {
-			throw new ReleaseException("VideoID konnte auf Youtube nicht gefunden werden: " + youtubeId);
+			throw new NotFoundException("VideoID konnte auf Youtube nicht gefunden werden: " + youtubeId);
 		}
 
 		Video video = videoList.get(0);

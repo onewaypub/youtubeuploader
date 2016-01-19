@@ -7,7 +7,6 @@ import java.io.IOException;
 
 import org.gneisenau.youtube.events.StatusUpdateEvent;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
-import org.gneisenau.youtube.handler.video.exceptions.PreUploadException;
 import org.gneisenau.youtube.handler.video.exceptions.UploadException;
 import org.gneisenau.youtube.handler.youtube.ImageHandler;
 import org.gneisenau.youtube.handler.youtube.ProgressAwareInputStream;
@@ -57,9 +56,6 @@ public class VideoThumbnailUploadTask extends AbstractYoutubeTask {
 				}
 			} catch (FileNotFoundException e) {
 				handleError(v, "Das Thumbnail konnte auf der Festplatt nicht mehr gefunden werden", null);
-				return VideoTask.STOP;
-			} catch (PreUploadException e) {
-				handleError(v, "Vorbereitung des Thumbnails für Youtube fehlgeschlagen", e);
 				return VideoTask.STOP;
 			} catch (AuthorizeException e) {
 				handleError(v, "Authorisierung bei Youtube fehlgeschlagen", e);
