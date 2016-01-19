@@ -27,9 +27,7 @@ public class Video {
 	private PrivacySetting privacySetting;
 	private State state;
 	private String youtubeId;
-	private UploadState thumbnailUploadState;
 	private String thumbnailUrl;
-	private UploadState videoUploadState;
 	private String videoUrl;
 	private String title;
 	private String description;
@@ -117,28 +115,12 @@ public class Video {
 		this.youtubeId = youtubeId;
 	}
 
-	public UploadState getThumbnailUploadState() {
-		return thumbnailUploadState;
-	}
-
-	public void setThumbnailUploadState(UploadState thumbnailUploadState) {
-		this.thumbnailUploadState = thumbnailUploadState;
-	}
-
 	public String getThumbnailUrl() {
 		return thumbnailUrl;
 	}
 
 	public void setThumbnailUrl(String thumbnailUrl) {
 		this.thumbnailUrl = thumbnailUrl;
-	}
-
-	public UploadState getVideoUploadState() {
-		return videoUploadState;
-	}
-
-	public void setVideoUploadState(UploadState videoUploadState) {
-		this.videoUploadState = videoUploadState;
 	}
 
 	public String getVideoUrl() {
@@ -257,8 +239,7 @@ public class Video {
 	public String toString() {
 		return "Video [id=" + id + ", video=" + video + ", thumbnail=" + thumbnail + ", releaseDate=" + releaseDate
 				+ ", tags=" + tags + ", errors=" + errors + ", privacySetting=" + privacySetting + ", state=" + state
-				+ ", youtubeId=" + youtubeId + ", thumbnailUploadState=" + thumbnailUploadState + ", thumbnailUrl="
-				+ thumbnailUrl + ", videoUploadState=" + videoUploadState + ", videoUrl=" + videoUrl + ", title="
+				+ ", youtubeId=" + youtubeId + ", thumbnailUrl=" + thumbnailUrl + ", videoUrl=" + videoUrl + ", title="
 				+ title + ", description=" + description + ", categoryId=" + categoryId + ", channelId=" + channelId
 				+ ", playlistId=" + playlistId + ", publisher=" + publisher + ", published=" + published
 				+ ", developer=" + developer + ", gerne=" + genre + ", shorttitle=" + shorttitle + ", category="
@@ -287,12 +268,10 @@ public class Video {
 		result = prime * result + ((state == null) ? 0 : state.hashCode());
 		result = prime * result + ((tags == null) ? 0 : tags.hashCode());
 		result = prime * result + ((thumbnail == null) ? 0 : thumbnail.hashCode());
-		result = prime * result + ((thumbnailUploadState == null) ? 0 : thumbnailUploadState.hashCode());
 		result = prime * result + ((thumbnailUrl == null) ? 0 : thumbnailUrl.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		result = prime * result + ((video == null) ? 0 : video.hashCode());
-		result = prime * result + ((videoUploadState == null) ? 0 : videoUploadState.hashCode());
 		result = prime * result + ((videoUrl == null) ? 0 : videoUrl.hashCode());
 		result = prime * result + ((youtubeId == null) ? 0 : youtubeId.hashCode());
 		return result;
@@ -388,8 +367,6 @@ public class Video {
 				return false;
 		} else if (!thumbnail.equals(other.thumbnail))
 			return false;
-		if (thumbnailUploadState != other.thumbnailUploadState)
-			return false;
 		if (thumbnailUrl == null) {
 			if (other.thumbnailUrl != null)
 				return false;
@@ -409,8 +386,6 @@ public class Video {
 			if (other.video != null)
 				return false;
 		} else if (!video.equals(other.video))
-			return false;
-		if (videoUploadState != other.videoUploadState)
 			return false;
 		if (videoUrl == null) {
 			if (other.videoUrl != null)

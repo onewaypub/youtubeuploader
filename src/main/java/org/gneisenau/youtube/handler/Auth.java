@@ -29,6 +29,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.DataStore;
 import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.services.youtube.YouTubeScopes;
 import com.google.common.collect.Lists;
 
 /**
@@ -70,8 +71,8 @@ public class Auth {
 
 	// This OAuth 2.0 access scope allows for full read/write access to the
 	// authenticated user's account.
-	private List<String> scopes = Lists.newArrayList("https://www.googleapis.com/auth/youtube",
-			"https://www.googleapis.com/auth/youtube.upload");
+	private List<String> scopes = Lists.newArrayList(YouTubeScopes.YOUTUBE,
+			YouTubeScopes.YOUTUBE_UPLOAD);
 
 	/**
 	 * Authorizes the installed application to access user's protected data.
@@ -125,24 +126,28 @@ public class Auth {
 		if (credential != null && (credential.getRefreshToken() != null || credential.getExpiresInSeconds() > 60)) {
 			return credential;
 		} else {
-			LocalServerReceiver localReceiver;
-			try {
-				String hostAddress = null;
-				if (redirectHost == null || redirectHost.trim() == "") {
-					hostAddress = InetAddress.getLocalHost().getHostAddress();
-				} else {
-					hostAddress = redirectHost;
-				}
-				localReceiver = new LocalServerReceiver.Builder().setHost(redirectHost).setPort(8081).build();
-			} catch (UnknownHostException e) {
-				throw new AuthorizeException(e);
-			}
-
-			try {
-				return new AuthorizationCodeMailGateway(flow, localReceiver, mailService, username).authorize(username);
-			} catch (IOException e) {
-				throw new AuthorizeException(e);
-			}
+//			LocalServerReceiver localReceiver;
+//			try {
+//				String hostAddress = null;
+//				if (redirectHost == null || redirectHost.trim() == "") {
+//					hostAddress = InetAddress.getLocalHost().getHostAddress();
+//				} else {
+//					hostAddress = redirectHost;
+//				}
+//				localReceiver = new LocalServerReceiver.Builder().setHost(redirectHost).setPort(8081).build();
+//			} catch (UnknownHostException e) {
+//				throw new AuthorizeException(e);
+//			}
+//
+//			try {
+//				return new AuthorizationCodeMailGateway(flow, localReceiver, mailService, username).authorize(username);
+//			} catch (IOException e) {
+//				throw new AuthorizeException(e);
+//			}
+			
+			
+			//if not signed in show error message via event bus
+			return null;
 		}
 	}
 

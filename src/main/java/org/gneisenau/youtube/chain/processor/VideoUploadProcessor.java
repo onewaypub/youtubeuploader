@@ -16,7 +16,6 @@ import org.gneisenau.youtube.exceptions.PreUploadException;
 import org.gneisenau.youtube.exceptions.UploadException;
 import org.gneisenau.youtube.handler.VideoHandler;
 import org.gneisenau.youtube.model.State;
-import org.gneisenau.youtube.model.UploadState;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.utils.ProgressAwareInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,6 @@ public class VideoUploadProcessor extends AbstractYoutubeProcessor {
 		File video = new File(v.getVideo());
 		v.setState(State.OnUpload);
 		try {
-			v.setVideoUploadState(UploadState.MEDIA_IN_PROGRESS);
 			ProgressAwareInputStream inputStream = new ProgressAwareInputStream(new FileInputStream(video),
 					video.length(), video);
 			inputStream.setOnProgressListener(new ProgressAwareInputStream.OnProgressListener() {

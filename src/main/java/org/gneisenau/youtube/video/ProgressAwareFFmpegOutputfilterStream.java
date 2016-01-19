@@ -10,6 +10,11 @@ import org.gneisenau.youtube.events.StatusUpdateEvent;
 import org.gneisenau.youtube.model.State;
 import org.springframework.context.ApplicationEventPublisher;
 
+/**
+ * Output Stream which scans the stream for the keywords time and duration. If it find them the next 11 chars will be used to parse a hh:mm:ss.SS timestamp.
+ * The timestamp of the duration and the current position will be used to generate a precentage of the video processing
+ *
+ */
 public class ProgressAwareFFmpegOutputfilterStream extends ByteArrayOutputStream {
 
 	private final ApplicationEventPublisher publisher;
