@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.gneisenau.youtube.events.StatusUpdateEvent;
 import org.gneisenau.youtube.message.MailSendService;
 import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.UserSettingsRepository;
@@ -17,10 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class YoutubeProcessor {
+public class YoutubeProcessor extends AbstractProcessor {
+
 	@Autowired
 	private List<YoutubeTask> youtubeProcessingChain;
 	@Autowired
@@ -30,11 +29,9 @@ public class YoutubeProcessor {
 	@Autowired
 	protected MailSendService mailService;
 
-	private final ApplicationEventPublisher publisher;
-
 	@Autowired
 	public YoutubeProcessor(ApplicationEventPublisher publisher) {
-		this.publisher = publisher;
+		super(publisher);
 	}
 
 	@PostConstruct
@@ -42,33 +39,27 @@ public class YoutubeProcessor {
 		Collections.sort(youtubeProcessingChain, AnnotationAwareOrderComparator.INSTANCE);
 	}
 
-	public void publishEvent(StatusUpdateEvent event){
-		this.publisher.publishEvent(event);
-	}
-
-	@Transactional
-	public void execute(List<Video> videos) {
-		for (Video videoTemp : videos) {
-			Video v = videoDAO.findById(videoTemp.getId());
-			StatusUpdateEvent event = new StatusUpdateEvent(v.getId(), State.OnUpload, 0, v);
-			publishEvent(event);			
-			for (YoutubeTask chainItem : youtubeProcessingChain) {
-				int process = chainItem.process(v);
-				
-				videoDAO.persist(v);
-				videoDAO.flush();
-				if(VideoTask.STOP == process){
-					break;
-				}
-			}
-			v.setState(State.OnUpload.nextState());
+	@Override
+	protected void runChain(Video v) {
+		for (YoutubeTask chainItem : youtubeProcessingChain) {
+			int process = chainItem.process(v);
 			videoDAO.persist(v);
 			videoDAO.flush();
-			event = new StatusUpdateEvent(v.getId(), v.getState(), 0, v);
-			publishEvent(event);
-			if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyUploadState()) {
-				mailService.sendStatusMail(v.getTitle(), v.getState(), v.getUsername());
+			if (VideoTask.STOP == process) {
+				break;
 			}
 		}
+	}
+
+	@Override
+	protected void notifyProcessing(Video v) {
+		if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyUploadState()) {
+			mailService.sendStatusMail(v.getTitle(), v.getState(), v.getUsername());
+		}
+	}
+
+	@Override
+	protected State initialProcessState() {
+		return State.OnUpload;
 	}
 }

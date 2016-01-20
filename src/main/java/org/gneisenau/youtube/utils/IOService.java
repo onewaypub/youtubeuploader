@@ -45,12 +45,16 @@ public class IOService {
 	public String executeCommandLineWithReturn(String line) throws ExecuteException, IOException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		executeCmdLine(line, outputStream);
-		return outputStream.toString();
+		String output = outputStream.toString();
+		logger.debug(output);
+		return output;
 	}
 
 	public String executeCommandLineWithReturn(String line, OutputStream outputStream) throws ExecuteException, IOException {
 		executeCmdLine(line, outputStream);
-		return outputStream.toString();
+		String output = outputStream.toString();
+		logger.debug(output);
+		return output;
 	}
 	private void executeCmdLine(String line, OutputStream outputStream) throws ExecuteException, IOException {
 		CommandLine cmdLine = CommandLine.parse(line);

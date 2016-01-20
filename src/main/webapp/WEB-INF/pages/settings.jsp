@@ -215,7 +215,7 @@
 			<button type="submit">Connect to Google</button>
 		</form>
 		<form
-			action="/connectToYoutube.do?${_csrf.parameterName}=${_csrf.token}"
+			action="/connectToYoutube"
 			method="POST">
 			<button type="submit">Connect to Youtube</button>
 		</form>

@@ -21,6 +21,8 @@ import org.apache.commons.lang.StringUtils;
 import org.dozer.DozerBeanMapper;
 import org.gneisenau.youtube.events.ErrorEvent;
 import org.gneisenau.youtube.events.VideoUpdateEvent;
+import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
+import org.gneisenau.youtube.handler.youtube.Auth;
 import org.gneisenau.youtube.handler.youtube.YoutubeHandler;
 import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.Video;
@@ -66,6 +68,8 @@ public class UploadController {
 	private WebsocketEventBus websocketEventBus;
 	@Autowired
 	private VideoRepository videoDAO;
+	@Autowired
+	private Auth auth;
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView init(HttpServletRequest request, HttpServletResponse response) {
@@ -131,6 +135,12 @@ public class UploadController {
 	@RequestMapping(value = "/upload/video", method = RequestMethod.POST)
 	public ResponseEntity<String> uploadVideoFile(MultipartHttpServletRequest request) {
 		List<File> files = new ArrayList<File>();
+		try {
+			auth.authorize("YouTubeUpload", secUtil.getPrincipal());
+		} catch (AuthorizeException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		try {
 			File outputDir = new File(ioUtils.getTemporaryFolder());
 			// Create a new file upload handler

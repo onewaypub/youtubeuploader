@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.gneisenau.youtube.events.StatusUpdateEvent;
 import org.gneisenau.youtube.message.MailSendService;
 import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.UserSettingsRepository;
@@ -16,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class VideoProcessor {
+public class VideoProcessor extends AbstractProcessor{
+
 	@Autowired
 	private List<VideoTask> videoProcessingChain;
 	@Autowired
@@ -29,11 +28,9 @@ public class VideoProcessor {
 	@Autowired
 	protected MailSendService mailService;
 
-	private final ApplicationEventPublisher publisher;
-
 	@Autowired
 	public VideoProcessor(ApplicationEventPublisher publisher) {
-		this.publisher = publisher;
+		super(publisher);
 	}
 
 	@PostConstruct
@@ -41,39 +38,27 @@ public class VideoProcessor {
 		Collections.sort(videoProcessingChain, AnnotationAwareOrderComparator.INSTANCE);
 	}
 
-	public void publishEvent(StatusUpdateEvent event){
-		this.publisher.publishEvent(event);
-	}
-
-	@Transactional
-	public void execute(List<Video> videos) {
-		int i = Math.round(100 / videoProcessingChain.size());
-		
-		for (Video videoTemp : videos) {
-			Video v = videoDAO.findById(videoTemp.getId());
-			StatusUpdateEvent event = new StatusUpdateEvent(v.getId(), State.OnProcessing, 0, v);
-			publishEvent(event);			
-			for (VideoTask chainItem : videoProcessingChain) {
-				int process = chainItem.process(v);
-				
-				videoDAO.persist(v);
-				videoDAO.flush();
-				if(VideoTask.STOP == process){
-					break;
-				} else {
-					event = new StatusUpdateEvent(v.getId(), v.getState(), i, v);
-					publishEvent(event);
-				}
-				i = i + Math.round(100 / videoProcessingChain.size());
-			}
-			v.setState(State.OnProcessing.nextState());
+	@Override
+	protected void runChain(Video v) {
+		for (VideoTask chainItem : videoProcessingChain) {
+			int process = chainItem.process(v);		
 			videoDAO.persist(v);
 			videoDAO.flush();
-			event = new StatusUpdateEvent(v.getId(), v.getState(), 0, v);
-			publishEvent(event);
-			if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyProcessedState()) {
-				mailService.sendStatusMail(v.getTitle(), v.getState(), v.getUsername());
-			}
+			if(VideoTask.STOP == process){
+				break;
+			} 
 		}
+	}
+
+	@Override
+	protected void notifyProcessing(Video v) {
+		if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyProcessedState()) {
+			mailService.sendStatusMail(v.getTitle(), v.getState(), v.getUsername());
+		}
+	}
+
+	@Override
+	protected State initialProcessState() {
+		return State.OnProcessing;
 	}
 }

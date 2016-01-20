@@ -12,6 +12,7 @@ import org.apache.commons.collections4.list.UnmodifiableList;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.message.MailSendService;
 import org.gneisenau.youtube.model.UserSettingsRepository;
+import org.gneisenau.youtube.model.UserconnectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -48,33 +49,23 @@ public class Auth {
 	public static final String ACCESS_TYPE_OFFLINE = "offline";
 	public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 	public static final JsonFactory JSON_FACTORY = new JacksonFactory();
-	private static final String CREDENTIALS_DIRECTORY = ".oauth-credentials";
+	@Autowired
+	private DatabaseDataStoreFactory dbFactory;
 
 	public static final List<String> SCOPES = new UnmodifiableList<String>(
 			Lists.newArrayList(YouTubeScopes.YOUTUBE, YouTubeScopes.YOUTUBE_UPLOAD));
 
 	public synchronized Credential authorize(String credentialDatastore, String username) throws AuthorizeException {
 
-		Reader clientSecretReader = new StringReader(clientSecretJson);
+		GoogleClientSecrets clientSecrets = initializeClientSecrets();
 
-		GoogleClientSecrets clientSecrets;
-		try {
-			clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, clientSecretReader);
-		} catch (IOException e) {
-			throw new AuthorizeException(e);
-		}
-
-		// This creates the credentials datastore at
-		// ~/.oauth-credentials/${credentialDatastore}
-		FileDataStoreFactory fileDataStoreFactory;
 		DataStore<StoredCredential> datastore;
 		try {
-			fileDataStoreFactory = new FileDataStoreFactory(new File(tomcatHomeDir + "/" + CREDENTIALS_DIRECTORY));
-			datastore = fileDataStoreFactory.getDataStore(credentialDatastore);
+			datastore = dbFactory.getDataStore(credentialDatastore);
 		} catch (IOException e) {
 			throw new AuthorizeException(e);
 		}
-
+		
 		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
 				clientSecrets, SCOPES).setAccessType(ACCESS_TYPE_OFFLINE).setApprovalPrompt(APPROVAL_PROMPT_FORCE)
 						.setCredentialDataStore(datastore).build();
@@ -92,7 +83,7 @@ public class Auth {
 		}
 	}
 
-	public GoogleAuthorizationCodeFlow createGoogleAuthorizationCodeFlow() throws AuthorizeException {
+	private GoogleClientSecrets initializeClientSecrets() throws AuthorizeException {
 		Reader clientSecretReader = new StringReader(clientSecretJson);
 
 		GoogleClientSecrets clientSecrets;
@@ -101,6 +92,11 @@ public class Auth {
 		} catch (IOException e) {
 			throw new AuthorizeException(e);
 		}
+		return clientSecrets;
+	}
+
+	public GoogleAuthorizationCodeFlow createGoogleAuthorizationCodeFlow() throws AuthorizeException {
+		GoogleClientSecrets clientSecrets = initializeClientSecrets();
 		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, Auth.JSON_FACTORY,
 				clientSecrets, Auth.SCOPES).setAccessType(ACCESS_TYPE_OFFLINE).setApprovalPrompt(APPROVAL_PROMPT_FORCE)
 						.build();

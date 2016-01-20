@@ -61,6 +61,17 @@ public class VerificationCodeController {
 		}
 
 	}
+	
+	@RequestMapping(value = "/connectToYoutube", method = RequestMethod.POST)
+	public @ResponseBody String connectToYoutube() throws AuthorizeException, IOException{
+		GoogleAuthorizationCodeFlow flow = authService.createGoogleAuthorizationCodeFlow();
+		Credential credential = flow.loadCredential(secUtil.getPrincipal());
+		if(credential != null) {
+			return "youtubeConnected";
+		} else {
+			return "youtubeConnect";
+		}
+	}
 
 
 	/**
