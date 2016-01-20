@@ -51,9 +51,7 @@ public class VideoUploadTask extends AbstractYoutubeTask {
 			try {
 				List<String> tags = new ArrayList<String>();
 				CollectionUtils.addAll(tags, v.getTags().split(","));
-				String id = vidUploader.upload(v.getId(), v.getPrivacySetting(), inputStream, tags, v.getTitle(),
-						createDescription(v), v.getChannelId(), v.getCategoryId(), v.getPlaylistId(), v.getUsername(),
-						v.isAgeRestricted());
+				String id = vidUploader.upload(v.getPrivacySetting(), v.getTitle(), inputStream, v.getUsername());
 				v.setYoutubeId(id);
 				v.setVideoUrl("https://www.youtube.com/watch?v=" + id);
 			} finally {

@@ -16,6 +16,7 @@ package org.gneisenau.youtube.handler.youtube;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -42,13 +43,6 @@ import com.google.api.services.youtube.model.VideoListResponse;
 import com.google.api.services.youtube.model.VideoSnippet;
 import com.google.api.services.youtube.model.VideoStatus;
 
-/**
- * Upload a video to the authenticated user's channel. Use OAuth 2.0 to
- * authorize the request. Note that you must add your video files to the project
- * folder to upload them with this application.
- *
- * @author Jeremy Walker
- */
 @Service
 @PropertySource("file:${user.home}/youtubeuploader.properties")
 public class VideoHandler {
@@ -60,33 +54,11 @@ public class VideoHandler {
 
 	private static final Logger logger = Logger.getLogger(VideoHandler.class);
 
-	/**
-	 * Define a global instance of a Youtube object, which will be used to make
-	 * YouTube Data API requests.
-	 */
 	private static YouTube youtube;
 
-	/**
-	 * Define a global variable that specifies the MIME type of the video being
-	 * uploaded.
-	 */
 	private static final String VIDEO_FILE_FORMAT = "video/*";
 
-	/**
-	 * Upload the user-selected video to the user's YouTube channel. The code
-	 * looks for the video in the application's project folder and uses OAuth
-	 * 2.0 to authorize the API request.
-	 *
-	 * @param args
-	 *            command line args (not used).
-	 * @throws AuthorizeException
-	 * @throws PreUploadException
-	 * @throws UploadException
-	 * @throws IOException
-	 */
-	public String upload(final Long id, PrivacySetting privacySetting, InputStream content, List<String> tags,
-			String title, String desc, String channelId, String categoryId, String playlistId, String username,
-			boolean ageRestricted) throws AuthorizeException, UploadException {
+	public String upload(PrivacySetting privacySetting, String title, InputStream content, String username) throws AuthorizeException, UploadException {
 
 		initYoutube(username);
 
@@ -95,24 +67,17 @@ public class VideoHandler {
 		setVideoStatus(privacySetting, videoObjectDefiningMetadata);
 
 		VideoSnippet snippet = new VideoSnippet();
-		setMetadata(tags, title, desc, channelId, categoryId, snippet);
+		setMetadata(new ArrayList<String>(), title, "", "", "", snippet);
 		videoObjectDefiningMetadata.setSnippet(snippet);
 
 		InputStreamContent mediaContent = new InputStreamContent(VIDEO_FILE_FORMAT, content);
 
 		Video returnedVideo = insert(videoObjectDefiningMetadata, mediaContent);
 
-		if (playlistId != null) {
-			try {
-				insertPlaylistItem(playlistId, returnedVideo.getId());
-			} catch (IOException e) {
-				logger.error(e);
-			}
-		}
 		return returnedVideo.getId();
 	}
 
-	public String updateMetadata(final Long id, PrivacySetting privacySetting, String youtubeId, List<String> tags,
+	public String updateMetadata(PrivacySetting privacySetting, String youtubeId, List<String> tags,
 			String title, String desc, String channelId, String categoryId, String playlistId, String username,
 			boolean ageRestricted) throws AuthorizeException, UpdateException, NotFoundException {
 
@@ -146,6 +111,26 @@ public class VideoHandler {
 			throw new UpdateException(e);
 		}
 
+	}
+
+	public String insertPlaylistItem(String playlistId, String videoId) throws IOException {
+	
+		ResourceId resourceId = new ResourceId();
+		resourceId.setKind("youtube#video");
+		resourceId.setVideoId(videoId);
+	
+		PlaylistItemSnippet playlistItemSnippet = new PlaylistItemSnippet();
+		playlistItemSnippet.setPlaylistId(playlistId);
+		playlistItemSnippet.setResourceId(resourceId);
+	
+		PlaylistItem playlistItem = new PlaylistItem();
+		playlistItem.setSnippet(playlistItemSnippet);
+	
+		YouTube.PlaylistItems.Insert playlistItemsInsertCommand = youtube.playlistItems()
+				.insert("snippet,contentDetails", playlistItem);
+		PlaylistItem returnedPlaylistItem = playlistItemsInsertCommand.execute();
+	
+		return returnedPlaylistItem.getId();
 	}
 
 	private Video insert(Video videoObjectDefiningMetadata, InputStreamContent mediaContent) throws UploadException {
@@ -229,25 +214,5 @@ public class VideoHandler {
 
 		Video video = videoList.get(0);
 		return video;
-	}
-
-	private static String insertPlaylistItem(String playlistId, String videoId) throws IOException {
-
-		ResourceId resourceId = new ResourceId();
-		resourceId.setKind("youtube#video");
-		resourceId.setVideoId(videoId);
-
-		PlaylistItemSnippet playlistItemSnippet = new PlaylistItemSnippet();
-		playlistItemSnippet.setPlaylistId(playlistId);
-		playlistItemSnippet.setResourceId(resourceId);
-
-		PlaylistItem playlistItem = new PlaylistItem();
-		playlistItem.setSnippet(playlistItemSnippet);
-
-		YouTube.PlaylistItems.Insert playlistItemsInsertCommand = youtube.playlistItems()
-				.insert("snippet,contentDetails", playlistItem);
-		PlaylistItem returnedPlaylistItem = playlistItemsInsertCommand.execute();
-
-		return returnedPlaylistItem.getId();
 	}
 }
