@@ -33,7 +33,7 @@ public class SettingsController {
 	@Autowired
 	private DozerBeanMapper dozerBeanMapper;
 
-	@RequestMapping(value = "/settings", method = RequestMethod.POST)
+	@RequestMapping(value = "/settings", method = RequestMethod.GET)
 	public ModelAndView init(HttpServletRequest request, HttpServletResponse response) {
 		
 		UserSettingsTO settings = dozerBeanMapper.map(userSettingsDAO.findByLoggedInUser(), UserSettingsTO.class);
