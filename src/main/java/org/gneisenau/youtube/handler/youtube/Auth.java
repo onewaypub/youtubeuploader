@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
+import org.apache.commons.collections4.list.UnmodifiableList;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.message.MailSendService;
 import org.gneisenau.youtube.model.UserSettingsRepository;
@@ -38,58 +39,22 @@ import com.google.common.collect.Lists;
 @PropertySource("file:${user.home}/youtubeuploader.properties")
 public class Auth {
 
-	@Autowired
-	private UserSettingsRepository userSettingDAO;
 	@Value("${tomcat.home.dir}")
 	private String tomcatHomeDir;
-
-	@Autowired
-	private MailSendService mailService;
 	public static final String APP_NAME = "YoutubeUploader";
-	@Value("${redirect.host}")
-	private String redirectHost;
 	@Value("${youtube.client.secret}")
 	private String clientSecretJson;
-
-	/**
-	 * Define a global instance of the HTTP transport.
-	 */
+	public static final String APPROVAL_PROMPT_FORCE = "force";
+	public static final String ACCESS_TYPE_OFFLINE = "offline";
 	public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-
-	/**
-	 * Define a global instance of the JSON factory.
-	 */
 	public static final JsonFactory JSON_FACTORY = new JacksonFactory();
-
-	/**
-	 * This is the directory that will be used under the user's home directory
-	 * where OAuth tokens will be stored.
-	 */
 	private static final String CREDENTIALS_DIRECTORY = ".oauth-credentials";
 
-	// This OAuth 2.0 access scope allows for full read/write access to the
-	// authenticated user's account.
-	private List<String> scopes = Lists.newArrayList(YouTubeScopes.YOUTUBE,
-			YouTubeScopes.YOUTUBE_UPLOAD);
+	public static final List<String> SCOPES = new UnmodifiableList<String>(
+			Lists.newArrayList(YouTubeScopes.YOUTUBE, YouTubeScopes.YOUTUBE_UPLOAD));
 
-	/**
-	 * Authorizes the installed application to access user's protected data.
-	 *
-	 * @param scopes
-	 *            list of scopes needed to run youtube upload.
-	 * @param credentialDatastore
-	 *            name of the credential datastore to cache OAuth tokens
-	 * @throws ClientSecrectsException
-	 * @throws SecretsStoreException
-	 * @throws AuthorizeException
-	 */
-	public synchronized Credential authorize(String credentialDatastore, String username)
-			throws AuthorizeException {
+	public synchronized Credential authorize(String credentialDatastore, String username) throws AuthorizeException {
 
-		// Load client secrets.
-
-		// Reader clientSecretReader = new
-		// InputStreamReader(Auth.class.getResourceAsStream("/client_secrets.json"));
 		Reader clientSecretReader = new StringReader(clientSecretJson);
 
 		GoogleClientSecrets clientSecrets;
@@ -110,9 +75,8 @@ public class Auth {
 			throw new AuthorizeException(e);
 		}
 
-		// Collection<String> scopes = new ArrayList<String>();
 		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
-				clientSecrets, scopes).setAccessType("offline").setApprovalPrompt("force")
+				clientSecrets, SCOPES).setAccessType(ACCESS_TYPE_OFFLINE).setApprovalPrompt(APPROVAL_PROMPT_FORCE)
 						.setCredentialDataStore(datastore).build();
 
 		Credential credential;
@@ -124,29 +88,23 @@ public class Auth {
 		if (credential != null && (credential.getRefreshToken() != null || credential.getExpiresInSeconds() > 60)) {
 			return credential;
 		} else {
-//			LocalServerReceiver localReceiver;
-//			try {
-//				String hostAddress = null;
-//				if (redirectHost == null || redirectHost.trim() == "") {
-//					hostAddress = InetAddress.getLocalHost().getHostAddress();
-//				} else {
-//					hostAddress = redirectHost;
-//				}
-//				localReceiver = new LocalServerReceiver.Builder().setHost(redirectHost).setPort(8081).build();
-//			} catch (UnknownHostException e) {
-//				throw new AuthorizeException(e);
-//			}
-//
-//			try {
-//				return new AuthorizationCodeMailGateway(flow, localReceiver, mailService, username).authorize(username);
-//			} catch (IOException e) {
-//				throw new AuthorizeException(e);
-//			}
-			
-			
-			//if not signed in show error message via event bus
 			return null;
 		}
+	}
+
+	public GoogleAuthorizationCodeFlow createGoogleAuthorizationCodeFlow() throws AuthorizeException {
+		Reader clientSecretReader = new StringReader(clientSecretJson);
+
+		GoogleClientSecrets clientSecrets;
+		try {
+			clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, clientSecretReader);
+		} catch (IOException e) {
+			throw new AuthorizeException(e);
+		}
+		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, Auth.JSON_FACTORY,
+				clientSecrets, Auth.SCOPES).setAccessType(ACCESS_TYPE_OFFLINE).setApprovalPrompt(APPROVAL_PROMPT_FORCE)
+						.build();
+		return flow;
 	}
 
 }

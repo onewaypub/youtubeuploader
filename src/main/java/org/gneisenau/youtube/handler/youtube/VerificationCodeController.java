@@ -1,8 +1,8 @@
 package org.gneisenau.youtube.handler.youtube;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections4.map.PassiveExpiringMap;
 import org.apache.commons.lang.StringUtils;
+import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.utils.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,25 +27,15 @@ import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.auth.oauth2.TokenResponse;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.common.collect.Lists;
 
 @Controller
 public class VerificationCodeController {
 
-	private static final String APPROVAL_PROMPT = "force";
-	private static final String ACCESS_TYPE_OFFLINE = "offline";
-	public final static String connectPath = "/connect/youtube";
-	private List<String> scopes = Lists.newArrayList("https://www.googleapis.com/auth/youtube",
-			"https://www.googleapis.com/auth/youtube.upload");
-	public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-	public static final JsonFactory JSON_FACTORY = new JacksonFactory();
+	private final static String connectPath = "/connect/youtube";
 	@Autowired
 	private SecurityUtil secUtil;
+	@Autowired
+	private Auth authService;
 	private Map<String, String> userTokenRegister = new PassiveExpiringMap<String, String>(600000);
 	private static final Logger logger = LoggerFactory.getLogger(VerificationCodeController.class);
 
@@ -56,13 +47,12 @@ public class VerificationCodeController {
 	 * @param response
 	 * @return
 	 * @throws IOException
+	 * @throws AuthorizeException 
 	 */
 	@RequestMapping(value = connectPath, produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
 	public @ResponseBody String showConnectionStatus(HttpServletRequest request, HttpServletResponse response)
-			throws IOException {
-		GoogleClientSecrets clientSecrets = null;
-		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
-				clientSecrets, scopes).setAccessType(ACCESS_TYPE_OFFLINE).setApprovalPrompt(APPROVAL_PROMPT).build();
+			throws IOException, AuthorizeException {
+		GoogleAuthorizationCodeFlow flow = authService.createGoogleAuthorizationCodeFlow();
 		Credential credential = flow.loadCredential(secUtil.getPrincipal());
 		if(credential != null) {
 			return "youtubeConnected";
@@ -72,6 +62,7 @@ public class VerificationCodeController {
 
 	}
 
+
 	/**
 	 * POST /connect/{providerId} - Initiates the connection flow with the
 	 * provider.
@@ -79,16 +70,23 @@ public class VerificationCodeController {
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws AuthorizeException 
 	 */
 	@RequestMapping(value = connectPath, produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.POST)
-	public @ResponseBody String initiateConnection(HttpServletRequest request, HttpServletResponse response) {
-		GoogleClientSecrets clientSecrets = null;
-		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
-				clientSecrets, scopes).setAccessType(ACCESS_TYPE_OFFLINE).setApprovalPrompt(APPROVAL_PROMPT).build();
+	public @ResponseBody String initiateConnection(HttpServletRequest request, HttpServletResponse response) throws AuthorizeException {
+		GoogleAuthorizationCodeFlow flow = authService.createGoogleAuthorizationCodeFlow();
 		String uuid = UUID.randomUUID().toString();
+		//Check if the user has already a uuid token; if yes then delete it.
+		if(userTokenRegister.containsValue(secUtil.getPrincipal())){
+			for(Entry<String, String> e : userTokenRegister.entrySet()){
+				if(e.getValue().equals(secUtil.getPrincipal())){
+					userTokenRegister.remove(e.getKey());
+				}
+			}
+		}
 		userTokenRegister.put(uuid, secUtil.getPrincipal());
 		AuthorizationCodeRequestUrl authorizationUrl = flow.newAuthorizationUrl()
-				.setRedirectUri(connectPath + "/" + secUtil.getPrincipal().hashCode() + "/" + uuid.toString());
+				.setRedirectUri(connectPath + "/" + uuid.toString());
 		return "redirect:" + authorizationUrl.build();
 
 	}
@@ -102,21 +100,19 @@ public class VerificationCodeController {
 	 * @param response
 	 * @return
 	 * @throws IOException
+	 * @throws AuthorizeException 
 	 */
 	@RequestMapping(value = connectPath
 			+ "/{uuid}", params = "code", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
 	public @ResponseBody String retrieveCode(@PathVariable("uuid") String uuid,
 			@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response)
-					throws IOException {
+					throws IOException, AuthorizeException {
 		String error = request.getParameter("error");
 		if (userTokenRegister.containsKey(uuid) && StringUtils.isBlank(error) && secUtil.getPrincipal().equals(userTokenRegister.containsKey(uuid))) {
 			// if found and matched remove entry. Entry can only be used one
 			// time
 			String userid = userTokenRegister.remove(uuid);
-			GoogleClientSecrets clientSecrets = null;
-			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
-					clientSecrets, scopes).setAccessType(ACCESS_TYPE_OFFLINE).setApprovalPrompt(APPROVAL_PROMPT)
-							.build();
+			GoogleAuthorizationCodeFlow flow = authService.createGoogleAuthorizationCodeFlow();
 			AuthorizationCodeRequestUrl authorizationUrl = flow.newAuthorizationUrl()
 					.setRedirectUri(connectPath + "/" + uuid);
 			TokenResponse tokenResponse = flow.newTokenRequest(code).setRedirectUri(authorizationUrl.build()).execute();
