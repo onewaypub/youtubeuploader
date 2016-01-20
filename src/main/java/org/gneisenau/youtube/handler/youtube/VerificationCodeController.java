@@ -86,9 +86,9 @@ public class VerificationCodeController {
 		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
 				clientSecrets, scopes).setAccessType(ACCESS_TYPE_OFFLINE).setApprovalPrompt(APPROVAL_PROMPT).build();
 		String uuid = UUID.randomUUID().toString();
-		userTokenRegister.put(secUtil.getPrincipal(), uuid);
+		userTokenRegister.put(uuid, secUtil.getPrincipal());
 		AuthorizationCodeRequestUrl authorizationUrl = flow.newAuthorizationUrl()
-				.setRedirectUri(connectPath + "/" + secUtil.getPrincipal() + "/" + uuid.toString());
+				.setRedirectUri(connectPath + "/" + secUtil.getPrincipal().hashCode() + "/" + uuid.toString());
 		return "redirect:" + authorizationUrl.build();
 
 	}
@@ -104,28 +104,28 @@ public class VerificationCodeController {
 	 * @throws IOException
 	 */
 	@RequestMapping(value = connectPath
-			+ "/{userId}/{uuid}", params = "code", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
-	public @ResponseBody String retrieveCode(@PathVariable("userId") String userid, @PathVariable("uuid") String uuid,
+			+ "/{uuid}", params = "code", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
+	public @ResponseBody String retrieveCode(@PathVariable("uuid") String uuid,
 			@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response)
 					throws IOException {
 		String error = request.getParameter("error");
-		if (userTokenRegister.containsKey(userid) && userTokenRegister.get(userid).equals(uuid) && StringUtils.isBlank(error)) {
+		if (userTokenRegister.containsKey(uuid) && StringUtils.isBlank(error) && secUtil.getPrincipal().equals(userTokenRegister.containsKey(uuid))) {
 			// if found and matched remove entry. Entry can only be used one
 			// time
-			userTokenRegister.remove(userid);
+			String userid = userTokenRegister.remove(uuid);
 			GoogleClientSecrets clientSecrets = null;
 			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
 					clientSecrets, scopes).setAccessType(ACCESS_TYPE_OFFLINE).setApprovalPrompt(APPROVAL_PROMPT)
 							.build();
 			AuthorizationCodeRequestUrl authorizationUrl = flow.newAuthorizationUrl()
-					.setRedirectUri(connectPath + "/" + userid + "/" + uuid);
+					.setRedirectUri(connectPath + "/" + uuid);
 			TokenResponse tokenResponse = flow.newTokenRequest(code).setRedirectUri(authorizationUrl.build()).execute();
 			flow.createAndStoreCredential(tokenResponse, userid);
 			return "youtubeConnected";
 		} else {
-			if (userTokenRegister.containsKey(userid) && !userTokenRegister.get(userid).equals(uuid)) {
-				// if token is wrong. delete key for security proposes
-				userTokenRegister.remove(userid);
+			if(userTokenRegister.containsKey(uuid) && !secUtil.getPrincipal().equals(userTokenRegister.containsKey(uuid))){
+				logger.warn("Wrong user and token combination:" + secUtil.getPrincipal() + "<->" + userTokenRegister.get(uuid) + ". Remove previous token");
+				userTokenRegister.remove(uuid);
 			}
 			if(StringUtils.isNotBlank(error)){
 				logger.error("Error on authentication from youtube with error: " + error);
