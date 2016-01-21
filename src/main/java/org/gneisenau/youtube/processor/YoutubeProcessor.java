@@ -62,4 +62,9 @@ public class YoutubeProcessor extends AbstractProcessor {
 	protected State initialProcessState() {
 		return State.OnUpload;
 	}
+
+	@Override
+	protected List<Video> getProcessingVideoList() {
+		return videoDAO.findAllWaitForUpload();
+	}
 }

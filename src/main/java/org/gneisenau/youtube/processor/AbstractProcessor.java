@@ -37,14 +37,14 @@ public abstract class AbstractProcessor {
 
 	
 	@Transactional
-	public void execute(List<Video> videos){
+	public void execute(){
+		List<Video> videos = getProcessingVideoList();
 		for (Video videoTemp : videos) {
 			execute(videoTemp);
 		}
 	}
 	
-	@Transactional
-	public void execute(Video videoTemp){
+	private void execute(Video videoTemp){
 		Video v = videoDAO.findById(videoTemp.getId());
 
 		v.setState(initialProcessState());
@@ -69,5 +69,6 @@ public abstract class AbstractProcessor {
 	protected abstract void runChain(Video v);
 	protected abstract void notifyProcessing(Video v);
 	protected abstract State initialProcessState();
+	protected abstract List<Video> getProcessingVideoList();
 
 }

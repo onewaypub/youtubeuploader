@@ -19,8 +19,7 @@ public class Scheduler {
 
 	@Scheduled(fixedDelay = 60000)
 	public void run() {
-		List<Video> videos = videoDAO.findAllWaitForPorcessing();
-		chain.execute(videos);
+		chain.execute();
 	}
 
 }

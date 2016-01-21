@@ -136,21 +136,21 @@ public class UploadController {
 	public ResponseEntity<String> uploadVideoFile(MultipartHttpServletRequest request) {
 		List<File> files = new ArrayList<File>();
 		try {
-			auth.authorize("YouTubeUpload", secUtil.getPrincipal());
-		} catch (AuthorizeException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
 			File outputDir = new File(ioUtils.getTemporaryFolder());
 			// Create a new file upload handler
 			Map<String, MultipartFile> fileMap = request.getFileMap();
 			for (Entry<String, MultipartFile> e : fileMap.entrySet()) {
+				if(ioUtils.canBeSaved(e.getValue().getSize())){
+					ErrorEvent event = new ErrorEvent("Video kann nicht gespeichert werden, da die Datei zu groﬂ ist", this);
+					websocketEventBus.onApplicationEvent(event);
+					break;
+				}
 				String name = e.getValue().getOriginalFilename();
 				String title = FilenameUtils.getBaseName(name);
 				String path2save = outputDir.getAbsolutePath() + File.separatorChar;
 				File newFile = new File(path2save + ioUtils.addMilliSecondsToFilename(name));
 				e.getValue().transferTo(newFile);
+				files.add(newFile);
 				Video v = new Video();
 				v.setTitle(title);
 				v.setVideo(newFile.getAbsolutePath());

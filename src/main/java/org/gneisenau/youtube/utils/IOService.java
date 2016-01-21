@@ -15,6 +15,7 @@ import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.io.FileSystemUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,8 @@ public class IOService {
 	private String ffmpegHome;
 	@Value("${home.temp.dir}")
 	private String homeTempDir;
+	@Value("${disk.free.minimum.space}")
+	private long quote;// in kb
 
 	public String findFFMPEG() throws ExecuteException, IOException {
 		return ffmpegHome;
@@ -50,12 +53,14 @@ public class IOService {
 		return output;
 	}
 
-	public String executeCommandLineWithReturn(String line, OutputStream outputStream) throws ExecuteException, IOException {
+	public String executeCommandLineWithReturn(String line, OutputStream outputStream)
+			throws ExecuteException, IOException {
 		executeCmdLine(line, outputStream);
 		String output = outputStream.toString();
 		logger.debug(output);
 		return output;
 	}
+
 	private void executeCmdLine(String line, OutputStream outputStream) throws ExecuteException, IOException {
 		CommandLine cmdLine = CommandLine.parse(line);
 		DefaultExecutor executor = new DefaultExecutor();
@@ -70,7 +75,6 @@ public class IOService {
 			throw new ExecuteException("Error running command", exitValue);
 		}
 	}
-
 
 	public String getTemporaryFolder() {
 		String tempDirPath = getSystemTemporaryFolder() + File.separator + "youtubeuploader";
@@ -142,6 +146,19 @@ public class IOService {
 		String baseName = FilenameUtils.getBaseName(name);
 		String extension = FilenameUtils.getExtension(name);
 		return System.currentTimeMillis() + "_" + baseName + "." + extension;
+	}
+
+	public boolean canBeSaved(long size) {
+		try {
+			long freeSpaceKb = FileSystemUtils.freeSpaceKb();
+			if (freeSpaceKb - size * 3 < quote) {
+				return false;
+			}
+		} catch (IOException e) {
+			logger.error("Error getting free disk space", e);
+			return false;
+		}
+		return true;
 	}
 
 }

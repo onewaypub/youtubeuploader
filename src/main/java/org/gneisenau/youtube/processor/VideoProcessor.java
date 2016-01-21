@@ -46,7 +46,7 @@ public class VideoProcessor extends AbstractProcessor{
 			videoDAO.flush();
 			if(VideoTask.STOP == process){
 				break;
-			} 
+			}
 		}
 	}
 
@@ -60,5 +60,10 @@ public class VideoProcessor extends AbstractProcessor{
 	@Override
 	protected State initialProcessState() {
 		return State.OnProcessing;
+	}
+
+	@Override
+	protected List<Video> getProcessingVideoList() {
+		return videoDAO.findAllWaitForPorcessing();
 	}
 }
