@@ -1,8 +1,5 @@
 package org.gneisenau.youtube.processor.task;
 
-import java.util.List;
-
-import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
 import org.gneisenau.youtube.processor.VideoProcessor;
 import org.springframework.beans.factory.annotation.Autowired;

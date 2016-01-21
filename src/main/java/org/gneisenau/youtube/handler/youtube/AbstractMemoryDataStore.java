@@ -14,15 +14,6 @@
 
 package org.gneisenau.youtube.handler.youtube;
 
-import com.google.api.client.util.IOUtils;
-import com.google.api.client.util.Lists;
-import com.google.api.client.util.Maps;
-import com.google.api.client.util.Preconditions;
-import com.google.api.client.util.store.AbstractDataStore;
-import com.google.api.client.util.store.DataStore;
-import com.google.api.client.util.store.DataStoreFactory;
-import com.google.api.client.util.store.DataStoreUtils;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -33,6 +24,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import com.google.api.client.util.IOUtils;
+import com.google.api.client.util.Lists;
+import com.google.api.client.util.Maps;
+import com.google.api.client.util.Preconditions;
+import com.google.api.client.util.store.AbstractDataStore;
+import com.google.api.client.util.store.DataStore;
+import com.google.api.client.util.store.DataStoreFactory;
+import com.google.api.client.util.store.DataStoreUtils;
 
 /**
  * Abstract, thread-safe, in-memory implementation of a data store factory.

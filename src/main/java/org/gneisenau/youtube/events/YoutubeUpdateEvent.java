@@ -1,6 +1,5 @@
 package org.gneisenau.youtube.events;
 
-import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.to.VideoTO;
 import org.springframework.context.ApplicationEvent;
 

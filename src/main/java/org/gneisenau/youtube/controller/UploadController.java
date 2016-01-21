@@ -21,7 +21,6 @@ import org.apache.commons.lang.StringUtils;
 import org.dozer.DozerBeanMapper;
 import org.gneisenau.youtube.events.ErrorEvent;
 import org.gneisenau.youtube.events.VideoUpdateEvent;
-import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.handler.youtube.Auth;
 import org.gneisenau.youtube.handler.youtube.YoutubeHandler;
 import org.gneisenau.youtube.model.State;

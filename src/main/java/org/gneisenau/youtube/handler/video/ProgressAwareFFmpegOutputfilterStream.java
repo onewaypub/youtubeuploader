@@ -1,10 +1,8 @@
 package org.gneisenau.youtube.handler.video;
 
 import java.io.ByteArrayOutputStream;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.gneisenau.youtube.events.StatusUpdateEvent;
 import org.gneisenau.youtube.model.State;
