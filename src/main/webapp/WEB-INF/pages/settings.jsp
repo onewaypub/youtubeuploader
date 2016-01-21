@@ -200,22 +200,22 @@
 			</div>
 		</form>
 		<form
-			action="/connectToFacebook.do?${_csrf.parameterName}=${_csrf.token}"
+			action="connectToFacebook.do?${_csrf.parameterName}=${_csrf.token}"
 			method="POST">
 			<button type="submit">Connect to Facebook</button>
 		</form>
 		<form
-			action="/connectToTwitter.do?${_csrf.parameterName}=${_csrf.token}"
+			action="connectToTwitter.do?${_csrf.parameterName}=${_csrf.token}"
 			method="POST">
 			<button type="submit">Connect to Twitter</button>
 		</form>
 		<form
-			action="/connectToGoogle.do?${_csrf.parameterName}=${_csrf.token}"
+			action="connectToGoogle.do?${_csrf.parameterName}=${_csrf.token}"
 			method="POST">
 			<button type="submit">Connect to Google</button>
 		</form>
 		<form
-			action="/connectToYoutube"
+			action="connect/youtube"
 			method="POST">
 			<button type="submit">Connect to Youtube</button>
 		</form>

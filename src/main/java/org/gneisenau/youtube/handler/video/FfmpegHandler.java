@@ -17,19 +17,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
-import com.xuggle.mediatool.IMediaReader;
-import com.xuggle.mediatool.IMediaWriter;
-import com.xuggle.mediatool.MediaToolAdapter;
-import com.xuggle.mediatool.ToolFactory;
-import com.xuggle.mediatool.event.IAddStreamEvent;
-import com.xuggle.mediatool.event.IAudioSamplesEvent;
-import com.xuggle.mediatool.event.ICloseCoderEvent;
-import com.xuggle.mediatool.event.ICloseEvent;
-import com.xuggle.mediatool.event.IOpenCoderEvent;
-import com.xuggle.mediatool.event.IOpenEvent;
-import com.xuggle.xuggler.Converter;
-import com.xuggle.xuggler.Xuggler;
-
 @Service
 @PropertySource("file:${user.home}/youtubeuploader.properties")
 public class FfmpegHandler {

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
 import com.google.api.client.auth.oauth2.Credential;
@@ -40,66 +41,42 @@ public class VerificationCodeController {
 	private static final Logger logger = LoggerFactory.getLogger(VerificationCodeController.class);
 
 	/**
-	 * GET /connect/{providerId} - Displays a web page showing connection status
-	 * provider.
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws IOException
-	 * @throws AuthorizeException 
-	 */
-	@RequestMapping(value = connectPath, produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
-	public @ResponseBody String showConnectionStatus(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, AuthorizeException {
-		GoogleAuthorizationCodeFlow flow = authService.createGoogleAuthorizationCodeFlow();
-		Credential credential = flow.loadCredential(secUtil.getPrincipal());
-		if(credential != null) {
-			return "youtubeConnected";
-		} else {
-			return "youtubeConnect";
-		}
-
-	}
-	
-	@RequestMapping(value = "/connectToYoutube", method = RequestMethod.POST)
-	public @ResponseBody String connectToYoutube() throws AuthorizeException, IOException{
-		GoogleAuthorizationCodeFlow flow = authService.createGoogleAuthorizationCodeFlow();
-		Credential credential = flow.loadCredential(secUtil.getPrincipal());
-		if(credential != null) {
-			return "youtubeConnected";
-		} else {
-			return "youtubeConnect";
-		}
-	}
-
-
-	/**
 	 * POST /connect/{providerId} - Initiates the connection flow with the
 	 * provider.
 	 * 
 	 * @param request
 	 * @param response
 	 * @return
-	 * @throws AuthorizeException 
+	 * @throws AuthorizeException
 	 */
 	@RequestMapping(value = connectPath, produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.POST)
-	public @ResponseBody String initiateConnection(HttpServletRequest request, HttpServletResponse response) throws AuthorizeException {
-		GoogleAuthorizationCodeFlow flow = authService.createGoogleAuthorizationCodeFlow();
+	public @ResponseBody ModelAndView initiateConnection(HttpServletRequest request, HttpServletResponse response)
+			throws AuthorizeException {
+		// if (authService.authorize("youtube", secUtil.getPrincipal()) != null)
+		// {
+		// return new ModelAndView("settings");
+		// }
 		String uuid = UUID.randomUUID().toString();
-		//Check if the user has already a uuid token; if yes then delete it.
-		if(userTokenRegister.containsValue(secUtil.getPrincipal())){
-			for(Entry<String, String> e : userTokenRegister.entrySet()){
-				if(e.getValue().equals(secUtil.getPrincipal())){
+		// Check if the user has already a uuid token; if yes then delete it.
+		if (userTokenRegister.containsValue(secUtil.getPrincipal())) {
+			for (Entry<String, String> e : userTokenRegister.entrySet()) {
+				if (e.getValue().equals(secUtil.getPrincipal())) {
 					userTokenRegister.remove(e.getKey());
 				}
 			}
 		}
 		userTokenRegister.put(uuid, secUtil.getPrincipal());
-		AuthorizationCodeRequestUrl authorizationUrl = flow.newAuthorizationUrl()
-				.setRedirectUri(connectPath + "/" + uuid.toString());
-		return "redirect:" + authorizationUrl.build();
+		GoogleAuthorizationCodeFlow flow = authService.createGoogleAuthorizationCodeFlow();
+		AuthorizationCodeRequestUrl authorizationUrl = createAuthUrl(flow, uuid);
+		return new ModelAndView("redirect:" + authorizationUrl.build());
 
+	}
+
+	private AuthorizationCodeRequestUrl createAuthUrl(GoogleAuthorizationCodeFlow flow, String uuid) {
+		AuthorizationCodeRequestUrl authorizationUrl = flow.newAuthorizationUrl()
+				.setRedirectUri("http://localhost:8080/YouTubeUploader" + connectPath);
+		authorizationUrl.setState(uuid.toString());
+		return authorizationUrl;
 	}
 
 	/**
@@ -111,34 +88,34 @@ public class VerificationCodeController {
 	 * @param response
 	 * @return
 	 * @throws IOException
-	 * @throws AuthorizeException 
+	 * @throws AuthorizeException
 	 */
-	@RequestMapping(value = connectPath
-			+ "/{uuid}", params = "code", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
-	public @ResponseBody String retrieveCode(@PathVariable("uuid") String uuid,
+	@RequestMapping(value = connectPath, params = { "state", "code" }, method = RequestMethod.GET)
+	public @ResponseBody ModelAndView retrieveCode(@RequestParam("state") String uuid,
 			@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response)
 					throws IOException, AuthorizeException {
 		String error = request.getParameter("error");
-		if (userTokenRegister.containsKey(uuid) && StringUtils.isBlank(error) && secUtil.getPrincipal().equals(userTokenRegister.containsKey(uuid))) {
+		if (userTokenRegister.containsKey(uuid) && StringUtils.isBlank(error)
+				&& secUtil.getPrincipal().equals(userTokenRegister.get(uuid))) {
 			// if found and matched remove entry. Entry can only be used one
 			// time
 			String userid = userTokenRegister.remove(uuid);
 			GoogleAuthorizationCodeFlow flow = authService.createGoogleAuthorizationCodeFlow();
-			AuthorizationCodeRequestUrl authorizationUrl = flow.newAuthorizationUrl()
-					.setRedirectUri(connectPath + "/" + uuid);
-			TokenResponse tokenResponse = flow.newTokenRequest(code).setRedirectUri(authorizationUrl.build()).execute();
+			TokenResponse tokenResponse = flow.newTokenRequest(code)
+					.setRedirectUri("http://localhost:8080/YouTubeUploader" + connectPath).execute();
 			flow.createAndStoreCredential(tokenResponse, userid);
-			return "youtubeConnected";
 		} else {
-			if(userTokenRegister.containsKey(uuid) && !secUtil.getPrincipal().equals(userTokenRegister.containsKey(uuid))){
-				logger.warn("Wrong user and token combination:" + secUtil.getPrincipal() + "<->" + userTokenRegister.get(uuid) + ". Remove previous token");
+			if (userTokenRegister.containsKey(uuid)
+					&& !secUtil.getPrincipal().equals(userTokenRegister.containsKey(uuid))) {
+				logger.warn("Wrong user and token combination:" + secUtil.getPrincipal() + "<->"
+						+ userTokenRegister.get(uuid) + ". Remove previous token");
 				userTokenRegister.remove(uuid);
 			}
-			if(StringUtils.isNotBlank(error)){
+			if (StringUtils.isNotBlank(error)) {
 				logger.error("Error on authentication from youtube with error: " + error);
 			}
-			return "youtubeConnect";
 		}
+		return new ModelAndView("settings");
 	}
 
 	/**
@@ -149,8 +126,7 @@ public class VerificationCodeController {
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping(value = connectPath
-			+ "/{providerUserId}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.DELETE)
+	@RequestMapping(value = connectPath + "/{providerUserId}", method = RequestMethod.DELETE)
 	public @ResponseBody String severConnection(@PathVariable("providerUserId") String providerUserId,
 			HttpServletRequest request, HttpServletResponse response) {
 		return null;
