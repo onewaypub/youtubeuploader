@@ -5,9 +5,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.dozer.DozerBeanMapper;
+import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
+import org.gneisenau.youtube.handler.youtube.Auth;
 import org.gneisenau.youtube.model.UserSettings;
 import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.gneisenau.youtube.to.UserSettingsTO;
+import org.gneisenau.youtube.utils.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.google.api.Google;
@@ -32,6 +35,10 @@ public class SettingsController {
 	private UserSettingsRepository userSettingsDAO;
 	@Autowired
 	private DozerBeanMapper dozerBeanMapper;
+	@Autowired
+	private Auth authService;
+	@Autowired
+	private SecurityUtil secUtil;
 
 	@RequestMapping(value = "/settings", method = RequestMethod.GET)
 	public ModelAndView init(HttpServletRequest request, HttpServletResponse response) {
@@ -40,6 +47,15 @@ public class SettingsController {
 
 		ModelAndView model = new ModelAndView("settings");
 		model.addObject("usersettings", settings);
+		model.addObject("connectedToFacebook", false);
+		try {
+			model.addObject("connectedToYoutube", authService.authorize("youtube", secUtil.getPrincipal()));
+		} catch (AuthorizeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		model.addObject("connectedToTwitter", false);
+		model.addObject("connectedToGoogle", false);
 		return model;
 	}
 
@@ -51,32 +67,7 @@ public class SettingsController {
 		dozerBeanMapper.map(to, settings);
 
 		userSettingsDAO.persist(settings);
-		return "redirect:/list.do";
-	}
-
-	@RequestMapping(value = "/connectToFacebook", method = RequestMethod.POST)
-	public String connectFacebook() {
-		return "redirect:/connect/facebook.do";
-	}
-
-	@RequestMapping(value = "/connectToTwitter", method = RequestMethod.POST)
-	public String connectTwitter() {
-		return "redirect:/connect/twitter.do";
-	}
-
-	@RequestMapping(value = "/connectToGoogle", method = RequestMethod.POST)
-	public String connectGoogle() {
-		return "redirect:/connect/google.do";
-	}
-
-	@RequestMapping(value = "/connectedToFacebook", method = RequestMethod.POST)
-	private boolean isConnectedToFacebook() {
-		return facebook.isAuthorized();
-	}
-
-	@RequestMapping(value = "/connectedToTwitter", method = RequestMethod.POST)
-	private boolean isConnectedToTwitter() {
-		return twitter.isAuthorized();
+		return "redirect:/list";
 	}
 
 }

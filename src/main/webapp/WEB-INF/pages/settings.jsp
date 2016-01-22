@@ -35,7 +35,7 @@
 					<li class="active"><a href="javascript:void(0)">Einstellungen</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="logout">Logout
+					<li><a href="logout">Logout 
 			</div>
 			</a>
 			</li>
@@ -51,8 +51,7 @@
 			</div>
 			<div class="col-md-1"></div>
 		</div>
-		<form action="save"
-			method="post" modelattribute="usersettings">
+		<form action="save" method="post" modelattribute="usersettings">
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-2">
@@ -195,36 +194,51 @@
 						Zurück</button>
 				</div>
 				<div class="col-md-1">
-					<a href="list.do?${_csrf.parameterName}=${_csrf.token}"
-						class="btn btn-default">Zurück</a>
+					<a href="list" class="btn btn-default">Zurück</a>
 				</div>
 				<div class="col-md-9"></div>
 			</div>
 		</form>
-		<form action="connect/facebook" method="POST">
-			<button type="submit">Verbinden mit Facebook</button>
-		</form>
-		<form action="connect/twitter" method="POST">
-			<button type="submit">Verbinden mit Twitter</button>
-		</form>
-		<form action="connect/google" method="POST">
-			<button type="submit">Verbinden mit Google</button>
-		</form>
-		<form action="connect/youtube" method="POST">
-			<button type="submit">Verbinden mit Youtube</button>
-		</form>
-		<form action="connect/facebook" method="DELETE">
-			<button type="submit">Facebook-Verbindung trennen</button>
-		</form>
-		<form action="connect/twitter" method="DELETE">
-			<button type="submit">Twitter-Verbindung trennen</button>
-		</form>
-		<form action="connect/google" method="DELETE">
-			<button type="submit">Google-Verbindung trennen</button>
-		</form>
-		<form action="connect/youtube" method="DELETE">
-			<button type="submit">Youtube-Verbindung trennen</button>
-		</form>
+		<c:if test="${connectedToFacebook}">
+			<form action="connect/facebook" method="POST">
+				<button type="submit">Verbinden mit Facebook</button>
+			</form>
+		</c:if>
+		<c:if test="${connectedToTwitter}">
+			<form action="connect/twitter" method="POST">
+				<button type="submit">Verbinden mit Twitter</button>
+			</form>
+		</c:if>
+		<c:if test="${connectedToGoogle}">
+			<form action="connect/google" method="POST">
+				<button type="submit">Verbinden mit Google</button>
+			</form>
+		</c:if>
+		<c:if test="${connectedToYoutube}">
+			<form action="connect/youtube" method="POST">
+				<button type="submit">Verbinden mit Youtube</button>
+			</form>
+		</c:if>
+		<c:if test="${not connectedToFacebook}">
+			<form action="connect/facebook" method="DELETE">
+				<button type="submit">Facebook-Verbindung trennen</button>
+			</form>
+		</c:if>
+		<c:if test="${not connectedToTwitter}">
+			<form action="connect/twitter" method="DELETE">
+				<button type="submit">Twitter-Verbindung trennen</button>
+			</form>
+		</c:if>
+		<c:if test="${not connectedToGoogle}">
+			<form action="connect/google" method="DELETE">
+				<button type="submit">Google-Verbindung trennen</button>
+			</form>
+		</c:if>
+		<c:if test="${not connectedToYoutube}">
+			<form action="connect/youtube" method="DELETE">
+				<button type="submit">Youtube-Verbindung trennen</button>
+			</form>
+		</c:if>
 	</div>
 	<script type="text/javascript" src="webjars/jquery/1.11.1/jquery.js"></script>
 	<script type="text/javascript"
