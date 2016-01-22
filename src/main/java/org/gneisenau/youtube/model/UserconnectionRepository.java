@@ -44,6 +44,11 @@ public class UserconnectionRepository {
 	public void flush(){
 		em.flush();
 	}
+
+	public void remove(String providerId, String userId) {
+		Userconnection uc = getUserconnectionForProviderId(userId, providerId);
+		em.remove(uc);
+	}
 	
 
 }

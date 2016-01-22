@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.collections4.map.PassiveExpiringMap;
 import org.apache.commons.lang.StringUtils;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
+import org.gneisenau.youtube.model.UserconnectionRepository;
 import org.gneisenau.youtube.utils.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,8 @@ public class VerificationCodeController {
 	private SecurityUtil secUtil;
 	@Autowired
 	private Auth authService;
+	@Autowired
+	private UserconnectionRepository userconnectionRepository;
 	private Map<String, String> userTokenRegister = new PassiveExpiringMap<String, String>(600000);
 	private static final Logger logger = LoggerFactory.getLogger(VerificationCodeController.class);
 
@@ -125,11 +128,11 @@ public class VerificationCodeController {
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping(value = connectPath + "/{providerUserId}", method = RequestMethod.DELETE)
-	public @ResponseBody String severConnection(@PathVariable("providerUserId") String providerUserId,
+	@RequestMapping(value = connectPath, method = RequestMethod.DELETE)
+	public @ResponseBody ModelAndView severConnection(@PathVariable("providerUserId") String providerUserId,
 			HttpServletRequest request, HttpServletResponse response) {
-		return null;
-
+		userconnectionRepository.remove("youtube", secUtil.getPrincipal());
+		return new ModelAndView("settings");
 	}
 
 }

@@ -35,11 +35,13 @@
 					<li class="active"><a href="javascript:void(0)">Einstellungen</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="logout">Logout</div>
-					</a></li>
-				</ul>
+					<li><a href="logout">Logout
 			</div>
+			</a>
+			</li>
+			</ul>
 		</div>
+	</div>
 	</div>
 	<div class="container-fluid">
 		<div class="row">
@@ -49,7 +51,7 @@
 			</div>
 			<div class="col-md-1"></div>
 		</div>
-		<form action="save.do?${_csrf.parameterName}=${_csrf.token}"
+		<form action="save"
 			method="post" modelattribute="usersettings">
 			<div class="row">
 				<div class="col-md-1"></div>
@@ -199,25 +201,29 @@
 				<div class="col-md-9"></div>
 			</div>
 		</form>
-		<form
-			action="connectToFacebook.do?${_csrf.parameterName}=${_csrf.token}"
-			method="POST">
-			<button type="submit">Connect to Facebook</button>
+		<form action="connect/facebook" method="POST">
+			<button type="submit">Verbinden mit Facebook</button>
 		</form>
-		<form
-			action="connectToTwitter.do?${_csrf.parameterName}=${_csrf.token}"
-			method="POST">
-			<button type="submit">Connect to Twitter</button>
+		<form action="connect/twitter" method="POST">
+			<button type="submit">Verbinden mit Twitter</button>
 		</form>
-		<form
-			action="connectToGoogle.do?${_csrf.parameterName}=${_csrf.token}"
-			method="POST">
-			<button type="submit">Connect to Google</button>
+		<form action="connect/google" method="POST">
+			<button type="submit">Verbinden mit Google</button>
 		</form>
-		<form
-			action="connect/youtube"
-			method="POST">
-			<button type="submit">Connect to Youtube</button>
+		<form action="connect/youtube" method="POST">
+			<button type="submit">Verbinden mit Youtube</button>
+		</form>
+		<form action="connect/facebook" method="DELETE">
+			<button type="submit">Facebook-Verbindung trennen</button>
+		</form>
+		<form action="connect/twitter" method="DELETE">
+			<button type="submit">Twitter-Verbindung trennen</button>
+		</form>
+		<form action="connect/google" method="DELETE">
+			<button type="submit">Google-Verbindung trennen</button>
+		</form>
+		<form action="connect/youtube" method="DELETE">
+			<button type="submit">Youtube-Verbindung trennen</button>
 		</form>
 	</div>
 	<script type="text/javascript" src="webjars/jquery/1.11.1/jquery.js"></script>
