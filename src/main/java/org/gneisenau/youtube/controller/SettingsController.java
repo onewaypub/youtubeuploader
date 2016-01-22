@@ -27,8 +27,11 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class SettingsController {
 
+	@Autowired
 	private Facebook facebook;
+	@Autowired
 	private Twitter twitter;
+	@Autowired
 	private Google google;
 
 	@Autowired
@@ -47,15 +50,15 @@ public class SettingsController {
 
 		ModelAndView model = new ModelAndView("settings");
 		model.addObject("usersettings", settings);
-		model.addObject("connectedToFacebook", false);
+		model.addObject("connectedToFacebook", facebook.isAuthorized());
 		try {
 			model.addObject("connectedToYoutube", authService.authorize("youtube", secUtil.getPrincipal()));
 		} catch (AuthorizeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		model.addObject("connectedToTwitter", false);
-		model.addObject("connectedToGoogle", false);
+		model.addObject("connectedToTwitter", twitter.isAuthorized());
+		model.addObject("connectedToGoogle", google.isAuthorized());
 		return model;
 	}
 
