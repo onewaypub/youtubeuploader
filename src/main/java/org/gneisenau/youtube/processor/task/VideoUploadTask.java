@@ -4,22 +4,22 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.gneisenau.youtube.events.StatusUpdateEvent;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.handler.video.exceptions.UploadException;
 import org.gneisenau.youtube.handler.youtube.ProgressAwareInputStream;
 import org.gneisenau.youtube.handler.youtube.VideoHandler;
+import org.gneisenau.youtube.model.PrivacySetting;
 import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.Video;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
+@Order(value=1)
 public class VideoUploadTask extends AbstractYoutubeTask {
 
 	@Autowired
@@ -49,9 +49,7 @@ public class VideoUploadTask extends AbstractYoutubeTask {
 				}
 			});
 			try {
-				List<String> tags = new ArrayList<String>();
-				CollectionUtils.addAll(tags, v.getTags().split(","));
-				String id = vidUploader.upload(v.getPrivacySetting(), v.getTitle(), inputStream, v.getUsername());
+				String id = vidUploader.upload(PrivacySetting.Private, v.getTitle(), inputStream, v.getUsername());
 				v.setYoutubeId(id);
 				v.setVideoUrl("https://www.youtube.com/watch?v=" + id);
 			} finally {
@@ -71,19 +69,7 @@ public class VideoUploadTask extends AbstractYoutubeTask {
 			handleError(v, "Das Video konnte nicht hochgeladen werden", e);
 			return VideoTask.STOP;
 		}
-		v.setState(State.WaitForListing);
-		if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyReleaseState()) {
-			mailService.sendStatusMail(v.getTitle(), v.getState(), v.getUsername());
-		}
 		return VideoTask.CONTINUE;
-	}
-
-	private String createDescription(Video v) {
-		String desc = v.getDescription() + "\n\nTitel: " + v.getShorttitle() + "\nGenre: " + v.getGenre()
-				+ "\nEntwickler: " + v.getDeveloper() + "\nPublisher: " + v.getPublisher() + "\nVeröffentlichung: "
-				+ v.getPublished() + "\n\nhttps://www.facebook.com/pages/PeachesLp/781275711939550"
-				+ "\nhttps://twitter.com/Peaches_LP";
-		return desc;
 	}
 
 }

@@ -139,11 +139,11 @@ public class UploadController {
 			// Create a new file upload handler
 			Map<String, MultipartFile> fileMap = request.getFileMap();
 			for (Entry<String, MultipartFile> e : fileMap.entrySet()) {
-				if(ioUtils.canBeSaved(e.getValue().getSize())){
-					ErrorEvent event = new ErrorEvent("Video kann nicht gespeichert werden, da die Datei zu groﬂ ist", this);
-					websocketEventBus.onApplicationEvent(event);
-					break;
-				}
+//				if(ioUtils.canBeSaved(e.getValue().getSize())){
+//					ErrorEvent event = new ErrorEvent("Video kann nicht gespeichert werden, da die Datei zu groﬂ ist", this);
+//					websocketEventBus.onApplicationEvent(event);
+//					break;
+//				}
 				String name = e.getValue().getOriginalFilename();
 				String title = FilenameUtils.getBaseName(name);
 				String path2save = outputDir.getAbsolutePath() + File.separatorChar;

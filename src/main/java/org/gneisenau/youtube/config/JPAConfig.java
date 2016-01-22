@@ -66,7 +66,7 @@ public class JPAConfig {
 
 	Properties additionalProperties() {
 		Properties properties = new Properties();
-		properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+		properties.setProperty("hibernate.hbm2ddl.auto", "validate");
 		properties.setProperty("hibernate.show_sql", "false");
 		properties.setProperty("hibernate.format_sql", "false");
 		properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");

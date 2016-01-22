@@ -199,42 +199,42 @@
 				<div class="col-md-9"></div>
 			</div>
 		</form>
-		<c:if test="${connectedToFacebook}">
+		<c:if test="${not connectedToFacebook}">
 			<form action="connect/facebook" method="POST">
 				<button type="submit">Verbinden mit Facebook</button>
 			</form>
 		</c:if>
-		<c:if test="${connectedToTwitter}">
+		<c:if test="${not connectedToTwitter}">
 			<form action="connect/twitter" method="POST">
 				<button type="submit">Verbinden mit Twitter</button>
 			</form>
 		</c:if>
-		<c:if test="${connectedToGoogle}">
+		<c:if test="${not connectedToGoogle}">
 			<form action="connect/google" method="POST">
 				<button type="submit">Verbinden mit Google</button>
 			</form>
 		</c:if>
-		<c:if test="${connectedToYoutube}">
+		<c:if test="${not connectedToYoutube}">
 			<form action="connect/youtube" method="POST">
 				<button type="submit">Verbinden mit Youtube</button>
 			</form>
 		</c:if>
-		<c:if test="${not connectedToFacebook}">
+		<c:if test="${connectedToFacebook}">
 			<form action="connect/facebook" method="DELETE">
 				<button type="submit">Facebook-Verbindung trennen</button>
 			</form>
 		</c:if>
-		<c:if test="${not connectedToTwitter}">
+		<c:if test="${connectedToTwitter}">
 			<form action="connect/twitter" method="DELETE">
 				<button type="submit">Twitter-Verbindung trennen</button>
 			</form>
 		</c:if>
-		<c:if test="${not connectedToGoogle}">
+		<c:if test="${connectedToGoogle}">
 			<form action="connect/google" method="DELETE">
 				<button type="submit">Google-Verbindung trennen</button>
 			</form>
 		</c:if>
-		<c:if test="${not connectedToYoutube}">
+		<c:if test="${connectedToYoutube}">
 			<form action="connect/youtube" method="DELETE">
 				<button type="submit">Youtube-Verbindung trennen</button>
 			</form>

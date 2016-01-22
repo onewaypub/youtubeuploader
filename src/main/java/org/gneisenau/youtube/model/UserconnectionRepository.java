@@ -21,7 +21,7 @@ public class UserconnectionRepository {
 	private SecurityUtil secUtil;
 
 	public Userconnection getUserconnectionForProviderId(String userId, String providerId) {
-		Query query = em.createQuery("from UserSettings where userId = :userId and providerId = :providerId");
+		Query query = em.createQuery("from userconnection where userId = :userId and providerId = :providerId");
 		query.setParameter("userId", userId);
 		query.setParameter("providerId", providerId);
 		Object singleResult = query.getSingleResult();
@@ -30,7 +30,7 @@ public class UserconnectionRepository {
 	}
 
 	public List<Userconnection> getListOfUserconnectionForProviderId(String id) {
-		Query query = em.createQuery("from UserSettings where providerId = :providerId");
+		Query query = em.createQuery("from userconnection where providerId = :providerId");
 		query.setParameter("providerId", id);
 		List<Userconnection> list = query.getResultList();
 

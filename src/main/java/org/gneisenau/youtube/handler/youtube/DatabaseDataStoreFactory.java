@@ -16,41 +16,23 @@ package org.gneisenau.youtube.handler.youtube;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.logging.Logger;
 
-import org.dozer.DozerBeanMapper;
-import org.gneisenau.youtube.model.Userconnection;
-import org.gneisenau.youtube.model.UserconnectionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.google.api.client.auth.oauth2.StoredCredential;
-import com.google.api.client.util.Maps;
 import com.google.api.client.util.store.AbstractDataStoreFactory;
 import com.google.api.client.util.store.DataStore;
 
 @Service
 public class DatabaseDataStoreFactory extends AbstractDataStoreFactory {
 
-	private static final Logger LOGGER = Logger.getLogger(DatabaseDataStoreFactory.class.getName());
-
-	/** Directory to store data. */
-	private final UserconnectionRepository repo;
-
-	/**
-	 * @param dataDirectory
-	 *            data directory
-	 */
-	public DatabaseDataStoreFactory(UserconnectionRepository dataDirectory) throws IOException {
-		this.repo = dataDirectory;
-	}
+	@Autowired
+	private ApplicationContext appContext;
 
 	@Override
 	protected <V extends Serializable> DataStore<V> createDataStore(String appname) throws IOException {
-		return (DataStore<V>) new DatabaseDataStore(repo, appname);
+		return (DataStore<V>) appContext.getBean(DatabaseDataStore.class);
 	}
-
 
 }

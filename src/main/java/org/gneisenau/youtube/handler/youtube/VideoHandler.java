@@ -77,7 +77,7 @@ public class VideoHandler {
 	}
 
 	public String updateMetadata(PrivacySetting privacySetting, String youtubeId, List<String> tags,
-			String title, String desc, String channelId, String categoryId, String playlistId, String username,
+			String title, String desc, String channelId, String categoryId, String username,
 			boolean ageRestricted) throws AuthorizeException, UpdateException, NotFoundException {
 
 		initYoutube(username);

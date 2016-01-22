@@ -50,15 +50,15 @@ public class SettingsController {
 
 		ModelAndView model = new ModelAndView("settings");
 		model.addObject("usersettings", settings);
-		model.addObject("connectedToFacebook", facebook.isAuthorized());
+		model.addObject("connectedToFacebook", false);
 		try {
-			model.addObject("connectedToYoutube", authService.authorize("youtube", secUtil.getPrincipal()));
+			model.addObject("connectedToYoutube", authService.authorize("youtube", secUtil.getPrincipal()) == null ? false : true);
 		} catch (AuthorizeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		model.addObject("connectedToTwitter", twitter.isAuthorized());
-		model.addObject("connectedToGoogle", google.isAuthorized());
+		model.addObject("connectedToTwitter", false);
+		model.addObject("connectedToGoogle", false);
 		return model;
 	}
 

@@ -29,7 +29,7 @@ import org.springframework.web.servlet.view.JstlView;
 @EnableWebMvc
 @EnableAspectJAutoProxy
 @Import({ JPAConfig.class, SchedulerConfig.class, SecurityConfig.class, SocialConfig.class, SecurityConfig.class,
-		UtilConfig.class, WebSocketSecurityConfig.class })
+		WebSocketSecurityConfig.class })
 public class WebAppConfig extends WebMvcConfigurerAdapter {
 
 	@Autowired
