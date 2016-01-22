@@ -1,5 +1,7 @@
 package org.gneisenau.youtube.model;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -26,4 +28,22 @@ public class UserconnectionRepository {
 
 		return (Userconnection) singleResult;
 	}
+
+	public List<Userconnection> getListOfUserconnectionForProviderId(String id) {
+		Query query = em.createQuery("from UserSettings where providerId = :providerId");
+		query.setParameter("providerId", id);
+		List<Userconnection> list = query.getResultList();
+
+		return list;
+	}
+	
+	public void persist(Userconnection c) {
+		em.persist(c);
+	}
+	
+	public void flush(){
+		em.flush();
+	}
+	
+
 }

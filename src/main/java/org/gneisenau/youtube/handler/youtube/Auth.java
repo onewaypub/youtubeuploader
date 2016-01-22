@@ -42,26 +42,14 @@ public class Auth {
 	public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 	public static final JsonFactory JSON_FACTORY = new JacksonFactory();
 	@Autowired
-	private DatabaseDataStoreFactory dbFactory;
+	private DatabaseDataStore datastore;
 
 	public static final List<String> SCOPES = new UnmodifiableList<String>(
 			Lists.newArrayList(YouTubeScopes.YOUTUBE, YouTubeScopes.YOUTUBE_UPLOAD));
 
 	public synchronized Credential authorize(String credentialDatastore, String username) throws AuthorizeException {
-
-		GoogleClientSecrets clientSecrets = initializeClientSecrets();
-
-		DataStore<StoredCredential> datastore;
-		try {
-			datastore = dbFactory.getDataStore(credentialDatastore);
-		} catch (IOException e) {
-			throw new AuthorizeException(e);
-		}
-		
-		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
-				clientSecrets, SCOPES).setAccessType(ACCESS_TYPE_OFFLINE).setApprovalPrompt(APPROVAL_PROMPT_FORCE)
-						.setCredentialDataStore(datastore).build();
-
+	
+		GoogleAuthorizationCodeFlow flow = createGoogleAuthorizationCodeFlow(credentialDatastore);
 		Credential credential;
 		try {
 			credential = flow.loadCredential(username);
@@ -87,11 +75,11 @@ public class Auth {
 		return clientSecrets;
 	}
 
-	public GoogleAuthorizationCodeFlow createGoogleAuthorizationCodeFlow() throws AuthorizeException {
+	public GoogleAuthorizationCodeFlow createGoogleAuthorizationCodeFlow(String credentialDatastore) throws AuthorizeException {
 		GoogleClientSecrets clientSecrets = initializeClientSecrets();
 		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, Auth.JSON_FACTORY,
 				clientSecrets, Auth.SCOPES).setAccessType(ACCESS_TYPE_OFFLINE).setApprovalPrompt(APPROVAL_PROMPT_FORCE)
-						.build();
+				.setCredentialDataStore(datastore).build();
 		return flow;
 	}
 

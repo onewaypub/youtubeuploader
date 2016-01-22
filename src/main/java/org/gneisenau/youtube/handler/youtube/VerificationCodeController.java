@@ -65,7 +65,7 @@ public class VerificationCodeController {
 			}
 		}
 		userTokenRegister.put(uuid, secUtil.getPrincipal());
-		GoogleAuthorizationCodeFlow flow = authService.createGoogleAuthorizationCodeFlow();
+		GoogleAuthorizationCodeFlow flow = authService.createGoogleAuthorizationCodeFlow("youtube");
 		AuthorizationCodeRequestUrl authorizationUrl = createAuthUrl(flow, uuid);
 		return new ModelAndView("redirect:" + authorizationUrl.build());
 
@@ -99,7 +99,7 @@ public class VerificationCodeController {
 			// if found and matched remove entry. Entry can only be used one
 			// time
 			String userid = userTokenRegister.remove(uuid);
-			GoogleAuthorizationCodeFlow flow = authService.createGoogleAuthorizationCodeFlow();
+			GoogleAuthorizationCodeFlow flow = authService.createGoogleAuthorizationCodeFlow("youtube");
 			TokenResponse tokenResponse = flow.newTokenRequest(code)
 					.setRedirectUri("http://localhost:8080/YouTubeUploader" + connectPath).execute();
 			flow.createAndStoreCredential(tokenResponse, userid);

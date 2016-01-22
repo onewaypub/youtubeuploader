@@ -15,18 +15,14 @@
 package org.gneisenau.youtube.handler.youtube;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.google.api.client.util.IOUtils;
-import com.google.api.client.util.Lists;
+import com.google.api.client.auth.oauth2.StoredCredential;
 import com.google.api.client.util.Maps;
 import com.google.api.client.util.Preconditions;
 import com.google.api.client.util.store.AbstractDataStore;
@@ -34,20 +30,13 @@ import com.google.api.client.util.store.DataStore;
 import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.client.util.store.DataStoreUtils;
 
-/**
- * Abstract, thread-safe, in-memory implementation of a data store factory.
- *
- * @param <V> serializable type of the mapped value
- *
- * @author Yaniv Inbar
- */
-class AbstractMemoryDataStore<V extends Serializable> extends AbstractDataStore<V> {
+class AbstractMemoryDataStore extends AbstractDataStore<StoredCredential> {
 
   /** Lock on access to the store. */
   private final Lock lock = new ReentrantLock();
 
   /** Data store map from the key to the value. */
-  HashMap<String, byte[]> keyValueMap = Maps.newHashMap();
+  HashMap<String, StoredCredential> keyValueMap = Maps.newHashMap();
 
   /**
    * @param dataStoreFactory data store factory
@@ -66,37 +55,33 @@ class AbstractMemoryDataStore<V extends Serializable> extends AbstractDataStore<
     }
   }
 
-  public final Collection<V> values() throws IOException {
+  public final Collection<StoredCredential> values() throws IOException {
     lock.lock();
     try {
-      List<V> result = Lists.newArrayList();
-      for (byte[] bytes : keyValueMap.values()) {
-        result.add(IOUtils.<V>deserialize(bytes));
-      }
-      return Collections.unmodifiableList(result);
+      return keyValueMap.values();
     } finally {
       lock.unlock();
     }
   }
 
-  public final V get(String key) throws IOException {
+  public final StoredCredential get(String key) throws IOException {
     if (key == null) {
       return null;
     }
     lock.lock();
     try {
-      return IOUtils.deserialize(keyValueMap.get(key));
+      return keyValueMap.get(key);
     } finally {
       lock.unlock();
     }
   }
 
-  public final DataStore<V> set(String key, V value) throws IOException {
+  public final DataStore<StoredCredential> set(String key, StoredCredential value) throws IOException {
     Preconditions.checkNotNull(key);
     Preconditions.checkNotNull(value);
     lock.lock();
     try {
-      keyValueMap.put(key, IOUtils.serialize(value));
+      keyValueMap.put(key, value);
       save();
     } finally {
       lock.unlock();
@@ -104,7 +89,7 @@ class AbstractMemoryDataStore<V extends Serializable> extends AbstractDataStore<
     return this;
   }
 
-  public DataStore<V> delete(String key) throws IOException {
+  public DataStore<StoredCredential> delete(String key) throws IOException {
     if (key == null) {
       return this;
     }
@@ -118,7 +103,7 @@ class AbstractMemoryDataStore<V extends Serializable> extends AbstractDataStore<
     return this;
   }
 
-  public final DataStore<V> clear() throws IOException {
+  public final DataStore<StoredCredential> clear() throws IOException {
     lock.lock();
     try {
       keyValueMap.clear();
@@ -143,19 +128,13 @@ class AbstractMemoryDataStore<V extends Serializable> extends AbstractDataStore<
   }
 
   @Override
-  public boolean containsValue(V value) throws IOException {
+  public boolean containsValue(StoredCredential value) throws IOException {
     if (value == null) {
       return false;
     }
     lock.lock();
     try {
-      byte[] serialized = IOUtils.serialize(value);
-      for (byte[] bytes : keyValueMap.values()) {
-        if (Arrays.equals(serialized, bytes)) {
-          return true;
-        }
-      }
-      return false;
+      return keyValueMap.containsValue(value);
     } finally {
       lock.unlock();
     }
