@@ -17,6 +17,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
@@ -37,7 +38,7 @@ public class IntroOutroTask extends AbstractVideoTask {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation=Propagation.MANDATORY)
 	public int process(Video v) {
 		// Merge Videos
 		File oldFile = new File(v.getVideo());

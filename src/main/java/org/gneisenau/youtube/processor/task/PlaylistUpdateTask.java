@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Order(value = 4)
@@ -26,6 +28,7 @@ public class PlaylistUpdateTask extends AbstractYoutubeTask {
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.MANDATORY)
 	public int process(Video v) {
 		if (StringUtils.isBlank(v.getYoutubeId()) || StringUtils.isBlank(v.getPlaylistId())) {
 			return CONTINUE;

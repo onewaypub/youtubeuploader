@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Order(value=1)
@@ -25,6 +27,7 @@ public class TranscodeTask extends AbstractVideoTask {
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.MANDATORY)
 	public int process(Video v) {
 		File oldFile = new File(v.getVideo());
 		String baseName = FilenameUtils.getBaseName(v.getVideo());
