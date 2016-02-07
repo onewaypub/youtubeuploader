@@ -20,8 +20,6 @@ public abstract class AbstractProcessor {
 	@Autowired
 	private VideoRepository videoDAO;
 	@Autowired
-	private UserSettingsRepository userSettingsDAO;
-	@Autowired
 	protected MailSendService mailService;
 
 	private final ApplicationEventPublisher publisher;
@@ -34,7 +32,6 @@ public abstract class AbstractProcessor {
 	public void publishEvent(StatusUpdateEvent event) {
 		this.publisher.publishEvent(event);
 	}
-
 	
 	@Transactional
 	public void execute(){

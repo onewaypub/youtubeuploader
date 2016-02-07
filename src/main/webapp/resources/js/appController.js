@@ -43,6 +43,8 @@ angular.module("videoApp.controllers").controller("VideoCtrl",
 					toastr.error(event.o, 'Fehler');
 				} else if (event.typ === 'WarningEvent') {
 					toastr.warning(event.o, 'Warnung');
+				} else if (event.typ === 'InfoEvent') {
+					toastr.info(event.o, 'Info');
 				} else if (event.typ === 'VideoDeleteEvent') {
 					for (var i = 0; i < $scope.videos.length; i++) {
 						if (event.o.id === $scope.videos[i].id) {

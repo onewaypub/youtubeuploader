@@ -17,10 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@Order(value=1)
-public class VideoUploadTask extends AbstractYoutubeTask {
+@Order(value = 1)
+public class VideoUploadTask extends AbstractProcessorTask implements YoutubeTask {
 
 	@Autowired
 	protected VideoHandler vidUploader;
@@ -31,6 +33,7 @@ public class VideoUploadTask extends AbstractYoutubeTask {
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.MANDATORY)
 	public int process(Video v) {
 		String mail = userSettingsDAO.findByUserName(v.getUsername()).getMailTo();
 		if (mail != null && mail.trim().length() == 0) {

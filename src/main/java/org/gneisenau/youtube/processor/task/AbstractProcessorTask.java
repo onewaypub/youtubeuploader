@@ -20,7 +20,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 @Component
-public abstract class AbstractVideoTask implements VideoTask {
+public abstract class AbstractProcessorTask {
 
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
@@ -28,11 +28,11 @@ public abstract class AbstractVideoTask implements VideoTask {
 
 	@Autowired
 	protected MailSendService mailService;
-
+	
 	private final ApplicationEventPublisher publisher;
 
 	@Autowired
-	public AbstractVideoTask(ApplicationEventPublisher publisher) {
+	public AbstractProcessorTask(ApplicationEventPublisher publisher) {
 		this.publisher = publisher;
 	}
 

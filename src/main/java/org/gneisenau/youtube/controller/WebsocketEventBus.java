@@ -1,6 +1,7 @@
 package org.gneisenau.youtube.controller;
 
 import org.gneisenau.youtube.events.ErrorEvent;
+import org.gneisenau.youtube.events.InfoEvent;
 import org.gneisenau.youtube.events.StatusUpdateEvent;
 import org.gneisenau.youtube.events.VideoAddEvent;
 import org.gneisenau.youtube.events.VideoDeleteEvent;
@@ -49,6 +50,11 @@ public class WebsocketEventBus {
 	}
 	@EventListener
 	public void onApplicationEvent(WarningEvent event) {
+		EventTO statusTO = new EventTO(event.getText(), event);
+		template.convertAndSend("/topic/event", statusTO);
+	}
+	@EventListener
+	public void onApplicationEvent(InfoEvent event) {
 		EventTO statusTO = new EventTO(event.getText(), event);
 		template.convertAndSend("/topic/event", statusTO);
 	}

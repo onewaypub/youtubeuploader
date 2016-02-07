@@ -42,12 +42,19 @@ public class FfmpegHandler {
 				+ outputFile.getAbsolutePath();
 		String newFile = outputFile.getAbsolutePath();
 		String output = null;
+		ProgressAwareFFmpegOutputfilterStream stream = null;
 		try {
-			ProgressAwareFFmpegOutputfilterStream stream = new ProgressAwareFFmpegOutputfilterStream(publisher, id);
+			stream = new ProgressAwareFFmpegOutputfilterStream(publisher, id);
 			output = ioService.executeCommandLineWithReturn(line, stream);
+			boolean delete = inputFile.delete();
+			logger.debug("Delete old file " + inputFile.getAbsolutePath() +", State: " + delete);			
 		} catch (IOException e) {
 			logger.warn("Error on exit ffmpeg with errorcode: " + output, e);
+			boolean delete = outputFile.delete();
+			logger.debug("Delete transcoded file " + outputFile.getAbsolutePath() +", State: " + delete);			
 			return inputFile.getPath();
+		} finally{
+			stream.close();			
 		}
 		return newFile;
 	}
@@ -85,7 +92,8 @@ public class FfmpegHandler {
 			}
 		} finally {
 			for (File f : streamFiles) {
-				f.delete();
+				boolean deleted = f.delete();
+				logger.debug("Delete intermediate file " + f.getAbsolutePath() +", State: " + deleted);			
 			}
 		}
 	}

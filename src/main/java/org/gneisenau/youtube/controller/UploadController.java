@@ -16,12 +16,19 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.dozer.DozerBeanMapper;
 import org.gneisenau.youtube.events.ErrorEvent;
+import org.gneisenau.youtube.events.InfoEvent;
 import org.gneisenau.youtube.events.VideoUpdateEvent;
+import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
+import org.gneisenau.youtube.handler.video.exceptions.NotFoundException;
+import org.gneisenau.youtube.handler.video.exceptions.UpdateException;
 import org.gneisenau.youtube.handler.youtube.Auth;
+import org.gneisenau.youtube.handler.youtube.VideoHandler;
+import org.gneisenau.youtube.handler.youtube.YouTubeUtils;
 import org.gneisenau.youtube.handler.youtube.YoutubeHandler;
 import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.Video;
@@ -68,7 +75,9 @@ public class UploadController {
 	@Autowired
 	private VideoRepository videoDAO;
 	@Autowired
-	private Auth auth;
+	private VideoHandler videoHandler;
+	@Autowired
+	private YouTubeUtils youtubeUtils;
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView init(HttpServletRequest request, HttpServletResponse response) {
@@ -139,11 +148,6 @@ public class UploadController {
 			// Create a new file upload handler
 			Map<String, MultipartFile> fileMap = request.getFileMap();
 			for (Entry<String, MultipartFile> e : fileMap.entrySet()) {
-//				if(ioUtils.canBeSaved(e.getValue().getSize())){
-//					ErrorEvent event = new ErrorEvent("Video kann nicht gespeichert werden, da die Datei zu groﬂ ist", this);
-//					websocketEventBus.onApplicationEvent(event);
-//					break;
-//				}
 				String name = e.getValue().getOriginalFilename();
 				String title = FilenameUtils.getBaseName(name);
 				String path2save = outputDir.getAbsolutePath() + File.separatorChar;
@@ -251,12 +255,22 @@ public class UploadController {
 			videoDAO.persist(v);
 			VideoUpdateEvent event = new VideoUpdateEvent(video, this);
 			websocketEventBus.onApplicationEvent(event);
+			updateYoutubeVideo(v);
 			return new ResponseEntity<>("{}", HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("Fehler beim Akutalisieren des Videos", e);
 			ErrorEvent event = new ErrorEvent("Metadaten des Videos konnten nicht akutalisiert werden", this);
 			websocketEventBus.onApplicationEvent(event);
 			return new ResponseEntity<>("{}", HttpStatus.OK);
+		}
+	}
+
+	private void updateYoutubeVideo(Video v) throws AuthorizeException, UpdateException, NotFoundException {
+		if(StringUtils.isNotBlank(v.getYoutubeId()))
+		{
+			videoHandler.updateMetadata(v.getPrivacySetting(), v.getYoutubeId(), youtubeUtils.getTagsList(v),
+					v.getTitle(), youtubeUtils.createDescription(v), v.getChannelId(), v.getCategoryId(), v.getUsername(), false);
+			websocketEventBus.onApplicationEvent(new InfoEvent(v.getId(), this));
 		}
 	}
 

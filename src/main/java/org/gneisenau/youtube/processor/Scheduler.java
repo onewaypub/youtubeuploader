@@ -14,6 +14,8 @@ public class Scheduler {
 	private VideoProcessor videoChain;
 	@Autowired
 	private YoutubeProcessor youtubeChain;
+	@Autowired
+	private PublishProcessor publishChain;
 
 	@Scheduled(fixedDelay = 60000)
 	public void runVideoChain() {
@@ -25,4 +27,8 @@ public class Scheduler {
 		youtubeChain.execute();
 	}
 
+	@Scheduled(fixedDelay = 60000)
+	public void runPublishChain() {
+		publishChain.execute();
+	}
 }
