@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 //@Component
-public class CleanUpTask extends AbstractVideoTask{
+public class CleanUpTask extends AbstractProcessorTask implements YoutubeTask{
 
 	@Autowired
 	public CleanUpTask(ApplicationEventPublisher publisher) {
