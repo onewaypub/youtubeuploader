@@ -1,4 +1,4 @@
-package org.gneisenau.youtube.handler.youtube;
+package org.gneisenau.youtube.handler.youtube.util;
 
 import java.io.IOException;
 import java.util.Map;

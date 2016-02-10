@@ -1,4 +1,4 @@
-package org.gneisenau.youtube.handler.youtube;
+package org.gneisenau.youtube.handler.youtube.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,6 @@ import java.util.List;
 import org.apache.commons.collections4.list.UnmodifiableList;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import com.google.api.client.auth.oauth2.Credential;

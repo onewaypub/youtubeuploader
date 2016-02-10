@@ -7,7 +7,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.social.config.annotation.EnableSocial;
 
 @Configuration
 @PropertySource("file:${user.home}/youtubeuploader.properties")

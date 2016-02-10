@@ -1,11 +1,9 @@
 package org.gneisenau.youtube.network;
 
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.Signature;
-
 import java.io.ByteArrayInputStream;
 
-import org.aspectj.lang.JoinPoint.StaticPart;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.SourceLocation;
 import org.aspectj.runtime.internal.AroundClosure;
 import org.gneisenau.youtube.utils.NetworkUtils;

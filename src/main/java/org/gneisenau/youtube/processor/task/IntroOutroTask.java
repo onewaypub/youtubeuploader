@@ -2,8 +2,6 @@ package org.gneisenau.youtube.processor.task;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.gneisenau.youtube.handler.video.FfmpegHandler;
@@ -14,7 +12,6 @@ import org.gneisenau.youtube.utils.IOService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;

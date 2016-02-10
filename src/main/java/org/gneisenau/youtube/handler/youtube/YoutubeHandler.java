@@ -14,12 +14,12 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
+import org.gneisenau.youtube.handler.youtube.util.YoutubeFactory;
 import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import com.google.api.client.auth.oauth2.Credential;
@@ -33,9 +33,7 @@ public class YoutubeHandler {
 	@Autowired
 	private UserSettingsRepository settingsDAO;
 	@Autowired
-	private Auth auth;
-	@Value("${youtube.app.name}")
-	private String youtubeAppName;
+	private YoutubeFactory youtubefactory;
 	private static final Logger logger = LoggerFactory.getLogger(YoutubeHandler.class);
 
 	private static final String API_KEY = "AIzaSyD9GYNNMLGXfc8OeZx0etSYvU94STP9hrM";
@@ -59,11 +57,7 @@ public class YoutubeHandler {
 			if (mailTo == null || mailTo.trim().length() == 0) {
 				return new HashMap<String, String>();
 			}
-			// Authorize the request.
-			Credential credential = auth.authorize(youtubeAppName, username);
-			YouTube youTube = new YouTube.Builder(Auth.HTTP_TRANSPORT, Auth.JSON_FACTORY, credential)
-					.setApplicationName(Auth.APP_NAME).build();
-			YouTube.Playlists.List searchList = youTube.playlists().list("id,snippet,contentDetails");
+			YouTube.Playlists.List searchList = youtubefactory.getYoutube(username).playlists().list("id,snippet,contentDetails");
 			searchList.setFields(
 					"etag,eventId,items(contentDetails,etag,id,kind,player,snippet,status),kind,nextPageToken,pageInfo,prevPageToken,tokenPagination");
 			searchList.setMine(true);

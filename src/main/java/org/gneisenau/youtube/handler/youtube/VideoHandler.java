@@ -24,13 +24,11 @@ import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.handler.video.exceptions.NotFoundException;
 import org.gneisenau.youtube.handler.video.exceptions.UpdateException;
 import org.gneisenau.youtube.handler.video.exceptions.UploadException;
+import org.gneisenau.youtube.handler.youtube.util.YoutubeFactory;
 import org.gneisenau.youtube.model.PrivacySetting;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
-import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.YouTube.Videos.Update;
@@ -46,19 +44,13 @@ import com.google.api.services.youtube.model.VideoStatus;
 public class VideoHandler {
 
 	@Autowired
-	private Auth auth;
-	@Value("${youtube.app.name}")
-	private String youtubeAppName;
+	private YoutubeFactory youtubefactory;
 
 	private static final Logger logger = Logger.getLogger(VideoHandler.class);
-
-	private static YouTube youtube;
 
 	private static final String VIDEO_FILE_FORMAT = "video/*";
 
 	public String upload(PrivacySetting privacySetting, String title, InputStream content, String username) throws AuthorizeException, UploadException {
-
-		initYoutube(username);
 
 		Video videoObjectDefiningMetadata = new Video();
 
@@ -70,7 +62,7 @@ public class VideoHandler {
 
 		InputStreamContent mediaContent = new InputStreamContent(VIDEO_FILE_FORMAT, content);
 
-		Video returnedVideo = insert(videoObjectDefiningMetadata, mediaContent);
+		Video returnedVideo = insert(videoObjectDefiningMetadata, mediaContent, username);
 
 		return returnedVideo.getId();
 	}
@@ -79,15 +71,13 @@ public class VideoHandler {
 			String title, String desc, String channelId, String categoryId, String username,
 			boolean ageRestricted) throws AuthorizeException, UpdateException, NotFoundException {
 
-		initYoutube(username);
-
-		Video video = getVideoFromYoutube(youtubeId);
+		Video video = getVideoFromYoutube(youtubeId, username);
 
 		VideoSnippet videoSnippet = video.getSnippet();
 
 		setMetadata(tags, title, desc, channelId, categoryId, videoSnippet);
 
-		Video returnedVideo = updateVideo(video);
+		Video returnedVideo = updateVideo(video, username);
 
 		return returnedVideo.getId();
 	}
@@ -95,15 +85,13 @@ public class VideoHandler {
 	public void release(String youtubeId, PrivacySetting privacySetting, String username)
 			throws AuthorizeException, UpdateException, NotFoundException {
 
-		initYoutube(username);
-
-		Video video = getVideoFromYoutube(youtubeId);
+		Video video = getVideoFromYoutube(youtubeId, username);
 
 		setVideoStatus(privacySetting, video);
 
 		YouTube.Videos.Update updateVideosRequest;
 		try {
-			updateVideosRequest = youtube.videos().update("status", video);
+			updateVideosRequest = youtubefactory.getYoutube(username).videos().update("status", video);
 			updateVideosRequest.execute();
 		} catch (IOException e) {
 			throw new UpdateException(e);
@@ -111,7 +99,7 @@ public class VideoHandler {
 
 	}
 
-	public String insertPlaylistItem(String playlistId, String videoId) throws IOException {
+	public String insertPlaylistItem(String playlistId, String videoId, String username) throws IOException, AuthorizeException {
 	
 		ResourceId resourceId = new ResourceId();
 		resourceId.setKind("youtube#video");
@@ -124,17 +112,17 @@ public class VideoHandler {
 		PlaylistItem playlistItem = new PlaylistItem();
 		playlistItem.setSnippet(playlistItemSnippet);
 	
-		YouTube.PlaylistItems.Insert playlistItemsInsertCommand = youtube.playlistItems()
+		YouTube.PlaylistItems.Insert playlistItemsInsertCommand = youtubefactory.getYoutube(username).playlistItems()
 				.insert("snippet,contentDetails", playlistItem);
 		PlaylistItem returnedPlaylistItem = playlistItemsInsertCommand.execute();
 	
 		return returnedPlaylistItem.getId();
 	}
 
-	private Video insert(Video videoObjectDefiningMetadata, InputStreamContent mediaContent) throws UploadException {
+	private Video insert(Video videoObjectDefiningMetadata, InputStreamContent mediaContent, String username) throws UploadException, AuthorizeException {
 		YouTube.Videos.Insert videoInsert;
 		try {
-			videoInsert = youtube.videos().insert("snippet,statistics,status", videoObjectDefiningMetadata,
+			videoInsert = youtubefactory.getYoutube(username).videos().insert("snippet,statistics,status", videoObjectDefiningMetadata,
 					mediaContent);
 		} catch (IOException e) {
 			throw new UploadException(e);
@@ -149,10 +137,10 @@ public class VideoHandler {
 		return returnedVideo;
 	}
 
-	private Video updateVideo(Video video) throws UpdateException {
+	private Video updateVideo(Video video, String username) throws UpdateException, AuthorizeException {
 		Update videoUpdate;
 		try {
-			videoUpdate = youtube.videos().update("snippet", video);
+			videoUpdate = youtubefactory.getYoutube(username).videos().update("snippet", video);
 		} catch (IOException e) {
 			throw new UpdateException(e);
 		}
@@ -166,18 +154,18 @@ public class VideoHandler {
 		return returnedVideo;
 	}
 
-	private void initYoutube(String username) throws AuthorizeException {
-		Credential credential;
-		try {
-			credential = auth.authorize(youtubeAppName, username);
-		} catch (Exception e) {
-			throw new AuthorizeException(e);
-		}
-
-		youtube = new YouTube.Builder(Auth.HTTP_TRANSPORT, Auth.JSON_FACTORY, credential)
-				.setApplicationName(Auth.APP_NAME).build();
-	}
-
+//	private void initYoutube(String username) throws AuthorizeException {
+//		Credential credential;
+//		try {
+//			credential = auth.authorize(youtubeAppName, username);
+//		} catch (Exception e) {
+//			throw new AuthorizeException(e);
+//		}
+//
+//		youtube = new YouTube.Builder(Auth.HTTP_TRANSPORT, Auth.JSON_FACTORY, credential)
+//				.setApplicationName(Auth.APP_NAME).build();
+//	}
+//
 	private void setMetadata(List<String> tags, String title, String desc, String channelId, String categoryId,
 			VideoSnippet snippet) {
 		snippet.setTitle(title);
@@ -195,11 +183,11 @@ public class VideoHandler {
 		video.setStatus(status);
 	}
 
-	private Video getVideoFromYoutube(String youtubeId) throws NotFoundException {
+	private Video getVideoFromYoutube(String youtubeId, String username) throws NotFoundException, AuthorizeException {
 		YouTube.Videos.List listVideosRequest;
 		List<Video> videoList;
 		try {
-			listVideosRequest = youtube.videos().list("snippet").setId(youtubeId);
+			listVideosRequest = youtubefactory.getYoutube(username).videos().list("snippet").setId(youtubeId);
 			VideoListResponse listResponse = listVideosRequest.execute();
 			videoList = listResponse.getItems();
 		} catch (IOException e) {

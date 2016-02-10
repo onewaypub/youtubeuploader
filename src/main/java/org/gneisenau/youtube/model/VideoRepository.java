@@ -54,7 +54,7 @@ public class VideoRepository {
 	}
 	@SuppressWarnings("unchecked")
 	public List<Video> findAllWaitForListing(){
-		Query query = em.createQuery("from Video where state = :state and releaseDate >= CURDATE()");
+		Query query = em.createQuery("from Video where state = :state and releaseDate <= CURDATE()");
 		query.setParameter("state", State.WaitForListing);
 		List<Video> videoList = query.getResultList();
 		return videoList;

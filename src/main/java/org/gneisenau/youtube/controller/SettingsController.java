@@ -6,7 +6,7 @@ import javax.validation.Valid;
 
 import org.dozer.DozerBeanMapper;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
-import org.gneisenau.youtube.handler.youtube.Auth;
+import org.gneisenau.youtube.handler.youtube.util.Auth;
 import org.gneisenau.youtube.model.UserSettings;
 import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.gneisenau.youtube.to.UserSettingsTO;

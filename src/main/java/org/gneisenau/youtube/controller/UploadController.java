@@ -16,7 +16,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.dozer.DozerBeanMapper;
@@ -26,7 +25,6 @@ import org.gneisenau.youtube.events.VideoUpdateEvent;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.handler.video.exceptions.NotFoundException;
 import org.gneisenau.youtube.handler.video.exceptions.UpdateException;
-import org.gneisenau.youtube.handler.youtube.Auth;
 import org.gneisenau.youtube.handler.youtube.VideoHandler;
 import org.gneisenau.youtube.handler.youtube.YouTubeUtils;
 import org.gneisenau.youtube.handler.youtube.YoutubeHandler;

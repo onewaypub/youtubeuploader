@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,7 +21,7 @@ public class FfmpegHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(FfmpegHandler.class);
 	@Autowired
-	IOService ioService = new IOService();
+	private IOService ioService = new IOService();
 	private final ApplicationEventPublisher publisher;
 
 	@Autowired

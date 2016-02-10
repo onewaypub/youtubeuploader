@@ -5,16 +5,12 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.fileupload.servlet.FileCleanerCleanup;
-import org.apache.commons.io.FileCleaningTracker;
 import org.gneisenau.youtube.message.MailSendService;
 import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
 import org.gneisenau.youtube.processor.task.PublishTask;
-import org.gneisenau.youtube.processor.task.VideoTask;
-import org.gneisenau.youtube.processor.task.YoutubeTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
