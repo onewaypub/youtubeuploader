@@ -176,7 +176,7 @@ public class UploadController {
 		}
 		return new ResponseEntity<>("{}", HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(value = "/upload/thumbnail/{id}", method = RequestMethod.POST)
 	@Transactional
 	public ResponseEntity<String> uploadThumbnail(@PathVariable Long id, MultipartHttpServletRequest request) {
@@ -207,7 +207,6 @@ public class UploadController {
 		}
 		return new ResponseEntity<>("{}", HttpStatus.OK);
 	}
-
 
 	@RequestMapping(value = "/getThumbnailImage/{id}", method = RequestMethod.GET)
 	public void getThumbnail(HttpServletResponse response, @PathVariable("id") long id) throws IOException {
@@ -266,10 +265,10 @@ public class UploadController {
 	}
 
 	private void updateYoutubeVideo(Video v) throws AuthorizeException, UpdateException, NotFoundException {
-		if(StringUtils.isNotBlank(v.getYoutubeId()))
-		{
+		if (StringUtils.isNotBlank(v.getYoutubeId())) {
 			videoHandler.updateMetadata(v.getPrivacySetting(), v.getYoutubeId(), youtubeUtils.getTagsList(v),
-					v.getTitle(), youtubeUtils.createDescription(v), v.getChannelId(), v.getCategoryId(), v.getUsername(), false);
+					v.getTitle(), youtubeUtils.createDescription(v), v.getChannelId(), v.getCategoryId(),
+					v.getUsername(), false);
 			websocketEventBus.onApplicationEvent(new InfoEvent(v.getId(), this));
 		}
 	}

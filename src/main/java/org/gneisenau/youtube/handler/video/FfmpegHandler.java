@@ -59,7 +59,7 @@ public class FfmpegHandler {
 		return newFile;
 	}
 
-	public void merge(String target, List<File> files)
+	public void merge(String target, File intro, File main, File outro)
 			throws VideoTranscodeException, VideoMergeException, ExecuteException, IOException {
 		List<File> streamFiles = new ArrayList<File>();
 		String ffmpeg = ioService.findFFMPEG();
@@ -67,6 +67,16 @@ public class FfmpegHandler {
 			long counter = System.currentTimeMillis();
 			String concatList = "";
 			boolean first = true;
+			List<File> files = new ArrayList<File>();
+			if(intro != null){
+				files.add(intro);
+			}
+			if(main != null){
+				files.add(main);
+			}
+			if(outro != null){
+				files.add(outro);
+			}
 			for (File f : files) {
 				File file = new File("intermediate" + counter + ".ts");
 				streamFiles.add(file.getAbsoluteFile());
@@ -86,6 +96,8 @@ public class FfmpegHandler {
 			String output = null;
 			try {
 				ioService.executeCommandLineWithReturn(line);
+				boolean deleted = main.delete();
+				logger.debug("Delete main video file " + main.getAbsolutePath() +", State: " + deleted);			
 			} catch (IOException e) {
 				logger.warn("Error on exit ffmpeg with errorcode: " + output, e);
 				throw new VideoMergeException(e);

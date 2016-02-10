@@ -25,9 +25,7 @@ public class UserSettings {
 	private boolean notifyReleaseState;
 	private boolean notifyErrorState;
 	private String videoFooter;
-	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name = "defaultTags")
-	private List<String> defaultTags;
+	private String defaultTags;
 	private boolean postOnTwitter;
 	private boolean postOnFacebook;
 	private String twitterPost;
@@ -47,6 +45,14 @@ public class UserSettings {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getDefaultTags() {
+		return defaultTags;
+	}
+
+	public void setDefaultTags(String defaultTags) {
+		this.defaultTags = defaultTags;
 	}
 
 	public String getIntro() {
@@ -111,14 +117,6 @@ public class UserSettings {
 
 	public void setVideoFooter(String videoFooter) {
 		this.videoFooter = videoFooter;
-	}
-
-	public List<String> getDefaultTags() {
-		return defaultTags;
-	}
-
-	public void setDefaultTags(List<String> defaultTags) {
-		this.defaultTags = defaultTags;
 	}
 
 	public boolean isPostOnTwitter() {

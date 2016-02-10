@@ -53,6 +53,8 @@ public class VideoUploadTask extends AbstractProcessorTask implements YoutubeTas
 			});
 			try {
 				String id = vidUploader.upload(PrivacySetting.Private, v.getTitle(), inputStream, v.getUsername());
+				boolean delete = new File(v.getVideo()).delete();
+				logger.error("Video deleted after upload: " + v.getVideo() + " State:" + delete);
 				v.setYoutubeId(id);
 				v.setVideoUrl("https://www.youtube.com/watch?v=" + id);
 			} finally {

@@ -47,17 +47,8 @@ public class IntroOutroTask extends AbstractProcessorTask implements VideoTask {
 		String baseName = FilenameUtils.getBaseName(v.getVideo());
 		String extension = FilenameUtils.getExtension(v.getVideo());
 		File newFile = new File(ioService.getTemporaryFolder() + File.separator + baseName + "_merged." + extension);
-
-		List<File> files = new ArrayList<File>();
-		if (intro != null) {
-			files.add(intro);
-		}
-		files.add(new File(v.getVideo()));
-		if (outro != null) {
-			files.add(outro);
-		}
 		try {
-			videoProcessor.merge(newFile.getAbsolutePath(), files);
+			videoProcessor.merge(newFile.getAbsolutePath(), intro, new File(v.getVideo()) , outro);
 		} catch (IOException e) {
 			handleError(v, "Fehler beim Zugriff auf die zusammenzuführenden Videodatei während des Merges");
 			return VideoTask.STOP;

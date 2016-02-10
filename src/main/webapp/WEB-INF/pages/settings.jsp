@@ -50,7 +50,66 @@
 				<h1>Einstellungen</h1>
 			</div>
 			<div class="col-md-1"></div>
+		</div><br/>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-11">
+				<label for="title">Verbindungen zu Sozialen Netzwerken</label>
+			</div>
 		</div>
+			<div class="row">
+				<div class="col-md-1"><br/></div>
+				<div class="col-md-2">
+				<c:if test="${not connectedToFacebook}">
+					<form action="connect/facebook" method="POST">
+						<button type="submit" class="btn btn-default"><input type="image" src="img/not_facebook.jpg" alt="nicht mit Facebook verbunden"/> Facebook verbinden</button>
+					</form>
+				</c:if>
+				<c:if test="${connectedToFacebook}">
+					<form action="connect/facebook" method="DELETE">
+						<button type="submit" class="btn btn-default"><input type="image" src="img/faceook.jpg" alt="mit Facebook verbunden"/> Facebook trennen</button>
+					</form>
+				</c:if>
+				</div>
+				<div class="col-md-2">
+				<c:if test="${not connectedToTwitter}">
+					<form action="connect/twitter" method="POST">
+						<button type="submit" class="btn btn-default"><input type="image" src="img/not_twitter.png" alt="nicht mit Twitter verbunden"/> Twitter verbinden</button>
+					</form>
+				</c:if>
+				<c:if test="${connectedToTwitter}">
+					<form action="connect/twitter" method="DELETE">
+						<button type="submit" class="btn btn-default"><input type="image" src="img/twitter.png" alt="mit Twitter verbunden"/> Twitter trennen</button>
+					</form>
+				</c:if>
+				</div>
+				<div class="col-md-2">
+				<c:if test="${not connectedToYoutube}">
+					<form action="connect/youtube" method="POST">
+						<button type="submit" class="btn btn-default"><input type="image" src="img/not_youtube.png" alt="nicht mit Youtube verbunden"/> Youtube verbinden</button>
+					</form>
+				</c:if>
+				<c:if test="${connectedToYoutube}">
+					<form action="connect/youtube" method="DELETE">
+						<button type="submit" class="btn btn-default"><input type="image" src="img/youtube.png" alt="mit Youtube verbunden"/> Youtube trennen</button>
+					</form>
+				</c:if>
+				</div>
+				<div class="col-md-2">
+				<c:if test="${not connectedToGoogle}">
+					<form action="connect/google" method="POST">
+						<button type="submit" class="btn btn-default"><input type="image" src="img/not_google.png" alt="nicht mit Google verbunden"/> Google verbinden</button>
+					</form>
+				</c:if>
+				<c:if test="${connectedToGoogle}">
+					<form action="connect/youtube" method="DELETE">
+						<button type="submit" class="btn btn-default"><input type="image" src="img/google.png" alt="mit Google verbunden"/> Google trennen</button>
+					</form>
+				</c:if>		
+				</div>
+				<div class="col-md-3"></div>
+			</div>
+			<div class="row"><div class="col-md-1"></div></div><br/>
 		<form action="save" method="post" modelattribute="usersettings">
 			<div class="row">
 				<div class="col-md-1"></div>
@@ -125,7 +184,7 @@
 					<div class="form-group">
 						<label for="title">Video Footer</label>
 						<textarea class="form-control" rows="3" placeholder="Video Footer"
-							name="videoFooter" id="videoFooter"></textarea>
+							name="videoFooter" id="videoFooter">${usersettings.videoFooter}</textarea>
 					</div>
 				</div>
 				<div class="col-md-3"></div>
@@ -136,7 +195,7 @@
 					<div class="form-group">
 						<label for="title">Standard Tags</label> <input type="text"
 							name="defaultTags" class="form-control" id="defaultTags"
-							required="required" />
+							required="required" value="${usersettings.defaultTags}"/>
 					</div>
 				</div>
 				<div class="col-md-3"></div>
@@ -146,11 +205,11 @@
 				<div class="col-md-2">
 					<div class="form-group">
 						<label for="title">Auf Twitter posten</label>
-						<c:if test="${usersettings.notifyErrorState}">
+						<c:if test="${usersettings.postOnTwitter}">
 							<input type="checkbox" name="postOnTwitter" class="form-control"
 								id="postOnTwitter" checked="checked"></input>
 						</c:if>
-						<c:if test="${not usersettings.notifyErrorState}">
+						<c:if test="${not usersettings.postOnTwitter}">
 							<input type="checkbox" name="postOnTwitter" class="form-control"
 								id="postOnTwitter"></input>
 						</c:if>
@@ -159,7 +218,7 @@
 				<div class="col-md-6">
 					<div class="form-group">
 						<label for="title">Twitter Post</label> <input type="text"
-							name="twitterPost" class="form-control" id="twitterPost" />
+							name="twitterPost" class="form-control" id="twitterPost" value="${usersettings.twitterPost}"/>
 					</div>
 				</div>
 				<div class="col-md-3"></div>
@@ -169,11 +228,11 @@
 				<div class="col-md-2">
 					<div class="form-group">
 						<label for="title">Auf Facebook posten</label>
-						<c:if test="${usersettings.notifyErrorState}">
+						<c:if test="${usersettings.postOnFacebook}">
 							<input type="checkbox" name="postOnFacebook" class="form-control"
 								id="postOnFacebook" checked="checked"></input>
 						</c:if>
-						<c:if test="${not usersettings.notifyErrorState}">
+						<c:if test="${not usersettings.postOnFacebook}">
 							<input type="checkbox" name="postOnFacebook" class="form-control"
 								id="postOnFacebook"></input>
 						</c:if>
@@ -182,7 +241,7 @@
 				<div class="col-md-6">
 					<div class="form-group">
 						<label for="title">Facebook Post</label> <input type="text"
-							name="facebookPost" class="form-control" id="facebookPost" />
+							name="facebookPost" class="form-control" id="facebookPost" value="${usersettings.facebookPost}"/>
 					</div>
 				</div>
 				<div class="col-md-3"></div>
@@ -190,8 +249,7 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<button type="submit" class="btn btn-default">Speichern &
-						Zurück</button>
+					<button type="submit" class="btn btn-default">Speichern</button>
 				</div>
 				<div class="col-md-1">
 					<a href="list" class="btn btn-default">Zurück</a>
@@ -199,46 +257,6 @@
 				<div class="col-md-9"></div>
 			</div>
 		</form>
-		<c:if test="${not connectedToFacebook}">
-			<form action="connect/facebook" method="POST">
-				<button type="submit">Verbinden mit Facebook</button>
-			</form>
-		</c:if>
-		<c:if test="${not connectedToTwitter}">
-			<form action="connect/twitter" method="POST">
-				<button type="submit">Verbinden mit Twitter</button>
-			</form>
-		</c:if>
-		<c:if test="${not connectedToGoogle}">
-			<form action="connect/google" method="POST">
-				<button type="submit">Verbinden mit Google</button>
-			</form>
-		</c:if>
-		<c:if test="${not connectedToYoutube}">
-			<form action="connect/youtube" method="POST">
-				<button type="submit">Verbinden mit Youtube</button>
-			</form>
-		</c:if>
-		<c:if test="${connectedToFacebook}">
-			<form action="connect/facebook" method="DELETE">
-				<button type="submit">Facebook-Verbindung trennen</button>
-			</form>
-		</c:if>
-		<c:if test="${connectedToTwitter}">
-			<form action="connect/twitter" method="DELETE">
-				<button type="submit">Twitter-Verbindung trennen</button>
-			</form>
-		</c:if>
-		<c:if test="${connectedToGoogle}">
-			<form action="connect/google" method="DELETE">
-				<button type="submit">Google-Verbindung trennen</button>
-			</form>
-		</c:if>
-		<c:if test="${connectedToYoutube}">
-			<form action="connect/youtube" method="DELETE">
-				<button type="submit">Youtube-Verbindung trennen</button>
-			</form>
-		</c:if>
 	</div>
 	<script type="text/javascript" src="webjars/jquery/1.11.1/jquery.js"></script>
 	<script type="text/javascript"

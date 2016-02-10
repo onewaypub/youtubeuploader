@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://dozer.sourceforge.net
           http://dozer.sourceforge.net/schema/beanmapping.xsd">
 
-	<mapping>
+	<mapping trim-strings="true" map-null="true" type="bi-directional">
 		<class-a>org.gneisenau.youtube.to.UserSettingsTO</class-a>
 		<class-b>org.gneisenau.youtube.model.UserSettings</class-b>
 		<field>
 			<a>postOnTwitter</a>
-			<b>twitterPost</b>
+			<b>postOnTwitter</b>
 		</field>
 		<field>
 			<a>postOnFacebook</a>
@@ -41,6 +41,14 @@
 		<field>
 			<a>mailTo</a>
 			<b>mailTo</b>
+		</field>
+		<field>
+			<a>videoFooter</a>
+			<b>videoFooter</b>
+		</field>
+		<field>
+			<a>defaultTags</a>
+			<b>defaultTags</b>
 		</field>
 	</mapping>
 

@@ -49,6 +49,7 @@ public class IOService {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		executeCmdLine(line, outputStream);
 		String output = outputStream.toString();
+		outputStream.close();
 		logger.debug(output);
 		return output;
 	}
@@ -58,6 +59,7 @@ public class IOService {
 		executeCmdLine(line, outputStream);
 		String output = outputStream.toString();
 		logger.debug(output);
+		outputStream.close();
 		return output;
 	}
 
@@ -74,6 +76,7 @@ public class IOService {
 		if (exitValue != 0) {
 			throw new ExecuteException("Error running command", exitValue);
 		}
+		watchdog.destroyProcess();
 	}
 
 	public String getTemporaryFolder() {
