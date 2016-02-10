@@ -1,8 +1,8 @@
 <dataset>
-	<userconnection userId="1" providerId="1"
+	<userconnection userId="1" providerId="google"
 		providerUserId="google" rank="1" displayName="google" accessToken="123456789"
 		secret="1234" refreshToken="56789" expireTime="0" />
-	<userconnection userId="1" providerId="youtube"
+	<userconnection userId="2" providerId="youtube"
 		providerUserId="0" rank="1" displayName="youtube" accessToken="987654321"
 		secret="4321" refreshToken="98765" expireTime="0" />
 </dataset>

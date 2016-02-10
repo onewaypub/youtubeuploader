@@ -1,8 +1,11 @@
 package org.gneisenau.youtube.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.List;
+
+import javax.persistence.NoResultException;
+import javax.validation.constraints.AssertTrue;
 
 import org.gneisenau.youtube.config.SchedulerConfig;
 import org.gneisenau.youtube.config.SecurityConfig;
@@ -37,9 +40,26 @@ public class UserconnectionRepositoryTest {
 	private UserconnectionRepository repo;
 
 	@Test
-	public void testFindByProviderId() {
+	public void testGetListOfUserconnectionForProviderId() {
 		List<Userconnection> entry = repo.getListOfUserconnectionForProviderId("youtube");
 		assertEquals(1, entry.size());
+	}
+
+	@Test
+	public void testGetListOfUserconnectionForProviderIdWithException() {
+		List<Userconnection> entry = repo.getListOfUserconnectionForProviderId("yutube");
+		assertEquals(0, entry.size());
+	}
+
+	@Test
+	public void testGetUserconnectionForProviderId() {
+		Userconnection entry = repo.getUserconnectionForProviderId("2", "youtube");
+		assertNotNull(entry);
+	}
+
+	@Test(expected = NoResultException.class)
+	public void testGetUserconnectionForProviderIdWithException() {
+		repo.getUserconnectionForProviderId("1", "youtube");
 	}
 
 }
