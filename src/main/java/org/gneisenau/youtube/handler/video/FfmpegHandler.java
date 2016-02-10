@@ -18,7 +18,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 @Service
-@PropertySource("file:${user.home}/youtubeuploader.properties")
 public class FfmpegHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(FfmpegHandler.class);

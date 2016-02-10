@@ -43,7 +43,6 @@ import com.google.api.services.youtube.model.VideoSnippet;
 import com.google.api.services.youtube.model.VideoStatus;
 
 @Service
-@PropertySource("file:${user.home}/youtubeuploader.properties")
 public class VideoHandler {
 
 	@Autowired

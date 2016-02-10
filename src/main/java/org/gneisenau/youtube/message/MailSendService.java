@@ -15,10 +15,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 @Service
-@PropertySource("file:${user.home}/youtubeuploader.properties")
 public class MailSendService {
 
-	private static String youtubeActivationMessage = "Der Youtube Upoad Service muß in Youtube authorisiert werden.\n\nBitte öffne folgende URL in einem Browser und logge Dich mit deinen Benutzerdaten ein\n\n";
+	private static String youtubeActivationMessage = "Der Youtube Upoad Service muï¿½ in Youtube authorisiert werden.\n\nBitte ï¿½ffne folgende URL in einem Browser und logge Dich mit deinen Benutzerdaten ein\n\n";
 	private static String youtubeActivationTitle = "Authorisierung des Youtube Upoad Service";
 
 	private static final Logger logger = LoggerFactory.getLogger(MailSendService.class);
@@ -57,7 +56,7 @@ public class MailSendService {
 		email.setSSL(true);
 		try {
 			email.setFrom(mailSenderUser);
-			email.setSubject("Video hat sein Status geändert - " + s + " - " + videoTitle);
+			email.setSubject("Video hat sein Status geï¿½ndert - " + s + " - " + videoTitle);
 			email.setMsg("Das Video " + videoTitle + " ist nun im Status " + s);
 			setMailTo(email, username);
 			email.send();
@@ -80,7 +79,7 @@ public class MailSendService {
 		try {
 			email.setFrom(mailSenderUser);
 			email.setSubject("Fehler beim Video - " + videoTitle);
-			email.setMsg("Das Video konnte nicht vollständig abgearbeitet werden\nAktueller Status ist " + s
+			email.setMsg("Das Video konnte nicht vollstï¿½ndig abgearbeitet werden\nAktueller Status ist " + s
 					+ "\nFehlermeldung: " + fehlermeldung);
 			setMailTo(email, username);
 			email.send();

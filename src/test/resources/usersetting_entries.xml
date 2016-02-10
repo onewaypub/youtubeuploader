@@ -1,0 +1,12 @@
+<dataset>
+	<usersettings id="1" username="0" intro="0" outro="0"
+		mailTo="0" notifyUploadState="0" notifyProcessedState="0"
+		notifyReleaseState="0" notifyErrorState="0" videoFooter="0"
+		defaultTags="0" postOnTwitter="0" postOnFacebook="0" twitterPost="0"
+		facebookPost="0" />
+	<usersettings id="2" username="0" intro="0" outro="0"
+		mailTo="0" notifyUploadState="0" notifyProcessedState="0"
+		notifyReleaseState="0" notifyErrorState="0" videoFooter="0"
+		defaultTags="0" postOnTwitter="0" postOnFacebook="0" twitterPost="0"
+		facebookPost="0"/>
+</dataset>

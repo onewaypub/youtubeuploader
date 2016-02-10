@@ -28,7 +28,6 @@ import com.google.api.services.youtube.model.Playlist;
 import com.google.api.services.youtube.model.PlaylistListResponse;
 
 @Service
-@PropertySource("file:${user.home}/youtubeuploader.properties")
 public class YoutubeHandler {
 
 	@Autowired

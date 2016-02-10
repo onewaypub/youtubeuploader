@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Order(value=2)
-@PropertySource("file:${user.home}/youtubeuploader.properties")
 public class IntroOutroTask extends AbstractProcessorTask implements VideoTask {
 
 	@Autowired
@@ -50,10 +49,10 @@ public class IntroOutroTask extends AbstractProcessorTask implements VideoTask {
 		try {
 			videoProcessor.merge(newFile.getAbsolutePath(), intro, new File(v.getVideo()) , outro);
 		} catch (IOException e) {
-			handleError(v, "Fehler beim Zugriff auf die zusammenzuführenden Videodatei während des Merges");
+			handleError(v, "Fehler beim Zugriff auf die zusammenzufï¿½hrenden Videodatei wï¿½hrend des Merges");
 			return VideoTask.STOP;
 		} catch (VideoTranscodeException e) {
-			handleError(v, "Zusammenzuführenden Videodateien könnten nicht transcodiert werden ");
+			handleError(v, "Zusammenzufï¿½hrenden Videodateien kï¿½nnten nicht transcodiert werden ");
 			return VideoTask.STOP;
 		} catch (VideoMergeException e) {
 			handleError(v, "Fehler beim Merge der Videodateien");

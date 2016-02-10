@@ -12,6 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.PathResource;
@@ -29,20 +30,13 @@ import org.springframework.web.servlet.view.JstlView;
 @EnableWebMvc
 @EnableAspectJAutoProxy
 @Import({ JPAConfig.class, SchedulerConfig.class, SecurityConfig.class, SocialConfig.class, SecurityConfig.class,
-		WebSocketSecurityConfig.class })
+		WebSocketSecurityConfig.class, PropertyConfig.class })
+@Profile("prod")
 public class WebAppConfig extends WebMvcConfigurerAdapter {
 
 	@Autowired
 	private IOService ioUtils;
 
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer properties() {
-		String userhome = System.getProperty("user.home");
-		PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
-		Resource resource = new PathResource(userhome + "/youtubeuploader.properties");
-		propertySourcesPlaceholderConfigurer.setLocations(resource);
-		return propertySourcesPlaceholderConfigurer;
-	}
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {

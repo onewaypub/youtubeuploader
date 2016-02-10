@@ -30,7 +30,6 @@ import com.google.common.collect.Lists;
  * and caching credentials.
  */
 @Service
-@PropertySource("file:${user.home}/youtubeuploader.properties")
 public class Auth {
 
 	@Value("${tomcat.home.dir}")

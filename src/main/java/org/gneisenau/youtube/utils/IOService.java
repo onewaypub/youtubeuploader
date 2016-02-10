@@ -26,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @Service
-@PropertySource("file:${user.home}/youtubeuploader.properties")
 public class IOService {
 
 	private static final Logger logger = LoggerFactory.getLogger(IOService.class);

@@ -1,0 +1,12 @@
+<dataset>
+	<video id="1" video="0" thumbnail="0" releaseDate="0" tags="0"
+		errors="0" privacySetting="0" state="0" youtubeId="0"
+		thumbnailUrl="0" videoUrl="0" title="0" description="0" categoryId="0"
+		channelId="0" playlistId="0" publisher="0" published="0" developer="0"
+		genre="0" shorttitle="0" category="0" username="0" ageRestricted="0" />
+	<video id="2" video="0" thumbnail="0" releaseDate="0" tags="0"
+		errors="0" privacySetting="0" state="0" youtubeId="0"
+		thumbnailUrl="0" videoUrl="0" title="0" description="0" categoryId="0"
+		channelId="0" playlistId="0" publisher="0" published="0" developer="0"
+		genre="0" shorttitle="0" category="0" username="0" ageRestricted="0" />
+</dataset>

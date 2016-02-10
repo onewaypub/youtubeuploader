@@ -42,7 +42,6 @@ import com.google.api.services.youtube.model.ThumbnailSetResponse;
  * @author Ibrahim Ulukaya
  */
 @Service
-@PropertySource("file:${user.home}/youtubeuploader.properties")
 public class ImageHandler {
 
 	@Autowired
