@@ -69,7 +69,7 @@ public class FfmpegHandlerTest {
 	@Test
 	public void testMerge() throws ExecuteException, IOException, VideoTranscodeException, VideoMergeException {
         when(iosService.executeCommandLineWithReturn(any(String.class), any(ProgressAwareFFmpegOutputfilterStream.class))).thenReturn(FileUtils.getTempDirectoryPath() + System.currentTimeMillis() + ".mp4");;
-        when(iosService.findFFMPEG()).thenReturn("");;
+        when(iosService.findFFMPEG()).thenReturn("");
         File intro = new File(FilenameUtils.getPath(TestConfigurationContext.class.getResource("/").getPath()) + "SampleVideo_1080x720_1mb.mp4");
         File outro = new File(FilenameUtils.getPath(TestConfigurationContext.class.getResource("/").getPath()) + "SampleVideo_1080x720_1mb.mp4");
         File srcFile = new File(FilenameUtils.getPath(TestConfigurationContext.class.getResource("/").getPath()) + "SampleVideo_1080x720_1mb.mp4");
