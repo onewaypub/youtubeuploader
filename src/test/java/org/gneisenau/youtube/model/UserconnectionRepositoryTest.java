@@ -26,7 +26,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @DatabaseSetup("/userconnection_entries.xml")
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 public class UserconnectionRepositoryTest {
 
 	@Autowired

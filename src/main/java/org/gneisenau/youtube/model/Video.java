@@ -39,7 +39,6 @@ public class Video {
 	private String developer;
 	private String genre;
 	private String shorttitle;
-	private String category;
 	private String username;
 	private boolean ageRestricted;
 
@@ -211,14 +210,6 @@ public class Video {
 		this.shorttitle = shorttitle;
 	}
 
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
-	}
-
 	public String getUsername() {
 		return username;
 	}
@@ -242,8 +233,8 @@ public class Video {
 				+ ", youtubeId=" + youtubeId + ", thumbnailUrl=" + thumbnailUrl + ", videoUrl=" + videoUrl + ", title="
 				+ title + ", description=" + description + ", categoryId=" + categoryId + ", channelId=" + channelId
 				+ ", playlistId=" + playlistId + ", publisher=" + publisher + ", published=" + published
-				+ ", developer=" + developer + ", gerne=" + genre + ", shorttitle=" + shorttitle + ", category="
-				+ category + ", username=" + username + ", ageRestricted=" + ageRestricted + "]";
+				+ ", developer=" + developer + ", gerne=" + genre + ", shorttitle=" + shorttitle + ", username="
+				+ username + ", ageRestricted=" + ageRestricted + "]";
 	}
 
 	@Override
@@ -251,7 +242,6 @@ public class Video {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (ageRestricted ? 1231 : 1237);
-		result = prime * result + ((category == null) ? 0 : category.hashCode());
 		result = prime * result + ((categoryId == null) ? 0 : categoryId.hashCode());
 		result = prime * result + ((channelId == null) ? 0 : channelId.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
@@ -287,11 +277,6 @@ public class Video {
 			return false;
 		Video other = (Video) obj;
 		if (ageRestricted != other.ageRestricted)
-			return false;
-		if (category == null) {
-			if (other.category != null)
-				return false;
-		} else if (!category.equals(other.category))
 			return false;
 		if (categoryId == null) {
 			if (other.categoryId != null)

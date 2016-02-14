@@ -12,6 +12,7 @@ import org.dozer.DozerBeanMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.PathResource;
@@ -26,6 +27,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 @ComponentScan(basePackages = "org.gneisenau.youtube")
 @PropertySource("/test.properties")
+@Profile("test")
 public class TestConfigurationContext {
 
 	@Bean

@@ -25,6 +25,8 @@ import org.gneisenau.youtube.events.VideoUpdateEvent;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.handler.video.exceptions.NotFoundException;
 import org.gneisenau.youtube.handler.video.exceptions.UpdateException;
+import org.gneisenau.youtube.handler.video.exceptions.UploadException;
+import org.gneisenau.youtube.handler.youtube.ImageHandler;
 import org.gneisenau.youtube.handler.youtube.VideoHandler;
 import org.gneisenau.youtube.handler.youtube.YouTubeUtils;
 import org.gneisenau.youtube.handler.youtube.YoutubeHandler;
@@ -33,6 +35,7 @@ import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
 import org.gneisenau.youtube.to.ValueTO;
 import org.gneisenau.youtube.to.VideoTO;
+import org.gneisenau.youtube.utils.BeanMapper;
 import org.gneisenau.youtube.utils.IOService;
 import org.gneisenau.youtube.utils.SecurityUtil;
 import org.imgscalr.Scalr;
@@ -57,9 +60,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 @Controller
-public class UploadController {
+public class VideoController {
 
-	private static final Logger logger = LoggerFactory.getLogger(UploadController.class);
+	private static final Logger logger = LoggerFactory.getLogger(VideoController.class);
 	@Autowired
 	private SecurityUtil secUtil;
 	@Autowired
@@ -67,15 +70,17 @@ public class UploadController {
 	@Autowired
 	private YoutubeHandler youtubeHandler;
 	@Autowired
-	private DozerBeanMapper dozerBeanMapper;
-	@Autowired
 	private WebsocketEventBus websocketEventBus;
 	@Autowired
 	private VideoRepository videoDAO;
 	@Autowired
 	private VideoHandler videoHandler;
 	@Autowired
+	private BeanMapper beanMapper;
+	@Autowired
 	private YouTubeUtils youtubeUtils;
+	@Autowired
+	private ImageHandler imageHandler;
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView init(HttpServletRequest request, HttpServletResponse response) {
@@ -124,9 +129,7 @@ public class UploadController {
 		try {
 			List<Video> list = videoDAO.findAll();
 			for (Video v : list) {
-				VideoTO bean = dozerBeanMapper.map(v, VideoTO.class);
-				bean.setLocalVideoUrl("getVideo/" + bean.getId() + ".mp4");
-				bean.setLocalThumbnailUrl("getThumbnailImage/" + bean.getId());
+				VideoTO bean = beanMapper.createVideo(v, secUtil.getPrincipal());
 				videos.add(bean);
 			}
 			return videos;
@@ -158,7 +161,7 @@ public class UploadController {
 				v.setState(State.WaitForProcessing);
 				v.setUsername(secUtil.getPrincipal());
 				videoDAO.persist(v);
-				VideoTO to = dozerBeanMapper.map(v, VideoTO.class);
+				VideoTO to = beanMapper.createVideo(v, secUtil.getPrincipal());
 				websocketEventBus.notifyNewVideo(to);
 			}
 		} catch (IOException e) {
@@ -191,8 +194,11 @@ public class UploadController {
 				Video v = videoDAO.findById(id);
 				v.setThumbnail(newFile.getAbsolutePath());
 				videoDAO.persist(v);
+				if(StringUtils.isNotBlank(v.getYoutubeId())){
+					imageHandler.upload(v.getId(), v.getYoutubeId(), new FileInputStream(newFile), secUtil.getPrincipal(), newFile.length());
+				}
 			}
-		} catch (IOException e) {
+		} catch (IOException | AuthorizeException |UploadException e) {
 			// Cleanup on exception
 			for (File f : files) {
 				if (f.exists()) {
@@ -202,7 +208,7 @@ public class UploadController {
 			logger.error("Fehler beim Hochladen der Thumbnails", e);
 			ErrorEvent event = new ErrorEvent("Fehler beim Hochladen des Thumbnails", this);
 			websocketEventBus.onApplicationEvent(event);
-		}
+		} 
 		return new ResponseEntity<>("{}", HttpStatus.OK);
 	}
 
@@ -222,7 +228,7 @@ public class UploadController {
 				ImageIO.write(outPad, "jpg", os);
 				is = new ByteArrayInputStream(os.toByteArray());
 			} else {
-				is = UploadController.class.getResourceAsStream("/thumbnail_placeholder.jpg");
+				is = VideoController.class.getResourceAsStream("/thumbnail_placeholder.jpg");
 			}
 			org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
 		} catch (Exception e) {
@@ -245,9 +251,9 @@ public class UploadController {
 				v = videoDAO.findById(id);
 			}
 			if (v == null) {
-				v = dozerBeanMapper.map(video, Video.class);
+				v = beanMapper.createVideo(video, secUtil.getPrincipal());
 			} else {
-				dozerBeanMapper.map(video, v, "metadata");
+				beanMapper.copyVideo(video, v, secUtil.getPrincipal());
 			}
 			videoDAO.persist(v);
 			VideoUpdateEvent event = new VideoUpdateEvent(video, this);
@@ -256,17 +262,21 @@ public class UploadController {
 			return new ResponseEntity<>("{}", HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("Fehler beim Akutalisieren des Videos", e);
-			ErrorEvent event = new ErrorEvent("Metadaten des Videos konnten nicht akutalisiert werden", this);
+			ErrorEvent event = new ErrorEvent("Metadaten des Videos konnten nicht akutalisiert werden: " + e.getMessage(), this);
 			websocketEventBus.onApplicationEvent(event);
 			return new ResponseEntity<>("{}", HttpStatus.OK);
 		}
 	}
 
-	private void updateYoutubeVideo(Video v) throws AuthorizeException, UpdateException, NotFoundException {
+	private void updateYoutubeVideo(Video v)
+			throws AuthorizeException, UpdateException, NotFoundException, IOException {
 		if (StringUtils.isNotBlank(v.getYoutubeId())) {
 			videoHandler.updateMetadata(v.getPrivacySetting(), v.getYoutubeId(), youtubeUtils.getTagsList(v),
 					v.getTitle(), youtubeUtils.createDescription(v), v.getChannelId(), v.getCategoryId(),
 					v.getUsername(), false);
+			if (StringUtils.isNotBlank(v.getPlaylistId())) {
+				videoHandler.insertPlaylistItem(v.getPlaylistId(), v.getYoutubeId(), secUtil.getPrincipal());
+			}
 			websocketEventBus.onApplicationEvent(new InfoEvent(v.getId(), this));
 		}
 	}
@@ -297,7 +307,7 @@ public class UploadController {
 	public ResponseEntity<String> deleteVideo(@PathVariable("id") long id) {
 		try {
 			Video video = videoDAO.findById(Long.valueOf(id));
-			VideoTO videoTO = dozerBeanMapper.map(video, VideoTO.class);
+			VideoTO videoTO = beanMapper.createVideo(video, secUtil.getPrincipal());
 			if (video.getVideo() != null) {
 				File f = new File(video.getVideo());
 				f.delete();

@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.handler.video.exceptions.NotFoundException;
@@ -154,25 +155,18 @@ public class VideoHandler {
 		return returnedVideo;
 	}
 
-//	private void initYoutube(String username) throws AuthorizeException {
-//		Credential credential;
-//		try {
-//			credential = auth.authorize(youtubeAppName, username);
-//		} catch (Exception e) {
-//			throw new AuthorizeException(e);
-//		}
-//
-//		youtube = new YouTube.Builder(Auth.HTTP_TRANSPORT, Auth.JSON_FACTORY, credential)
-//				.setApplicationName(Auth.APP_NAME).build();
-//	}
-//
 	private void setMetadata(List<String> tags, String title, String desc, String channelId, String categoryId,
 			VideoSnippet snippet) {
+		title = StringUtils.stripToEmpty(title);
+		desc = StringUtils.stripToEmpty(desc);
+		channelId = StringUtils.stripToEmpty(channelId);
+		categoryId = StringUtils.stripToEmpty(categoryId);
+			
 		snippet.setTitle(title);
 		snippet.setDescription(desc);
 		snippet.setChannelId(channelId);
 		snippet.setTags(tags);
-		if (categoryId != null || categoryId != "-1") {
+		if (categoryId != null && categoryId != "-1") {
 			snippet.setCategoryId(categoryId);
 		}
 	}

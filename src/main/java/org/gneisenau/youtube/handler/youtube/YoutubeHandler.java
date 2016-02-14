@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -16,6 +17,7 @@ import javax.json.JsonReader;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.handler.youtube.util.YoutubeFactory;
 import org.gneisenau.youtube.model.UserSettingsRepository;
+import org.gneisenau.youtube.model.Video;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,5 +107,7 @@ public class YoutubeHandler {
 		}
 		return categories;
 	}
+	
 
+	
 }

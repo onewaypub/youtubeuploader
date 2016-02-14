@@ -36,8 +36,8 @@ public class MetadataUpdateTask extends AbstractProcessorTask implements Youtube
 			return CONTINUE;
 		}
 		try {
-			vidUploader.updateMetadata(PrivacySetting.Private, v.getYoutubeId(), utils.getTagsList(v), v.getTitle(),
-					utils.createDescription(v), v.getCategoryId(), v.getCategoryId(), v.getUsername(), false);
+			vidUploader.updateMetadata(v.getPrivacySetting(), v.getYoutubeId(), utils.getTagsList(v), v.getTitle(),
+					utils.createDescription(v), v.getChannelId(), v.getCategoryId(), v.getUsername(), false);
 		} catch (AuthorizeException e) {
 			handleError(v, "Authorisierung bei Youtube fehlgeschlagen", e);
 			return VideoTask.STOP;

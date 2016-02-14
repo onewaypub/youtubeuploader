@@ -36,7 +36,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 @ContextConfiguration(classes = { TestConfigurationContext.class })
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 public class FfmpegHandlerTest {
 	
 	@InjectMocks

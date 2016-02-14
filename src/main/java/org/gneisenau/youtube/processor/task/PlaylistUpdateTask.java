@@ -34,8 +34,6 @@ public class PlaylistUpdateTask extends AbstractProcessorTask implements Publish
 		if (StringUtils.isBlank(v.getYoutubeId()) || StringUtils.isBlank(v.getPlaylistId())) {
 			return CONTINUE;
 		}
-		List<String> tags = new ArrayList<String>();
-		CollectionUtils.addAll(tags, v.getTags().split(","));
 		try {
 			vidUploader.insertPlaylistItem(v.getPlaylistId(), v.getYoutubeId(), v.getUsername());
 		} catch (IOException e) {

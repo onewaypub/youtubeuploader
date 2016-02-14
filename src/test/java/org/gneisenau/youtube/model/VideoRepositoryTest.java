@@ -29,7 +29,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class,
 		DbUnitTestExecutionListener.class })
 @DatabaseSetup("/video_entries.xml")
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 public class VideoRepositoryTest {
 
 	@Autowired

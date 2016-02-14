@@ -13,7 +13,7 @@ public class TextUtil {
 	private DozerBeanMapper mapper;
 	
 	public String replacePlaceholder(String text, Video v){
-		text = text.replaceAll("%%CATEGORY%%", v.getCategory());
+		//text = text.replaceAll("%%CATEGORY%%", v.getCategory());
 		text = text.replaceAll("%%DESCRIPTION%%", v.getDescription());
 		text = text.replaceAll("%%DEVELOPER%%", v.getDeveloper());
 		text = text.replaceAll("%%GENRE%%", v.getGenre());

@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class YoutubeProcessor extends AbstractProcessor {
@@ -39,6 +41,7 @@ public class YoutubeProcessor extends AbstractProcessor {
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.MANDATORY)
 	protected void runChain(Video v) {
 		for (YoutubeTask chainItem : youtubeProcessingChain) {
 			int process = chainItem.process(v);

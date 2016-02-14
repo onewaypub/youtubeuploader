@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.exec.ExecuteException;
+import org.apache.commons.io.FilenameUtils;
 import org.gneisenau.youtube.events.StatusUpdateEvent;
 import org.gneisenau.youtube.handler.youtube.exceptions.VideoMergeException;
 import org.gneisenau.youtube.handler.youtube.exceptions.VideoTranscodeException;
@@ -34,7 +35,6 @@ public class FfmpegHandler {
 	}
 
 	public String transcode(File inputFile, File outputFile, long id) throws ExecuteException, IOException {
-		// 
 		String line = ioService.findFFMPEG()+ " -i " + inputFile.getAbsolutePath()
 				+ " -codec:v libx264 -bf 2 -flags +cgop -pix_fmt yuv420p -codec:a aac -strict -2 -b:a 384k -r:a 48000 -movflags faststart "
 				+ outputFile.getAbsolutePath();
@@ -43,7 +43,7 @@ public class FfmpegHandler {
 		ProgressAwareFFmpegOutputfilterStream stream = null;
 		try {
 			stream = new ProgressAwareFFmpegOutputfilterStream(publisher, id);
-			output = ioService.executeCommandLineWithReturn(line, stream);
+			output = ioService.executeCommandLineWithReturn(line, stream, ioService.getTemporaryProcessingFolder());
 			boolean delete = inputFile.delete();
 			logger.debug("Delete old file " + inputFile.getAbsolutePath() +", State: " + delete);			
 		} catch (IOException e) {
@@ -76,15 +76,15 @@ public class FfmpegHandler {
 				files.add(outro);
 			}
 			for (File f : files) {
-				File file = new File("intermediate" + counter + ".ts");
-				streamFiles.add(file.getAbsoluteFile());
+				String filename = "intermediate" + counter + ".ts";
+				streamFiles.add(new File(ioService.getTemporaryProcessingFolder() + File.separator +  filename));
 				counter++;
-				concatList = concatList + (first ? "" : "|") + file.getName();
+				concatList = concatList + (first ? "" : "|") + filename;
 				first = false;
-				String line = ffmpeg + " -i " + f + " -c copy -bsf:v h264_mp4toannexb -f mpegts " + file.getName();
+				String line = ffmpeg + " -i " + f + " -c copy -bsf:v h264_mp4toannexb -f mpegts " + filename;
 				String output = null;
 				try {
-					output = ioService.executeCommandLineWithReturn(line);
+					output = ioService.executeCommandLineWithReturn(line, ioService.getTemporaryProcessingFolder());
 				} catch (IOException e) {
 					logger.warn("Error on exit ffmpeg with errorcode: " + output, e);
 					throw new VideoTranscodeException(e);
@@ -93,7 +93,7 @@ public class FfmpegHandler {
 			String line = ffmpeg + " -i \"concat:" + concatList + "\" -c copy -bsf:a aac_adtstoasc  " + target;
 			String output = null;
 			try {
-				ioService.executeCommandLineWithReturn(line);
+				ioService.executeCommandLineWithReturn(line, ioService.getTemporaryProcessingFolder());
 				boolean deleted = main.delete();
 				logger.debug("Delete main video file " + main.getAbsolutePath() +", State: " + deleted);			
 			} catch (IOException e) {

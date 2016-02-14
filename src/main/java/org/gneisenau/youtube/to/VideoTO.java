@@ -26,8 +26,7 @@ public class VideoTO {
 	private List<String> errors;
 	private boolean ageRestricted;
 	private PrivacySetting privacySetting;
-	@JsonDeserialize(using = StateDeserializer.class)
-	private State state;
+	private String state;
 	private int process;
 	private String youtubeId;
 	private String thumbnailUrl;
@@ -63,11 +62,11 @@ public class VideoTO {
 		this.privacySetting = privacySetting;
 	}
 
-	public State getState() {
+	public String getState() {
 		return state;
 	}
 
-	public void setState(State state) {
+	public void setState(String state) {
 		this.state = state;
 	}
 

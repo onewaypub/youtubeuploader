@@ -5,9 +5,13 @@
 	<session-config>
 		<!-- in minutes 12Hours -->
 		<session-timeout>720</session-timeout>
-        <tracking-mode>COOKIE</tracking-mode>
-        <tracking-mode>URL</tracking-mode>
+		<tracking-mode>COOKIE</tracking-mode>
+		<tracking-mode>URL</tracking-mode>
 	</session-config>
+	<context-param>
+		<param-name>spring.profiles.active</param-name>
+		<param-value>prod</param-value>
+	</context-param>
 	<filter>
 		<filter-name>encodingFilter</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

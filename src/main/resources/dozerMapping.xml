@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://dozer.sourceforge.net
           http://dozer.sourceforge.net/schema/beanmapping.xsd">
 
-	<mapping trim-strings="true" map-null="true" type="bi-directional">
+	<mapping trim-strings="true" map-null="true" type="bi-directional" wildcard="false">
 		<class-a>org.gneisenau.youtube.to.UserSettingsTO</class-a>
 		<class-b>org.gneisenau.youtube.model.UserSettings</class-b>
 		<field>
@@ -52,12 +52,12 @@
 		</field>
 	</mapping>
 
-	<mapping trim-strings="true" map-null="true" type="bi-directional">
-		<class-a>org.gneisenau.youtube.to.VideoTO</class-a>
-		<class-b>org.gneisenau.youtube.model.Video</class-b>
+	<mapping trim-strings="true" map-null="true" type="one-way" wildcard="false">
+		<class-a>org.gneisenau.youtube.model.Video</class-a>
+		<class-b>org.gneisenau.youtube.to.VideoTO</class-b>
 		<field>
-			<a>releaseDate</a>
-			<b date-format="dd.MM.yyyy HH:mm">releaseDate</b>
+			<a date-format="dd.MM.yyyy HH:mm">releaseDate</a>
+			<b>releaseDate</b>
 		</field>
 		<field>
 			<a>tags</a>
@@ -68,8 +68,16 @@
 			<b>title</b>
 		</field>
 		<field>
-			<a>playlist</a>
+			<a>errors</a>
+			<b>errors</b>
+		</field>
+		<field>
+			<a>playlistId</a>
 			<b>playlistId</b>
+		</field>
+		<field>
+			<a>playlistId</a>
+			<b>playlist</b>
 		</field>
 		<field>
 			<a>description</a>
@@ -88,6 +96,10 @@
 			<b>categoryId</b>
 		</field>
 		<field>
+			<a>categoryId</a>
+			<b>category</b>
+		</field>
+		<field>
 			<a>developer</a>
 			<b>developer</b>
 		</field>
@@ -100,12 +112,8 @@
 			<b>video</b>
 		</field>
 		<field>
-			<a>category</a>
-			<b>category</b>
-		</field>
-		<field>
-			<a>published</a>
-			<b date-format="dd.MM.yyyy">published</b>
+			<a date-format="dd.MM.yyyy">published</a>
+			<b>published</b>
 		</field>
 		<field>
 			<a>publisher</a>
@@ -131,7 +139,7 @@
 			<a>youtubeId</a>
 			<b>youtubeId</b>
 		</field>
-		<field>
+		<field custom-converter="org.gneisenau.youtube.utils.StateConverter">
 			<a>state</a>
 			<b>state</b>
 		</field>
@@ -146,7 +154,7 @@
 	</mapping>
 	
 	
-	<mapping map-id="metadata" trim-strings="true" map-null="true" type="one-way">
+	<mapping trim-strings="true" map-null="true" type="one-way" wildcard="false">
 		<class-a>org.gneisenau.youtube.to.VideoTO</class-a>
 		<class-b>org.gneisenau.youtube.model.Video</class-b>
 		<field>
@@ -178,7 +186,7 @@
 			<b>genre</b>
 		</field>
 		<field>
-			<a>categoryId</a>
+			<a>category</a>
 			<b>categoryId</b>
 		</field>
 		<field>
@@ -188,10 +196,6 @@
 		<field>
 			<a>shorttitle</a>
 			<b>shorttitle</b>
-		</field>
-		<field>
-			<a>category</a>
-			<b>category</b>
 		</field>
 		<field>
 			<a>published</a>

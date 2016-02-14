@@ -195,9 +195,9 @@
 											<div class="col-md-3">
 												<div class="form-group">
 													<label for="categoryId">Youtube Kategorie</label><select
-														class="form-control" id="categoryId" name="categoryId"
-														ng-model="video.categoryId">
-														<option ng-repeat="category in cats" id="{{category.id}}">{{category.value}}</option>
+														class="form-control" id="category" name="category"
+														ng-model="video.category">
+														<option ng-repeat="category in cats" id="{{category.value}}">{{category.value}}</option>
 													</select>
 												</div>
 											</div>
@@ -254,8 +254,8 @@
 													<label for="sel1">Playlist</label> <select
 														class="form-control" id="playlist" name="playlist"
 														ng-model="video.playlist">
-														<option ng-repeat="playlistitem in playlist"
-															id="{{playlistitem.id}}">{{playlistitem.value}}</option>
+														<option ng-repeat="playlistitem in playlist" 
+															id="{{playlistitem.value}}">{{playlistitem.value}}</option>
 													</select>
 												</div>
 											</div>

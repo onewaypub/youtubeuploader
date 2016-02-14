@@ -44,8 +44,12 @@ public class IOService {
 	}
 
 	public String executeCommandLineWithReturn(String line) throws ExecuteException, IOException {
+		return executeCommandLineWithReturn(line, getTemporaryProcessingFolder());
+	}
+
+	public String executeCommandLineWithReturn(String line, String processingFolder) throws ExecuteException, IOException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		executeCmdLine(line, outputStream);
+		executeCmdLine(line, outputStream, processingFolder);
 		String output = outputStream.toString();
 		outputStream.close();
 		logger.debug(output);
@@ -54,14 +58,19 @@ public class IOService {
 
 	public String executeCommandLineWithReturn(String line, OutputStream outputStream)
 			throws ExecuteException, IOException {
-		executeCmdLine(line, outputStream);
+		return executeCommandLineWithReturn(line, outputStream, getTemporaryProcessingFolder());
+	}
+
+	public String executeCommandLineWithReturn(String line, OutputStream outputStream, String processingFolder)
+			throws ExecuteException, IOException {
+		executeCmdLine(line, outputStream, getTemporaryProcessingFolder());
 		String output = outputStream.toString();
 		logger.debug(output);
 		outputStream.close();
 		return output;
 	}
 
-	private void executeCmdLine(String line, OutputStream outputStream) throws ExecuteException, IOException {
+	private void executeCmdLine(String line, OutputStream outputStream, String processionFolder) throws ExecuteException, IOException {
 		CommandLine cmdLine = CommandLine.parse(line);
 		DefaultExecutor executor = new DefaultExecutor();
 		executor.setExitValue(0);
@@ -69,7 +78,7 @@ public class IOService {
 		PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
 		executor.setStreamHandler(streamHandler);
 		executor.setWatchdog(watchdog);
-		executor.setWorkingDirectory(new File(getTemporaryProcessingFolder()));
+		executor.setWorkingDirectory(new File(processionFolder));
 		int exitValue = executor.execute(cmdLine);
 		if (exitValue != 0) {
 			throw new ExecuteException("Error running command", exitValue);

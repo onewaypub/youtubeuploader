@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Order(value = 2)
@@ -29,8 +31,9 @@ public class ReleaseTask extends AbstractProcessorTask  implements PublishTask{
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.MANDATORY)
 	public int process(Video v) {
-		if (StringUtils.isBlank(v.getYoutubeId()) || StringUtils.isBlank(v.getPlaylistId())) {
+		if (StringUtils.isBlank(v.getYoutubeId()) || v.getReleaseDate() == null) {
 			return CONTINUE;
 		}
 		List<String> tags = new ArrayList<String>();

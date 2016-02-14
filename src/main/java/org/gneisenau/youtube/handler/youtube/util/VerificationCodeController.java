@@ -54,10 +54,6 @@ public class VerificationCodeController {
 	@RequestMapping(value = connectPath, produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.POST)
 	public @ResponseBody ModelAndView initiateConnection(HttpServletRequest request, HttpServletResponse response)
 			throws AuthorizeException {
-		// if (authService.authorize("youtube", secUtil.getPrincipal()) != null)
-		// {
-		// return new ModelAndView("settings");
-		// }
 		String uuid = UUID.randomUUID().toString();
 		// Check if the user has already a uuid token; if yes then delete it.
 		if (userTokenRegister.containsValue(secUtil.getPrincipal())) {

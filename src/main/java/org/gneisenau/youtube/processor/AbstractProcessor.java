@@ -10,6 +10,8 @@ import org.gneisenau.youtube.model.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
@@ -32,7 +34,7 @@ public abstract class AbstractProcessor {
 		this.publisher.publishEvent(event);
 	}
 	
-	@Transactional
+	@Transactional(propagation=Propagation.REQUIRES_NEW, isolation=Isolation.READ_COMMITTED, timeout=10800)
 	public void execute(){
 		List<Video> videos = getProcessingVideoList();
 		for (Video videoTemp : videos) {
