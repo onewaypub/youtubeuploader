@@ -122,7 +122,7 @@ public class DozerMapperTest {
 
 		VideoTO bean = dozerBeanMapper.map(v, VideoTO.class);
 
-		assertEquals("category", bean.getCategory());
+		assertEquals("categoryId", bean.getCategory());
 		assertEquals("categoryId", bean.getCategoryId());
 		assertEquals("channelId", bean.getChannelId());
 		assertEquals("description", bean.getDescription());
@@ -130,6 +130,7 @@ public class DozerMapperTest {
 		assertEquals(errors, bean.getErrors());
 		assertEquals("genre", bean.getGenre());
 		assertEquals((Long)100L, bean.getId());
+		assertEquals("playlistId", bean.getPlaylist());
 		assertEquals("playlistId", bean.getPlaylistId());
 		assertEquals(PrivacySetting.Unlisted, bean.getPrivacySetting());
 		assertEquals("published", bean.getPublished());

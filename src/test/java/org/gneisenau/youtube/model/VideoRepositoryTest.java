@@ -74,7 +74,7 @@ public class VideoRepositoryTest {
 	@Transactional
 	public void testFindAllWaitForListing() {
 		Video v = repo.findById(1L);
-		v.setReleaseDate(DateUtils.addMilliseconds(new Date(System.currentTimeMillis()), 10000));
+		v.setReleaseDate(DateUtils.addMilliseconds(new Date(System.currentTimeMillis()), 120000));
 		v.setState(State.WaitForListing);
 		repo.persist(v);
 		repo.flush();
@@ -82,7 +82,7 @@ public class VideoRepositoryTest {
 		List<Video> list = repo.findAllWaitForListing();
 		assertEquals(0, list.size());
 
-		v.setReleaseDate(DateUtils.addMilliseconds(new Date(System.currentTimeMillis()), -1000));
+		v.setReleaseDate(DateUtils.addMilliseconds(new Date(System.currentTimeMillis()), -120000));
 		repo.persist(v);
 		repo.flush();
 
@@ -101,7 +101,7 @@ public class VideoRepositoryTest {
 		repo.flush();
 
 		list = repo.findAllWaitForListing();
-		assertEquals(0, list.size());
+		assertEquals(1, list.size());
 
 		v.setReleaseDate(new Date(System.currentTimeMillis()));
 		repo.persist(v);

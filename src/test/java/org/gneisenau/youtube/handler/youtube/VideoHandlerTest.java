@@ -107,14 +107,14 @@ public class VideoHandlerTest {
 		assertEquals("1", id);
 	}
 
-//	@Test
-//	public void testRelease() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testInsertPlaylistItem() {
-//		fail("Not yet implemented");
-//	}
+	@Test
+	public void testRelease() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testInsertPlaylistItem() {
+		fail("Not yet implemented");
+	}
 
 }
