@@ -50,9 +50,21 @@ public enum State {
 			return "Wird hochgeladen";
 		}
 	},
-	WaitForListing {
+	OnListing {
 		public State nextState() {
 			return State.Done;
+		}
+		public State errorState() {
+			return State.Error;
+		}
+
+		public String getDisplayName() {
+			return "Wird hochgeladen";
+		}
+	},
+	WaitForListing {
+		public State nextState() {
+			return State.OnListing;
 		}
 		public State errorState() {
 			return State.Error;

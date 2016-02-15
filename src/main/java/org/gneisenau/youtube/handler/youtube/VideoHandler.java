@@ -92,7 +92,7 @@ public class VideoHandler {
 
 		YouTube.Videos.Update updateVideosRequest;
 		try {
-			updateVideosRequest = youtubefactory.getYoutube(username).videos().update("status", video);
+			updateVideosRequest = youtubefactory.getYoutube(username).videos().update("status,snippet", video);
 			updateVideosRequest.execute();
 		} catch (IOException e) {
 			throw new UpdateException(e);
@@ -157,18 +157,18 @@ public class VideoHandler {
 
 	private void setMetadata(List<String> tags, String title, String desc, String channelId, String categoryId,
 			VideoSnippet snippet) {
-		title = StringUtils.stripToEmpty(title);
-		desc = StringUtils.stripToEmpty(desc);
-		channelId = StringUtils.stripToEmpty(channelId);
-		categoryId = StringUtils.stripToEmpty(categoryId);
+		title = StringUtils.stripToNull(title);
+		desc = StringUtils.stripToNull(desc);
+		channelId = StringUtils.stripToNull(channelId);
+		categoryId = StringUtils.stripToNull(categoryId);
 			
 		snippet.setTitle(title);
 		snippet.setDescription(desc);
 		snippet.setChannelId(channelId);
 		snippet.setTags(tags);
-		if (categoryId != null && categoryId != "-1") {
+		if (StringUtils.isNotBlank(categoryId) && categoryId != "-1") {
 			snippet.setCategoryId(categoryId);
-		}
+		} 
 	}
 
 	private void setVideoStatus(PrivacySetting privacySetting, Video video) {

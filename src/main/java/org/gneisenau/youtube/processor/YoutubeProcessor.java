@@ -62,7 +62,7 @@ public class YoutubeProcessor extends AbstractProcessor {
 
 	@Override
 	protected State initialProcessState() {
-		return State.OnUpload;
+		return State.OnListing;
 	}
 
 	@Override
