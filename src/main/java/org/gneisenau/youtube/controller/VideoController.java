@@ -192,6 +192,10 @@ public class VideoController {
 				File newFile = new File(path2save + ioUtils.addMilliSecondsToFilename(name));
 				e.getValue().transferTo(newFile);
 				Video v = videoDAO.findById(id);
+				if(StringUtils.isNotBlank(v.getThumbnail())){
+					File oldFile = new File(v.getThumbnail());
+					files.add(oldFile);
+				}
 				v.setThumbnail(newFile.getAbsolutePath());
 				videoDAO.persist(v);
 				if(StringUtils.isNotBlank(v.getYoutubeId())){
@@ -320,8 +324,8 @@ public class VideoController {
 			websocketEventBus.notifyDeleteVideo(videoTO);
 			return new ResponseEntity<>("{}", HttpStatus.OK);
 		} catch (Exception e) {
-			logger.error("Fehler beim Löschen des Videos", e);
-			ErrorEvent event = new ErrorEvent("Video konnte nicht gelöscht werden", this);
+			logger.error("Fehler beim Lï¿½schen des Videos", e);
+			ErrorEvent event = new ErrorEvent("Video konnte nicht gelï¿½scht werden", this);
 			websocketEventBus.onApplicationEvent(event);
 			return new ResponseEntity<>("{}", HttpStatus.OK);
 		}
