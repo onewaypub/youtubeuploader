@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.gneisenau.youtube.model.Video;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class YouTubeUtils {
 	}
 
 	public String createDescription(Video v) {
+		Validate.notNull(v, "No video given");
 		String desc = "";
 		if (StringUtils.isNotBlank(v.getDescription())) {
 			desc = desc + v.getDescription();

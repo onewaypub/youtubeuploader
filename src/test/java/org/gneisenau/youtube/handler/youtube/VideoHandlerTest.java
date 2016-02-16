@@ -79,6 +79,41 @@ public class VideoHandlerTest {
 		assertEquals("1", id);
 	}
 
+	@Test(expected = NullPointerException.class)
+	public void testUploadPrivacySettingIsNull() throws AuthorizeException, UploadException, IOException {
+		ByteArrayInputStream content = new ByteArrayInputStream("test".getBytes());
+		handler.upload(null, "testTitle", content, "test");
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testUploadTitleIsNull() throws AuthorizeException, UploadException, IOException {
+		ByteArrayInputStream content = new ByteArrayInputStream("test".getBytes());
+		handler.upload(PrivacySetting.Private, null, content, "test");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testUploadTitleIsEmpty() throws AuthorizeException, UploadException, IOException {
+		ByteArrayInputStream content = new ByteArrayInputStream("test".getBytes());
+		handler.upload(PrivacySetting.Private, "", content, "test");
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testUploadContentIsNull() throws AuthorizeException, UploadException, IOException {
+		handler.upload(PrivacySetting.Private, "1", null, "test");
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testUploadUsernameIsNull() throws AuthorizeException, UploadException, IOException {
+		ByteArrayInputStream content = new ByteArrayInputStream("test".getBytes());
+		handler.upload(PrivacySetting.Private, "1", content, null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testUploadUsernameIsEmpty() throws AuthorizeException, UploadException, IOException {
+		ByteArrayInputStream content = new ByteArrayInputStream("test".getBytes());
+		handler.upload(PrivacySetting.Private, "1", content, "");
+	}
+
 	@Test
 	public void testUpdateMetadata() throws IOException, AuthorizeException, UpdateException, NotFoundException {
 		pushVideoListResponse();
@@ -89,6 +124,41 @@ public class VideoHandlerTest {
 		assertEquals("1", id);
 	}
 
+	@Test(expected = NullPointerException.class)
+	public void testUpdateMetadataPrivacySettingIsNull()
+			throws IOException, AuthorizeException, UpdateException, NotFoundException {
+		handler.updateMetadata(null, "1", new ArrayList<String>(), "title", "desc", "channelId", "categoryId",
+				"username", true);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testUpdateMetadataVideoIdIsNull()
+			throws IOException, AuthorizeException, UpdateException, NotFoundException {
+		handler.updateMetadata(PrivacySetting.Private, null, new ArrayList<String>(), "title", "desc", "channelId",
+				"categoryId", "username", true);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testUpdateMetadataVideoIdIsEmpty()
+			throws IOException, AuthorizeException, UpdateException, NotFoundException {
+		handler.updateMetadata(PrivacySetting.Private, "", new ArrayList<String>(), "title", "desc", "channelId",
+				"categoryId", "username", true);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testUpdateMetadataUsernameIsNull()
+			throws IOException, AuthorizeException, UpdateException, NotFoundException {
+		handler.updateMetadata(PrivacySetting.Private, "1", new ArrayList<String>(), "title", "desc", "channelId",
+				"categoryId", null, true);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testUpdateMetadataUsernameIsEmpty()
+			throws IOException, AuthorizeException, UpdateException, NotFoundException {
+		handler.updateMetadata(PrivacySetting.Private, "1", new ArrayList<String>(), "title", "desc", "channelId",
+				"categoryId", "", true);
+	}
+
 	@Test
 	public void testRelease() throws IOException, AuthorizeException, UpdateException, NotFoundException {
 		pushVideoListResponse();
@@ -97,12 +167,69 @@ public class VideoHandlerTest {
 		handler.release("1", PrivacySetting.Public, "username");
 	}
 
+	@Test(expected = NullPointerException.class)
+	public void testReleaseVideoIdIsNull() throws IOException, AuthorizeException, UpdateException, NotFoundException {
+		handler.release(null, PrivacySetting.Public, "username");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testReleaseVideoIdIsEmpty() throws IOException, AuthorizeException, UpdateException, NotFoundException {
+		handler.release("", PrivacySetting.Public, "username");
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testReleaseUsernameIsNull() throws IOException, AuthorizeException, UpdateException, NotFoundException {
+		handler.release("1", PrivacySetting.Public, null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testReleaseUsernameIsEmpty()
+			throws IOException, AuthorizeException, UpdateException, NotFoundException {
+		handler.release("1", PrivacySetting.Public, "");
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testReleasePrivacySettingIsNull()
+			throws IOException, AuthorizeException, UpdateException, NotFoundException {
+		handler.release("1", null, "username");
+	}
+
 	@Test
 	public void testInsertPlaylistItem() throws IOException, AuthorizeException {
 		pushVideoListResponse();
 		pushInsertPlaylistResponse();
 		pushAuthorizationMock();
 		handler.insertPlaylistItem("2", "1", "username");
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testInsertPlaylistItemPlayListIdIsNull() throws IOException, AuthorizeException {
+		handler.insertPlaylistItem(null, "1", "username");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testInsertPlaylistItemPlayListIdIsEmpty() throws IOException, AuthorizeException {
+		handler.insertPlaylistItem("", "1", "username");
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testInsertPlaylistItemVideoIdIsNull() throws IOException, AuthorizeException {
+		handler.insertPlaylistItem("2", null, "username");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testInsertPlaylistItemVideoIdIsEmpty() throws IOException, AuthorizeException {
+		handler.insertPlaylistItem("2", "", "username");
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testInsertPlaylistItemUsernameIsNull() throws IOException, AuthorizeException {
+		handler.insertPlaylistItem("2", "1", null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testInsertPlaylistItemUsernameIsEmpty() throws IOException, AuthorizeException {
+		handler.insertPlaylistItem("2", "1", "");
 	}
 
 	private void pushVideoUpdateMetadataResponse() throws IOException {
@@ -137,6 +264,5 @@ public class VideoHandlerTest {
 		Credential creds = new MockGoogleCredential.Builder().build();
 		when(auth.authorize(anyString(), anyString())).thenReturn(creds);
 	}
-
 
 }

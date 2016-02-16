@@ -67,7 +67,6 @@ import com.google.api.services.youtube.YouTube.Thumbnails.Set;
 @ActiveProfiles("test")
 public class ImageHandlerTest {
 
-
 	@Autowired
 	private ImageHandler handler;
 	@Autowired
@@ -85,12 +84,44 @@ public class ImageHandlerTest {
 	}
 
 	@Test
-	public void testUpload() throws AuthorizeException, UploadException, IOException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+	public void testUpload() throws AuthorizeException, IOException, UploadException {
 		pushAuthorizationMock();
 		pushUploadImageResponse();
 		pushUploadImage2Response();
 		ByteArrayInputStream content = new ByteArrayInputStream("test".getBytes());
 		String imgUrl = handler.upload("2", content, "username", "test".length());
+		assertEquals("http://test.de/test", imgUrl);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testUploadNoVideoId() throws AuthorizeException, IOException, UploadException {
+		ByteArrayInputStream content = new ByteArrayInputStream("test".getBytes());
+		String imgUrl = handler.upload(null, content, "username", "test".length());
+		assertEquals("http://test.de/test", imgUrl);
+	}
+	@Test(expected = IllegalArgumentException.class)
+	public void testUploadEmptyVideoId() throws AuthorizeException, IOException, UploadException {
+		ByteArrayInputStream content = new ByteArrayInputStream("test".getBytes());
+		String imgUrl = handler.upload("", content, "username", "test".length());
+		assertEquals("http://test.de/test", imgUrl);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testUploadNoUserame() throws AuthorizeException, IOException, UploadException {
+		ByteArrayInputStream content = new ByteArrayInputStream("test".getBytes());
+		String imgUrl = handler.upload("1", content, null, "test".length());
+		assertEquals("http://test.de/test", imgUrl);
+	}
+	@Test(expected = IllegalArgumentException.class)
+	public void testUploadEmptyUserame() throws AuthorizeException, IOException, UploadException {
+		ByteArrayInputStream content = new ByteArrayInputStream("test".getBytes());
+		String imgUrl = handler.upload("1", content, "", "test".length());
+		assertEquals("http://test.de/test", imgUrl);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testUploadNoContent() throws AuthorizeException, IOException, UploadException {
+		String imgUrl = handler.upload("1", null, "username", "test".length());
 		assertEquals("http://test.de/test", imgUrl);
 	}
 
@@ -100,6 +131,7 @@ public class ImageHandlerTest {
 		httpTransport.addResponse(HttpMethod.POST, HttpStatusCodes.STATUS_CODE_OK,
 				"https://www.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=2&uploadType=resumable", liststr);
 	}
+
 	private void pushUploadImage2Response() throws IOException {
 		URL list = VideoHandlerTest.class.getResource("/youtubeResponses/thumbnailSetResponse.json");
 		String liststr = FileUtils.readFileToString(new File(list.getPath()));

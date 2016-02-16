@@ -13,9 +13,9 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
+import org.apache.commons.lang3.Validate;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.handler.youtube.util.YoutubeFactory;
-import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,6 @@ import com.google.api.services.youtube.model.PlaylistListResponse;
 @Service
 public class YoutubeHandler {
 
-	@Autowired
-	private UserSettingsRepository settingsDAO;
 	@Autowired
 	private YoutubeFactory youtubefactory;
 	private static final Logger logger = LoggerFactory.getLogger(YoutubeHandler.class);
@@ -49,6 +47,8 @@ public class YoutubeHandler {
 	 * @throws IOException
 	 */
 	public Map<String, String> getPlaylists(String username) {
+		Validate.notEmpty(username,"No username given");
+
 		Map<String, String> playlistMap = new HashMap<String, String>();
 		try {
 			YouTube.Playlists.List searchList = youtubefactory.getYoutube(username).playlists()

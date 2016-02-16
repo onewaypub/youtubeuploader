@@ -70,6 +70,16 @@ public class YoutubeHandlerTest {
 		assertEquals("title", playlist.entrySet().iterator().next().getValue());
 	}
 
+	@Test(expected = NullPointerException.class)
+	public void testGetPlaylistsUsernameIsNull() throws AuthorizeException, IOException {
+		handler.getPlaylists(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testGetPlaylistsUsernameIsEmpty() throws AuthorizeException, IOException {
+		handler.getPlaylists("");
+	}
+
 	@Test
 	public void testGetCategories() {
 		//TODO: Not testing at the moment

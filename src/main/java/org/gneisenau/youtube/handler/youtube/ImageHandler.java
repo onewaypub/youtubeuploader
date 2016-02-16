@@ -18,21 +18,16 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.lang3.Validate;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.handler.video.exceptions.UploadException;
-import org.gneisenau.youtube.handler.youtube.util.Auth;
 import org.gneisenau.youtube.handler.youtube.util.YoutubeFactory;
-import org.gneisenau.youtube.model.Video;
-import org.gneisenau.youtube.model.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.media.MediaHttpUploader;
-import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.InputStreamContent;
-import com.google.api.client.json.JsonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.YouTube.Thumbnails.Set;
 import com.google.api.services.youtube.model.ThumbnailSetResponse;
@@ -48,21 +43,10 @@ import com.google.api.services.youtube.model.ThumbnailSetResponse;
 public class ImageHandler {
 
 	@Autowired
-	private VideoRepository videoDAO;
-	@Autowired
 	private YoutubeFactory youtubefactory;
 	@Value("${youtube.app.name}")
 	private String youtubeAppName;
-	@Autowired
-	private HttpTransport httpTransport; 
-	@Autowired
-	private JsonFactory jsonFactory;
 
-	/**
-	 * Define a global instance of a Youtube object, which will be used to make
-	 * YouTube Data API requests.
-	 */
-	private static YouTube youtube;
 
 	/**
 	 * Define a global variable that specifies the MIME type of the image being
@@ -83,16 +67,17 @@ public class ImageHandler {
 	 */
 	public String upload(String videoId, InputStream imageFile, String username, long length)
 			throws AuthorizeException, UploadException {
+		
+		Validate.notEmpty(videoId,"No videoId given");
+		Validate.notEmpty(videoId,"No videoId given");
+		Validate.notNull(imageFile,"No imageFile given");
+		Validate.notEmpty(username,"No username given");
 
 		YouTube youTube = youtubefactory.getYoutube(username);
 
-		// Create an object that contains the thumbnail image file's
-		// contents.
 		InputStreamContent mediaContent = new InputStreamContent(IMAGE_FILE_FORMAT, new BufferedInputStream(imageFile));
 		mediaContent.setLength(length);
 
-		// Create an API request that specifies that the mediaContent
-		// object is the thumbnail of the specified video.
 		Set thumbnailSet;
 		try {
 			thumbnailSet = youTube.thumbnails().set(videoId, mediaContent);
@@ -100,20 +85,9 @@ public class ImageHandler {
 			throw new UploadException(e);
 		}
 
-		// Set the upload type and add an event listener.
 		MediaHttpUploader uploader = thumbnailSet.getMediaHttpUploader();
-
-		// Indicate whether direct media upload is enabled. A value of
-		// "True" indicates that direct media upload is enabled and that
-		// the entire media content will be uploaded in a single request.
-		// A value of "False," which is the default, indicates that the
-		// request will use the resumable media upload protocol, which
-		// supports the ability to resume an upload operation after a
-		// network interruption or other transmission failure, saving
-		// time and bandwidth in the event of network failures.
 		uploader.setDirectUploadEnabled(false);
 
-		// Upload the image and set it as the specified video's thumbnail.
 		ThumbnailSetResponse setResponse;
 		try {
 			setResponse = thumbnailSet.execute();

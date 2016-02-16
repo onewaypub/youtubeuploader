@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.handler.video.exceptions.NotFoundException;
@@ -54,6 +55,11 @@ public class VideoHandler {
 	public String upload(PrivacySetting privacySetting, String title, InputStream content, String username)
 			throws AuthorizeException, UploadException {
 
+		Validate.notNull(privacySetting, "PrivacySettings not set");
+		Validate.notEmpty(title, "No title given");
+		Validate.notNull(content, "No upload content given");
+		Validate.notEmpty(username, "No username given");
+
 		Video videoObjectDefiningMetadata = new Video();
 
 		setVideoStatus(privacySetting, videoObjectDefiningMetadata);
@@ -73,6 +79,15 @@ public class VideoHandler {
 			String desc, String channelId, String categoryId, String username, boolean ageRestricted)
 					throws AuthorizeException, UpdateException, NotFoundException {
 
+		Validate.notNull(privacySetting, "PrivacySettings not set");
+		Validate.notEmpty(title, "No title given");
+		Validate.notEmpty(youtubeId, "No youtube video id given");
+		Validate.notEmpty(username, "No username given");
+		
+		if(tags == null){
+			tags = new ArrayList<String>();
+		}
+
 		Video video = getVideoFromYoutube(youtubeId, username);
 
 		VideoSnippet videoSnippet = video.getSnippet();
@@ -86,6 +101,10 @@ public class VideoHandler {
 
 	public void release(String youtubeId, PrivacySetting privacySetting, String username)
 			throws AuthorizeException, UpdateException, NotFoundException {
+
+		Validate.notNull(privacySetting, "PrivacySettings not set");
+		Validate.notEmpty(youtubeId, "No youtube video id given");
+		Validate.notEmpty(username, "No username given");
 
 		Video video = getVideoFromYoutube(youtubeId, username);
 
@@ -103,6 +122,10 @@ public class VideoHandler {
 
 	public String insertPlaylistItem(String playlistId, String videoId, String username)
 			throws IOException, AuthorizeException {
+
+		Validate.notEmpty(playlistId, "Playlist id not set");
+		Validate.notEmpty(videoId, "Youtube video Id not set");
+		Validate.notEmpty(username, "No username given");
 
 		ResourceId resourceId = new ResourceId();
 		resourceId.setKind("youtube#video");
