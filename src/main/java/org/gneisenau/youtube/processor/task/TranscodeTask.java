@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@Order(value=1)
-public class TranscodeTask extends AbstractProcessorTask implements VideoTask  {
+@Order(value = 1)
+public class TranscodeTask extends AbstractProcessorTask implements VideoTask {
 
 	@Autowired
 	private FfmpegHandler videoProcessor;
@@ -27,7 +27,7 @@ public class TranscodeTask extends AbstractProcessorTask implements VideoTask  {
 	}
 
 	@Override
-	@Transactional(propagation=Propagation.MANDATORY)
+	@Transactional(propagation = Propagation.MANDATORY)
 	public int process(Video v) {
 		File oldFile = new File(v.getVideo());
 		String baseName = FilenameUtils.getBaseName(v.getVideo());
@@ -42,16 +42,15 @@ public class TranscodeTask extends AbstractProcessorTask implements VideoTask  {
 			v.setVideo(transcodedFile.getAbsolutePath());
 			oldFile.delete();
 		} catch (ExecuteException e) {
-			handleError(v, "Fehler beim Ausführen des Transcodings");
+			handleError(v, "Fehler beim Ausfï¿½hren des Transcodings");
 			transcodedFile.delete();
 			return VideoTask.STOP;
 		} catch (IOException e) {
-			handleError(v, "Fehler beim Zugriff auf die Videodateien während des Transcodings");
+			handleError(v, "Fehler beim Zugriff auf die Videodateien wï¿½hrend des Transcodings");
 			transcodedFile.delete();
 			return VideoTask.STOP;
 		}
 		return VideoTask.CONTINUE;
 	}
-
 
 }

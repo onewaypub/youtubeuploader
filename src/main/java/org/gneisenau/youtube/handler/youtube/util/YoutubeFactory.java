@@ -35,7 +35,7 @@ public class YoutubeFactory {
 
 			YouTube youtube = new YouTube.Builder(Auth.HTTP_TRANSPORT, Auth.JSON_FACTORY, credential)
 					.setApplicationName(Auth.APP_NAME).build();
-			
+
 			youtubeMap.put(username, youtube);
 			return youtube;
 

@@ -41,7 +41,7 @@ public class PublishProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	@Transactional(propagation=Propagation.MANDATORY)
+	@Transactional(propagation = Propagation.MANDATORY)
 	protected void runChain(Video v) {
 		for (PublishTask chainItem : releaseProcessingChain) {
 			int process = chainItem.process(v);

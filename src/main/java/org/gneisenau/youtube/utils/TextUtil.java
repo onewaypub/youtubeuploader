@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TextUtil {
-	
+
 	@Autowired
 	private DozerBeanMapper mapper;
-	
-	public String replacePlaceholder(String text, Video v){
-		//text = text.replaceAll("%%CATEGORY%%", v.getCategory());
+
+	public String replacePlaceholder(String text, Video v) {
+		// text = text.replaceAll("%%CATEGORY%%", v.getCategory());
 		text = text.replaceAll("%%DESCRIPTION%%", v.getDescription());
 		text = text.replaceAll("%%DEVELOPER%%", v.getDeveloper());
 		text = text.replaceAll("%%GENRE%%", v.getGenre());
@@ -26,7 +26,7 @@ public class TextUtil {
 		return text;
 	}
 
-	public String replacePlaceholder(String text, VideoTO vDTO){
+	public String replacePlaceholder(String text, VideoTO vDTO) {
 		Video v = mapper.map(vDTO, Video.class);
 		return replacePlaceholder(text, v);
 	}

@@ -51,7 +51,8 @@ public class VideoHandler {
 
 	private static final String VIDEO_FILE_FORMAT = "video/*";
 
-	public String upload(PrivacySetting privacySetting, String title, InputStream content, String username) throws AuthorizeException, UploadException {
+	public String upload(PrivacySetting privacySetting, String title, InputStream content, String username)
+			throws AuthorizeException, UploadException {
 
 		Video videoObjectDefiningMetadata = new Video();
 
@@ -68,9 +69,9 @@ public class VideoHandler {
 		return returnedVideo.getId();
 	}
 
-	public String updateMetadata(PrivacySetting privacySetting, String youtubeId, List<String> tags,
-			String title, String desc, String channelId, String categoryId, String username,
-			boolean ageRestricted) throws AuthorizeException, UpdateException, NotFoundException {
+	public String updateMetadata(PrivacySetting privacySetting, String youtubeId, List<String> tags, String title,
+			String desc, String channelId, String categoryId, String username, boolean ageRestricted)
+					throws AuthorizeException, UpdateException, NotFoundException {
 
 		Video video = getVideoFromYoutube(youtubeId, username);
 
@@ -100,31 +101,33 @@ public class VideoHandler {
 
 	}
 
-	public String insertPlaylistItem(String playlistId, String videoId, String username) throws IOException, AuthorizeException {
-	
+	public String insertPlaylistItem(String playlistId, String videoId, String username)
+			throws IOException, AuthorizeException {
+
 		ResourceId resourceId = new ResourceId();
 		resourceId.setKind("youtube#video");
 		resourceId.setVideoId(videoId);
-	
+
 		PlaylistItemSnippet playlistItemSnippet = new PlaylistItemSnippet();
 		playlistItemSnippet.setPlaylistId(playlistId);
 		playlistItemSnippet.setResourceId(resourceId);
-	
+
 		PlaylistItem playlistItem = new PlaylistItem();
 		playlistItem.setSnippet(playlistItemSnippet);
-	
+
 		YouTube.PlaylistItems.Insert playlistItemsInsertCommand = youtubefactory.getYoutube(username).playlistItems()
 				.insert("snippet,contentDetails", playlistItem);
 		PlaylistItem returnedPlaylistItem = playlistItemsInsertCommand.execute();
-	
+
 		return returnedPlaylistItem.getId();
 	}
 
-	private Video insert(Video videoObjectDefiningMetadata, InputStreamContent mediaContent, String username) throws UploadException, AuthorizeException {
+	private Video insert(Video videoObjectDefiningMetadata, InputStreamContent mediaContent, String username)
+			throws UploadException, AuthorizeException {
 		YouTube.Videos.Insert videoInsert;
 		try {
-			videoInsert = youtubefactory.getYoutube(username).videos().insert("snippet,statistics,status", videoObjectDefiningMetadata,
-					mediaContent);
+			videoInsert = youtubefactory.getYoutube(username).videos().insert("snippet,statistics,status",
+					videoObjectDefiningMetadata, mediaContent);
 		} catch (IOException e) {
 			throw new UploadException(e);
 		}
@@ -161,14 +164,14 @@ public class VideoHandler {
 		desc = StringUtils.stripToNull(desc);
 		channelId = StringUtils.stripToNull(channelId);
 		categoryId = StringUtils.stripToNull(categoryId);
-			
+
 		snippet.setTitle(title);
 		snippet.setDescription(desc);
 		snippet.setChannelId(channelId);
 		snippet.setTags(tags);
 		if (StringUtils.isNotBlank(categoryId) && categoryId != "-1") {
 			snippet.setCategoryId(categoryId);
-		} 
+		}
 	}
 
 	private void setVideoStatus(PrivacySetting privacySetting, Video video) {

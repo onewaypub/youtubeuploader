@@ -21,5 +21,4 @@ public class EventTO {
 		return typ;
 	}
 
-
 }

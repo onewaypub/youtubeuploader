@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.dozer.DozerBeanMapper;
 import org.gneisenau.youtube.events.ErrorEvent;
 import org.gneisenau.youtube.events.InfoEvent;
 import org.gneisenau.youtube.events.VideoUpdateEvent;
@@ -192,17 +191,18 @@ public class VideoController {
 				File newFile = new File(path2save + ioUtils.addMilliSecondsToFilename(name));
 				e.getValue().transferTo(newFile);
 				Video v = videoDAO.findById(id);
-				if(StringUtils.isNotBlank(v.getThumbnail())){
+				if (StringUtils.isNotBlank(v.getThumbnail())) {
 					File oldFile = new File(v.getThumbnail());
 					files.add(oldFile);
 				}
 				v.setThumbnail(newFile.getAbsolutePath());
 				videoDAO.persist(v);
-				if(StringUtils.isNotBlank(v.getYoutubeId())){
-					imageHandler.upload(v.getId(), v.getYoutubeId(), new FileInputStream(newFile), secUtil.getPrincipal(), newFile.length());
+				if (StringUtils.isNotBlank(v.getYoutubeId())) {
+					imageHandler.upload(v.getId(), v.getYoutubeId(), new FileInputStream(newFile),
+							secUtil.getPrincipal(), newFile.length());
 				}
 			}
-		} catch (IOException | AuthorizeException |UploadException e) {
+		} catch (IOException | AuthorizeException | UploadException e) {
 			// Cleanup on exception
 			for (File f : files) {
 				if (f.exists()) {
@@ -212,7 +212,7 @@ public class VideoController {
 			logger.error("Fehler beim Hochladen der Thumbnails", e);
 			ErrorEvent event = new ErrorEvent("Fehler beim Hochladen des Thumbnails", this);
 			websocketEventBus.onApplicationEvent(event);
-		} 
+		}
 		return new ResponseEntity<>("{}", HttpStatus.OK);
 	}
 
@@ -266,7 +266,8 @@ public class VideoController {
 			return new ResponseEntity<>("{}", HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("Fehler beim Akutalisieren des Videos", e);
-			ErrorEvent event = new ErrorEvent("Metadaten des Videos konnten nicht akutalisiert werden: " + e.getMessage(), this);
+			ErrorEvent event = new ErrorEvent(
+					"Metadaten des Videos konnten nicht akutalisiert werden: " + e.getMessage(), this);
 			websocketEventBus.onApplicationEvent(event);
 			return new ResponseEntity<>("{}", HttpStatus.OK);
 		}

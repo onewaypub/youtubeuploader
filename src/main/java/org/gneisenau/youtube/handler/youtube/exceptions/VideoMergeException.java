@@ -2,7 +2,7 @@ package org.gneisenau.youtube.handler.youtube.exceptions;
 
 import java.io.IOException;
 
-public class VideoMergeException extends Exception{
+public class VideoMergeException extends Exception {
 
 	public VideoMergeException(IOException e) {
 		super(e);

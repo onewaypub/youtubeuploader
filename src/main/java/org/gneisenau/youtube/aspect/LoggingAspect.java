@@ -27,7 +27,7 @@ public class LoggingAspect {
 		Logger localLog = LoggerFactory.getLogger(joinPoint.getClass());
 		if (localLog.isTraceEnabled()) {
 			Object[] args = joinPoint.getArgs();
-			if (args !=  null && args.length > 0) {
+			if (args != null && args.length > 0) {
 				localLog.trace("", args);
 			}
 		}

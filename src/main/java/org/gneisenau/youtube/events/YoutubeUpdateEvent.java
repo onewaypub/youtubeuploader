@@ -21,6 +21,4 @@ public class YoutubeUpdateEvent extends ApplicationEvent {
 		return o;
 	}
 
-
-
 }

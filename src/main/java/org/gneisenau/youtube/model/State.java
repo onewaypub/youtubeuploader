@@ -6,6 +6,7 @@ public enum State {
 		public State nextState() {
 			return State.OnProcessing;
 		}
+
 		public State errorState() {
 			return State.Error;
 		}
@@ -18,6 +19,7 @@ public enum State {
 		public State nextState() {
 			return State.WaitForUpload;
 		}
+
 		public State errorState() {
 			return State.Error;
 		}
@@ -30,6 +32,7 @@ public enum State {
 		public State nextState() {
 			return State.OnUpload;
 		}
+
 		public State errorState() {
 			return State.Error;
 		}
@@ -42,6 +45,7 @@ public enum State {
 		public State nextState() {
 			return State.WaitForListing;
 		}
+
 		public State errorState() {
 			return State.Error;
 		}
@@ -54,6 +58,7 @@ public enum State {
 		public State nextState() {
 			return State.Done;
 		}
+
 		public State errorState() {
 			return State.Error;
 		}
@@ -66,30 +71,33 @@ public enum State {
 		public State nextState() {
 			return State.OnListing;
 		}
+
 		public State errorState() {
 			return State.Error;
 		}
 
 		public String getDisplayName() {
-			return "Warte auf Veröffentlichung";
+			return "Warte auf Verï¿½ffentlichung";
 		}
 	},
 	Done {
 		public State nextState() {
 			return State.OnProcessing;
 		}
+
 		public State errorState() {
 			return State.Error;
 		}
 
 		public String getDisplayName() {
-			return "Veröffentlicht";
+			return "Verï¿½ffentlicht";
 		}
 	},
 	Error {
 		public State nextState() {
 			return State.Error;
 		}
+
 		public State errorState() {
 			return State.Error;
 		}
@@ -100,23 +108,25 @@ public enum State {
 	};
 
 	public abstract State nextState();
+
 	public abstract State errorState();
+
 	public abstract String getDisplayName();
-	
-	public static final State getInitialState(){
+
+	public static final State getInitialState() {
 		return State.WaitForProcessing;
 	}
-	
-    public static State fromString(String value) {
-        for (State state : values()) {
-            if (state.name().equalsIgnoreCase(value)) {
-                return state;
-            }
-            if (state.getDisplayName().equalsIgnoreCase(value)) {
-                return state;
-            }
-        }
 
-        return Error;
-    }
+	public static State fromString(String value) {
+		for (State state : values()) {
+			if (state.name().equalsIgnoreCase(value)) {
+				return state;
+			}
+			if (state.getDisplayName().equalsIgnoreCase(value)) {
+				return state;
+			}
+		}
+
+		return Error;
+	}
 }

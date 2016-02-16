@@ -20,5 +20,4 @@ public class VideoAddEvent extends ApplicationEvent {
 		return videoId;
 	}
 
-
 }

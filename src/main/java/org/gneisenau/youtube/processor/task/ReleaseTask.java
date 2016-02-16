@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Order(value = 2)
-public class ReleaseTask extends AbstractProcessorTask  implements PublishTask{
+public class ReleaseTask extends AbstractProcessorTask implements PublishTask {
 
 	@Autowired
 	protected VideoHandler vidUploader;
@@ -31,29 +31,29 @@ public class ReleaseTask extends AbstractProcessorTask  implements PublishTask{
 	}
 
 	@Override
-	@Transactional(propagation=Propagation.MANDATORY)
+	@Transactional(propagation = Propagation.MANDATORY)
 	public int process(Video v) {
 		if (StringUtils.isBlank(v.getYoutubeId()) || v.getReleaseDate() == null) {
-			return CONTINUE;
+			return PublishTask.CONTINUE;
 		}
 		List<String> tags = new ArrayList<String>();
 		CollectionUtils.addAll(tags, v.getTags().split(","));
 		try {
 			vidUploader.release(v.getYoutubeId(), PrivacySetting.Public, v.getUsername());
 		} catch (NotFoundException e) {
-			handleError(v, "Kann Video nicht der Playlist hinzufügen", e);
+			handleError(v, "Kann Video nicht der Playlist hinzufï¿½gen", e);
 			return VideoTask.STOP;
 		} catch (AuthorizeException e) {
-			handleError(v, "Kann Video nicht der Playlist hinzufügen", e);
+			handleError(v, "Kann Video nicht der Playlist hinzufï¿½gen", e);
 			return VideoTask.STOP;
 		} catch (UpdateException e) {
-			handleError(v, "Kann Video nicht der Playlist hinzufügen", e);
+			handleError(v, "Kann Video nicht der Playlist hinzufï¿½gen", e);
 			return VideoTask.STOP;
 		}
 		if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyReleaseState()) {
 			mailService.sendStatusMail(v.getTitle(), v.getState(), v.getUsername());
 		}
-		return VideoTask.CONTINUE;
+		return PublishTask.CONTINUE;
 	}
 
 }

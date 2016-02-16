@@ -33,7 +33,7 @@ public class VideoUploadTask extends AbstractProcessorTask implements YoutubeTas
 	}
 
 	@Override
-	@Transactional(propagation=Propagation.MANDATORY)
+	@Transactional(propagation = Propagation.MANDATORY)
 	public int process(Video v) {
 		String mail = userSettingsDAO.findByUserName(v.getUsername()).getMailTo();
 		if (mail != null && mail.trim().length() == 0) {

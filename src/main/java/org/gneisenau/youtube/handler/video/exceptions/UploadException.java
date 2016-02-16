@@ -2,7 +2,7 @@ package org.gneisenau.youtube.handler.video.exceptions;
 
 import java.io.IOException;
 
-public class UploadException extends Exception{
+public class UploadException extends Exception {
 
 	/**
 	 * 

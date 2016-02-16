@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -17,14 +16,11 @@ import javax.json.JsonReader;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.handler.youtube.util.YoutubeFactory;
 import org.gneisenau.youtube.model.UserSettingsRepository;
-import org.gneisenau.youtube.model.Video;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.Playlist;
 import com.google.api.services.youtube.model.PlaylistListResponse;
@@ -42,7 +38,7 @@ public class YoutubeHandler {
 
 	private Map<String, String> categories = new HashMap<String, String>();
 	private long lastUpdate = 0;
-	private long nextUpdateDelta = 1800000;//every 30 min
+	private long nextUpdateDelta = 1800000;// every 30 min
 
 	/**
 	 * Create a playlist and add it to the authorized account.
@@ -59,7 +55,8 @@ public class YoutubeHandler {
 			if (mailTo == null || mailTo.trim().length() == 0) {
 				return new HashMap<String, String>();
 			}
-			YouTube.Playlists.List searchList = youtubefactory.getYoutube(username).playlists().list("id,snippet,contentDetails");
+			YouTube.Playlists.List searchList = youtubefactory.getYoutube(username).playlists()
+					.list("id,snippet,contentDetails");
 			searchList.setFields(
 					"etag,eventId,items(contentDetails,etag,id,kind,player,snippet,status),kind,nextPageToken,pageInfo,prevPageToken,tokenPagination");
 			searchList.setMine(true);
@@ -84,7 +81,7 @@ public class YoutubeHandler {
 	}
 
 	public Map<String, String> getCategories() {
-		if(lastUpdate == 0 || System.currentTimeMillis() - lastUpdate > nextUpdateDelta){
+		if (lastUpdate == 0 || System.currentTimeMillis() - lastUpdate > nextUpdateDelta) {
 			categories.clear();
 		}
 		if (categories.size() == 0) {
@@ -107,7 +104,5 @@ public class YoutubeHandler {
 		}
 		return categories;
 	}
-	
 
-	
 }

@@ -2,7 +2,7 @@ package org.gneisenau.youtube.to;
 
 import org.gneisenau.youtube.events.StatusUpdateEvent;
 
-public class StatusEventTO extends EventTO{
+public class StatusEventTO extends EventTO {
 	private String status;
 	private int percent;
 

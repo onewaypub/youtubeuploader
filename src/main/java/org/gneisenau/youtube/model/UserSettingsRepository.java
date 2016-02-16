@@ -31,19 +31,19 @@ public class UserSettingsRepository {
 		UserSettings v = findById(id);
 		em.remove(v);
 	}
-	
-	public UserSettings findById(Long id){
+
+	public UserSettings findById(Long id) {
 		UserSettings v = em.find(UserSettings.class, id);
 		return v;
 	}
 
-	public UserSettings findByUserName(String name){
+	public UserSettings findByUserName(String name) {
 		Query query = em.createQuery("from UserSettings where username = :username");
 		query.setParameter("username", name);
 		Object singleResult;
-		try{
+		try {
 			singleResult = query.getSingleResult();
-		} catch (NoResultException e){
+		} catch (NoResultException e) {
 			UserSettings settings = new UserSettings();
 			settings.setUsername(name);
 			this.persist(settings);
@@ -52,17 +52,16 @@ public class UserSettingsRepository {
 		return (UserSettings) singleResult;
 	}
 
-	public UserSettings findByLoggedInUser(){
+	public UserSettings findByLoggedInUser() {
 		return findByUserName(secUtil.getPrincipal());
 	}
-	
 
 	public void persist(UserSettings video) {
 		em.persist(video);
 	}
-	
-	public void flush(){
+
+	public void flush() {
 		em.flush();
 	}
-	
+
 }

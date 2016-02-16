@@ -88,8 +88,7 @@ public class Auth {
 		}
 		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, Auth.JSON_FACTORY,
 				clientSecrets, Auth.SCOPES).setAccessType(ACCESS_TYPE_OFFLINE).setApprovalPrompt(APPROVAL_PROMPT_FORCE)
-						.setCredentialDataStore(datastore)
-						.build();
+						.setCredentialDataStore(datastore).build();
 		return flow;
 	}
 

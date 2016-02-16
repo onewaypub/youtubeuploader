@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 //@Component
-public class CleanUpTask extends AbstractProcessorTask implements YoutubeTask{
+public class CleanUpTask extends AbstractProcessorTask implements YoutubeTask {
 
 	@Autowired
 	public CleanUpTask(ApplicationEventPublisher publisher) {
@@ -15,10 +15,9 @@ public class CleanUpTask extends AbstractProcessorTask implements YoutubeTask{
 	}
 
 	@Override
-	@Transactional(propagation=Propagation.MANDATORY)
-	public int process(Video v) {		
+	@Transactional(propagation = Propagation.MANDATORY)
+	public int process(Video v) {
 		return VideoTask.CONTINUE;
 	}
-
 
 }

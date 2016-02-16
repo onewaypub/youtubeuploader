@@ -25,5 +25,4 @@ public class ErrorEvent extends ApplicationEvent {
 		return text;
 	}
 
-
 }

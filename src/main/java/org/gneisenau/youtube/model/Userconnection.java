@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.validation.constraints.NotNull;
 
-@Entity(name="userconnection")
+@Entity(name = "userconnection")
 @IdClass(UserConnectionId.class)
 public class Userconnection {
 	@Id

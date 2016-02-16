@@ -18,7 +18,7 @@ public class SecurityController {
 
 	@Autowired
 	private SecurityUtil secUtil;
-	
+
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -27,9 +27,9 @@ public class SecurityController {
 		}
 		return "redirect:/list";
 	}
-	
+
 	@RequestMapping("/login")
-	public String loginPage(HttpServletRequest request, HttpServletResponse response){
+	public String loginPage(HttpServletRequest request, HttpServletResponse response) {
 		return "/login";
 	}
 

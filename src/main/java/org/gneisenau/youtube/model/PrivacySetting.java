@@ -2,23 +2,23 @@ package org.gneisenau.youtube.model;
 
 public enum PrivacySetting {
 	Private, Public, Unlisted;
-	
-	public static PrivacySetting getState(String state){
-		if("private".equalsIgnoreCase(state)){
+
+	public static PrivacySetting getState(String state) {
+		if ("private".equalsIgnoreCase(state)) {
 			return PrivacySetting.Private;
-		} else if("oeffentlich".equalsIgnoreCase(state)) {
+		} else if ("oeffentlich".equalsIgnoreCase(state)) {
 			return PrivacySetting.Public;
 		} else {
-			//Default
+			// Default
 			return PrivacySetting.Unlisted;
 		}
 	}
-	
+
 	public String getDisplayName() {
 		if (this.equals(PrivacySetting.Private)) {
 			return "Privat";
 		} else if (this.equals(PrivacySetting.Public)) {
-			return "Öffentlich";
+			return "ï¿½ffentlich";
 		} else if (this.equals(PrivacySetting.Unlisted)) {
 			return "Nicht gelistet";
 		}

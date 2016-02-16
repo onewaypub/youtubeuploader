@@ -47,7 +47,8 @@ public class IOService {
 		return executeCommandLineWithReturn(line, getTemporaryProcessingFolder());
 	}
 
-	public String executeCommandLineWithReturn(String line, String processingFolder) throws ExecuteException, IOException {
+	public String executeCommandLineWithReturn(String line, String processingFolder)
+			throws ExecuteException, IOException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		executeCmdLine(line, outputStream, processingFolder);
 		String output = outputStream.toString();
@@ -70,7 +71,8 @@ public class IOService {
 		return output;
 	}
 
-	private void executeCmdLine(String line, OutputStream outputStream, String processionFolder) throws ExecuteException, IOException {
+	private void executeCmdLine(String line, OutputStream outputStream, String processionFolder)
+			throws ExecuteException, IOException {
 		CommandLine cmdLine = CommandLine.parse(line);
 		DefaultExecutor executor = new DefaultExecutor();
 		executor.setExitValue(0);

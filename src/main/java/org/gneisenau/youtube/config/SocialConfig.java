@@ -51,27 +51,27 @@ public class SocialConfig implements SocialConfigurer {
 	public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
 		return new JdbcUsersConnectionRepository(dataSource, connectionFactoryLocator, Encryptors.noOpText());
 	}
-	
+
 	@Bean
-	@Scope(value="request", proxyMode=ScopedProxyMode.INTERFACES)
+	@Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
 	public Facebook facebook(ConnectionRepository repository) {
 		Connection<Facebook> connection = repository.findPrimaryConnection(Facebook.class);
 		return connection != null ? connection.getApi() : null;
 	}
-	
+
 	@Bean
-	@Scope(value="request", proxyMode=ScopedProxyMode.INTERFACES)
+	@Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
 	public Twitter twitter(ConnectionRepository repository) {
 		Connection<Twitter> connection = repository.findPrimaryConnection(Twitter.class);
 		return connection != null ? connection.getApi() : null;
 	}
-	
+
 	@Bean
-	@Scope(value="request", proxyMode=ScopedProxyMode.INTERFACES)
+	@Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
 	public Google google(ConnectionRepository repository) {
 		Connection<Google> connection = repository.findPrimaryConnection(Google.class);
 		return connection != null ? connection.getApi() : null;
-	}	
+	}
 
 	@Bean
 	public ConnectController connectController(ConnectionFactoryLocator connectionFactoryLocator,

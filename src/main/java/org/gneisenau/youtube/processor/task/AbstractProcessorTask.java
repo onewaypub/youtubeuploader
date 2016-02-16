@@ -28,7 +28,7 @@ public abstract class AbstractProcessorTask {
 
 	@Autowired
 	protected MailSendService mailService;
-	
+
 	private final ApplicationEventPublisher publisher;
 
 	@Autowired
@@ -36,10 +36,9 @@ public abstract class AbstractProcessorTask {
 		this.publisher = publisher;
 	}
 
-	public void publishEvent(StatusUpdateEvent event){
+	public void publishEvent(StatusUpdateEvent event) {
 		this.publisher.publishEvent(event);
 	}
-
 
 	protected void handleError(Video v, String message) {
 		List<String> errors = v.getErrors();

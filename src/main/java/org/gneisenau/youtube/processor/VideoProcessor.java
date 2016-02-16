@@ -17,7 +17,7 @@ import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.stereotype.Component;
 
 @Component
-public class VideoProcessor extends AbstractProcessor{
+public class VideoProcessor extends AbstractProcessor {
 
 	@Autowired
 	private List<VideoTask> videoProcessingChain;
@@ -41,10 +41,10 @@ public class VideoProcessor extends AbstractProcessor{
 	@Override
 	protected void runChain(Video v) {
 		for (VideoTask chainItem : videoProcessingChain) {
-			int process = chainItem.process(v);		
+			int process = chainItem.process(v);
 			videoDAO.persist(v);
 			videoDAO.flush();
-			if(VideoTask.STOP == process){
+			if (VideoTask.STOP == process) {
 				break;
 			}
 		}

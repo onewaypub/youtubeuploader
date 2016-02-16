@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public abstract class AbstractProcessor {
 
-
 	@Autowired
 	private VideoRepository videoDAO;
 	@Autowired
@@ -33,16 +32,16 @@ public abstract class AbstractProcessor {
 	public void publishEvent(StatusUpdateEvent event) {
 		this.publisher.publishEvent(event);
 	}
-	
-	@Transactional(propagation=Propagation.REQUIRES_NEW, isolation=Isolation.READ_COMMITTED, timeout=10800)
-	public void execute(){
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED, timeout = 10800)
+	public void execute() {
 		List<Video> videos = getProcessingVideoList();
 		for (Video videoTemp : videos) {
 			execute(videoTemp);
 		}
 	}
-	
-	private void execute(Video videoTemp){
+
+	private void execute(Video videoTemp) {
 		Video v = videoDAO.findById(videoTemp.getId());
 
 		v.setState(initialProcessState());
@@ -65,8 +64,11 @@ public abstract class AbstractProcessor {
 	}
 
 	protected abstract void runChain(Video v);
+
 	protected abstract void notifyProcessing(Video v);
+
 	protected abstract State initialProcessState();
+
 	protected abstract List<Video> getProcessingVideoList();
 
 }

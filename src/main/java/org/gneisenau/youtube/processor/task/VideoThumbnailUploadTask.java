@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Order(value = 2)
-public class VideoThumbnailUploadTask extends AbstractProcessorTask implements YoutubeTask{
+public class VideoThumbnailUploadTask extends AbstractProcessorTask implements YoutubeTask {
 
 	@Autowired
 	private ImageHandler imgUploader;
@@ -33,7 +33,7 @@ public class VideoThumbnailUploadTask extends AbstractProcessorTask implements Y
 	}
 
 	@Override
-	@Transactional(propagation=Propagation.MANDATORY)
+	@Transactional(propagation = Propagation.MANDATORY)
 	public int process(Video v) {
 		if (StringUtils.isBlank(v.getThumbnail()) || StringUtils.isBlank(v.getYoutubeId())) {
 			return CONTINUE;

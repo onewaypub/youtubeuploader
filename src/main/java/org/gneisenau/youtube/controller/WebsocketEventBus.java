@@ -36,28 +36,32 @@ public class WebsocketEventBus {
 		EventTO deleteVideoTO = new EventTO(v, new VideoDeleteEvent(v.getId(), this));
 		template.convertAndSend("/topic/event", deleteVideoTO);
 	}
-	
+
 	@EventListener
 	public void onApplicationEvent(StatusUpdateEvent event) {
 		Video video = videoDAO.findById(event.getId());
 		StatusEventTO statusTO = new StatusEventTO(video, event);
 		template.convertAndSend("/topic/event", statusTO);
 	}
+
 	@EventListener
 	public void onApplicationEvent(ErrorEvent event) {
 		EventTO statusTO = new EventTO(event.getText(), event);
 		template.convertAndSend("/topic/event", statusTO);
 	}
+
 	@EventListener
 	public void onApplicationEvent(WarningEvent event) {
 		EventTO statusTO = new EventTO(event.getText(), event);
 		template.convertAndSend("/topic/event", statusTO);
 	}
+
 	@EventListener
 	public void onApplicationEvent(InfoEvent event) {
 		EventTO statusTO = new EventTO(event.getText(), event);
 		template.convertAndSend("/topic/event", statusTO);
 	}
+
 	@EventListener
 	public void onApplicationEvent(VideoUpdateEvent event) {
 		EventTO statusTO = new EventTO(event.getO(), event);

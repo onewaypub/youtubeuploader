@@ -36,12 +36,12 @@ public class UserconnectionRepository {
 
 		return list;
 	}
-	
+
 	public void persist(Userconnection c) {
 		em.persist(c);
 	}
-	
-	public void flush(){
+
+	public void flush() {
 		em.flush();
 	}
 
@@ -49,6 +49,5 @@ public class UserconnectionRepository {
 		Userconnection uc = getUserconnectionForProviderId(userId, providerId);
 		em.remove(uc);
 	}
-	
 
 }

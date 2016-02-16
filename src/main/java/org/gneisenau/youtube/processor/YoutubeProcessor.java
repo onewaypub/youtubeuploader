@@ -41,7 +41,7 @@ public class YoutubeProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	@Transactional(propagation=Propagation.MANDATORY)
+	@Transactional(propagation = Propagation.MANDATORY)
 	protected void runChain(Video v) {
 		for (YoutubeTask chainItem : youtubeProcessingChain) {
 			int process = chainItem.process(v);

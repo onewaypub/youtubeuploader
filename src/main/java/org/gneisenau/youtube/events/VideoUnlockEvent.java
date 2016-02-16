@@ -20,5 +20,4 @@ public class VideoUnlockEvent extends ApplicationEvent {
 		return videoId;
 	}
 
-
 }

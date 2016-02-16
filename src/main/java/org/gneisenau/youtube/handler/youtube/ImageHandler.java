@@ -115,7 +115,6 @@ public class ImageHandler {
 		// time and bandwidth in the event of network failures.
 		uploader.setDirectUploadEnabled(false);
 
-
 		// Upload the image and set it as the specified video's thumbnail.
 		ThumbnailSetResponse setResponse;
 		try {

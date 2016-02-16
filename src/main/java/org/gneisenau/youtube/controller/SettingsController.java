@@ -45,14 +45,15 @@ public class SettingsController {
 
 	@RequestMapping(value = "/settings", method = RequestMethod.GET)
 	public ModelAndView init(HttpServletRequest request, HttpServletResponse response) {
-		
+
 		UserSettingsTO settings = dozerBeanMapper.map(userSettingsDAO.findByLoggedInUser(), UserSettingsTO.class);
 
 		ModelAndView model = new ModelAndView("settings");
 		model.addObject("usersettings", settings);
 		model.addObject("connectedToFacebook", false);
 		try {
-			model.addObject("connectedToYoutube", authService.authorize("youtube", secUtil.getPrincipal()) == null ? false : true);
+			model.addObject("connectedToYoutube",
+					authService.authorize("youtube", secUtil.getPrincipal()) == null ? false : true);
 		} catch (AuthorizeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

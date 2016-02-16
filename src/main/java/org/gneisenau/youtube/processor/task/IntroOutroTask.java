@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@Order(value=2)
+@Order(value = 2)
 public class IntroOutroTask extends AbstractProcessorTask implements VideoTask {
 
 	@Autowired
@@ -34,7 +34,7 @@ public class IntroOutroTask extends AbstractProcessorTask implements VideoTask {
 	}
 
 	@Override
-	@Transactional(propagation=Propagation.MANDATORY)
+	@Transactional(propagation = Propagation.MANDATORY)
 	public int process(Video v) {
 		// Merge Videos
 		File oldFile = new File(v.getVideo());
@@ -44,7 +44,7 @@ public class IntroOutroTask extends AbstractProcessorTask implements VideoTask {
 		String extension = FilenameUtils.getExtension(v.getVideo());
 		File newFile = new File(ioService.getTemporaryFolder() + File.separator + baseName + "_merged." + extension);
 		try {
-			videoProcessor.merge(newFile.getAbsolutePath(), intro, new File(v.getVideo()) , outro);
+			videoProcessor.merge(newFile.getAbsolutePath(), intro, new File(v.getVideo()), outro);
 		} catch (IOException e) {
 			handleError(v, "Fehler beim Zugriff auf die zusammenzuf�hrenden Videodatei w�hrend des Merges");
 			return VideoTask.STOP;

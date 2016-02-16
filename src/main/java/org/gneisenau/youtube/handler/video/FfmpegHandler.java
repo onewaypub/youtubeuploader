@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.exec.ExecuteException;
-import org.apache.commons.io.FilenameUtils;
 import org.gneisenau.youtube.events.StatusUpdateEvent;
 import org.gneisenau.youtube.handler.youtube.exceptions.VideoMergeException;
 import org.gneisenau.youtube.handler.youtube.exceptions.VideoTranscodeException;
@@ -35,7 +34,7 @@ public class FfmpegHandler {
 	}
 
 	public String transcode(File inputFile, File outputFile, long id) throws ExecuteException, IOException {
-		String line = ioService.findFFMPEG()+ " -i " + inputFile.getAbsolutePath()
+		String line = ioService.findFFMPEG() + " -i " + inputFile.getAbsolutePath()
 				+ " -codec:v libx264 -bf 2 -flags +cgop -pix_fmt yuv420p -codec:a aac -strict -2 -b:a 384k -r:a 48000 -movflags faststart "
 				+ outputFile.getAbsolutePath();
 		String newFile = outputFile.getAbsolutePath();
@@ -45,14 +44,14 @@ public class FfmpegHandler {
 			stream = new ProgressAwareFFmpegOutputfilterStream(publisher, id);
 			output = ioService.executeCommandLineWithReturn(line, stream, ioService.getTemporaryProcessingFolder());
 			boolean delete = inputFile.delete();
-			logger.debug("Delete old file " + inputFile.getAbsolutePath() +", State: " + delete);			
+			logger.debug("Delete old file " + inputFile.getAbsolutePath() + ", State: " + delete);
 		} catch (IOException e) {
 			logger.warn("Error on exit ffmpeg with errorcode: " + output, e);
 			boolean delete = outputFile.delete();
-			logger.debug("Delete transcoded file " + outputFile.getAbsolutePath() +", State: " + delete);			
+			logger.debug("Delete transcoded file " + outputFile.getAbsolutePath() + ", State: " + delete);
 			return inputFile.getPath();
-		} finally{
-			stream.close();			
+		} finally {
+			stream.close();
 		}
 		return newFile;
 	}
@@ -66,18 +65,18 @@ public class FfmpegHandler {
 			String concatList = "";
 			boolean first = true;
 			List<File> files = new ArrayList<File>();
-			if(intro != null){
+			if (intro != null) {
 				files.add(intro);
 			}
-			if(main != null){
+			if (main != null) {
 				files.add(main);
 			}
-			if(outro != null){
+			if (outro != null) {
 				files.add(outro);
 			}
 			for (File f : files) {
 				String filename = "intermediate" + counter + ".ts";
-				streamFiles.add(new File(ioService.getTemporaryProcessingFolder() + File.separator +  filename));
+				streamFiles.add(new File(ioService.getTemporaryProcessingFolder() + File.separator + filename));
 				counter++;
 				concatList = concatList + (first ? "" : "|") + filename;
 				first = false;
@@ -95,7 +94,7 @@ public class FfmpegHandler {
 			try {
 				ioService.executeCommandLineWithReturn(line, ioService.getTemporaryProcessingFolder());
 				boolean deleted = main.delete();
-				logger.debug("Delete main video file " + main.getAbsolutePath() +", State: " + deleted);			
+				logger.debug("Delete main video file " + main.getAbsolutePath() + ", State: " + deleted);
 			} catch (IOException e) {
 				logger.warn("Error on exit ffmpeg with errorcode: " + output, e);
 				throw new VideoMergeException(e);
@@ -103,7 +102,7 @@ public class FfmpegHandler {
 		} finally {
 			for (File f : streamFiles) {
 				boolean deleted = f.delete();
-				logger.debug("Delete intermediate file " + f.getAbsolutePath() +", State: " + deleted);			
+				logger.debug("Delete intermediate file " + f.getAbsolutePath() + ", State: " + deleted);
 			}
 		}
 	}

@@ -9,11 +9,11 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 @Configuration
 @EnableAsync
 @EnableScheduling
-public class SchedulerConfig implements SchedulingConfigurer{
+public class SchedulerConfig implements SchedulingConfigurer {
 
 	@Override
 	public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

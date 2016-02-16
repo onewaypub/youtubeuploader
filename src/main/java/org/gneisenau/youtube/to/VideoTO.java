@@ -3,10 +3,6 @@ package org.gneisenau.youtube.to;
 import java.util.List;
 
 import org.gneisenau.youtube.model.PrivacySetting;
-import org.gneisenau.youtube.model.State;
-import org.gneisenau.youtube.utils.StateDeserializer;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 public class VideoTO {
 

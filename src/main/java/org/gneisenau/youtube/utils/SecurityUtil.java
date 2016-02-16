@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SecurityUtil {
-	
+
 	public String getPrincipal() {
 		String userName = null;
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -34,7 +34,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 	@Autowired
 	private IOService ioUtils;
 
-
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");

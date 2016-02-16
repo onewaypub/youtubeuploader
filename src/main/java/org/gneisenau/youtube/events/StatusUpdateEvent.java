@@ -38,5 +38,4 @@ public class StatusUpdateEvent extends ApplicationEvent {
 		return "StatusUpdateEvent [percentage=" + percentage + ", state=" + state + ", id=" + id + "]";
 	}
 
-
 }

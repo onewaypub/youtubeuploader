@@ -6,7 +6,6 @@ import org.gneisenau.youtube.handler.video.exceptions.NotFoundException;
 import org.gneisenau.youtube.handler.video.exceptions.UpdateException;
 import org.gneisenau.youtube.handler.youtube.VideoHandler;
 import org.gneisenau.youtube.handler.youtube.YouTubeUtils;
-import org.gneisenau.youtube.model.PrivacySetting;
 import org.gneisenau.youtube.model.Video;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -30,7 +29,7 @@ public class MetadataUpdateTask extends AbstractProcessorTask implements Youtube
 	}
 
 	@Override
-	@Transactional(propagation=Propagation.MANDATORY)
+	@Transactional(propagation = Propagation.MANDATORY)
 	public int process(Video v) {
 		if (StringUtils.isBlank(v.getYoutubeId())) {
 			return CONTINUE;
