@@ -16,9 +16,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class MailSendService {
 
-	private static String youtubeActivationMessage = "Der Youtube Upoad Service mu� in Youtube authorisiert werden.\n\nBitte �ffne folgende URL in einem Browser und logge Dich mit deinen Benutzerdaten ein\n\n";
-	private static String youtubeActivationTitle = "Authorisierung des Youtube Upoad Service";
-
 	private static final Logger logger = LoggerFactory.getLogger(MailSendService.class);
 	@Autowired
 	private UserSettingsRepository userSettingsDAO;
@@ -30,23 +27,6 @@ public class MailSendService {
 	@Value("${mail.sender.password}")
 	private String mailSenderPassword;
 
-	public void sendYoutubeAuthorizationMail(String authorizeUrl, String username) {
-		Email email = new SimpleEmail();
-		email.setHostName(mailServer);
-		email.setSmtpPort(465);
-		email.setAuthenticator(new DefaultAuthenticator(mailSenderUser, mailSenderPassword));
-		email.setSSL(true);
-		try {
-			email.setFrom(mailSenderUser);
-			email.setSubject(youtubeActivationTitle);
-			email.setMsg(youtubeActivationMessage + authorizeUrl);
-			setMailTo(email, username);
-			email.send();
-		} catch (EmailException e) {
-			logger.error("", e);
-		}
-	}
-
 	public void sendStatusMail(String videoTitle, State s, String username) {
 		Email email = new SimpleEmail();
 		email.setHostName(mailServer);
@@ -55,7 +35,7 @@ public class MailSendService {
 		email.setSSL(true);
 		try {
 			email.setFrom(mailSenderUser);
-			email.setSubject("Video hat sein Status ge�ndert - " + s + " - " + videoTitle);
+			email.setSubject("Video hat sein Status ge\u00e4ndert - " + s + " - " + videoTitle);
 			email.setMsg("Das Video " + videoTitle + " ist nun im Status " + s);
 			setMailTo(email, username);
 			email.send();
@@ -78,7 +58,7 @@ public class MailSendService {
 		try {
 			email.setFrom(mailSenderUser);
 			email.setSubject("Fehler beim Video - " + videoTitle);
-			email.setMsg("Das Video konnte nicht vollst�ndig abgearbeitet werden\nAktueller Status ist " + s
+			email.setMsg("Das Video konnte nicht vollst\u00e4ndig abgearbeitet werden\nAktueller Status ist " + s
 					+ "\nFehlermeldung: " + fehlermeldung);
 			setMailTo(email, username);
 			email.send();
