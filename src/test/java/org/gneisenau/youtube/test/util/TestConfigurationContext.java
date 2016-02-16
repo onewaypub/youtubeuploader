@@ -1,5 +1,6 @@
 package org.gneisenau.youtube.test.util;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -24,6 +25,17 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.LowLevelHttpRequest;
+import com.google.api.client.http.LowLevelHttpResponse;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.Json;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.testing.http.MockHttpTransport;
+import com.google.api.client.testing.http.MockLowLevelHttpRequest;
+import com.google.api.client.testing.http.MockLowLevelHttpResponse;
+
 @Configuration
 @ComponentScan(basePackages = "org.gneisenau.youtube")
 @PropertySource("/test.properties")
@@ -33,7 +45,8 @@ public class TestConfigurationContext {
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer properties() {
 		PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
-		Resource resource = new PathResource(FilenameUtils.getPath(TestConfigurationContext.class.getResource("/").getPath()) + "test.properties");
+		Resource resource = new PathResource(
+				FilenameUtils.getPath(TestConfigurationContext.class.getResource("/").getPath()) + "test.properties");
 		propertySourcesPlaceholderConfigurer.setLocations(resource);
 		return propertySourcesPlaceholderConfigurer;
 	}
@@ -47,7 +60,7 @@ public class TestConfigurationContext {
 		dataSource.setPassword("");
 		return dataSource;
 	}
-	
+
 	@Bean
 	public DozerBeanMapper getDozerMapper() {
 		List<String> mappingFiles = new ArrayList<String>();
@@ -64,7 +77,6 @@ public class TestConfigurationContext {
 		return transactionManager;
 	}
 
-	
 	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
@@ -86,30 +98,30 @@ public class TestConfigurationContext {
 		properties.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
 		return properties;
 	}
-	
-//    /**
-//     * Mock beans for all services. The beans are marked  to ensure they take precedence over the implementations for autowiring.
-//     */
-//    @Configuration
-//    @Profile("mockedServices")
-//    public static class ServiceMocks {
-//        @Bean
-//        @Primary
-//        public InvoiceService mockedInvoiceService() {
-//            return createMock(InvoiceService.class);
-//        }
-//
-//        @Bean
-//        @Primary
-//        public CustomerService mockedCustomerService() {
-//            return createMock(CustomerService.class);
-//        }
-//
-//        @Bean
-//        @Primary
-//        public ReportService mockedReportService() {
-//            return createMock(ReportService.class);
-//        }
-//    }
+
+	@Bean
+	public HttpTransport getHttpTransport() {
+		return new MockHttpTransport() {
+			@Override
+			public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
+				return new MockLowLevelHttpRequest() {
+					@Override
+					public LowLevelHttpResponse execute() throws IOException {
+						MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
+						response.addHeader("custom_header", "value");
+						response.setStatusCode(404);
+						response.setContentType(Json.MEDIA_TYPE);
+						response.setContent("{\"error\":\"not found\"}");
+						return response;
+					}
+				};
+			}
+		};
+	}
+
+	@Bean
+	public JsonFactory getJsonFactory() {
+		return new JacksonFactory();
+	}
 
 }

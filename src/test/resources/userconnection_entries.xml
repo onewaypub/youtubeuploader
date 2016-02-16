@@ -5,4 +5,10 @@
 	<userconnection userId="2" providerId="youtube"
 		providerUserId="0" rank="1" displayName="youtube" accessToken="987654321"
 		secret="4321" refreshToken="98765" expireTime="0" />
+	<userconnection userId="3" providerId="twitter"
+		providerUserId="0" rank="1" displayName="twitter" accessToken="987654321"
+		secret="4321" refreshToken="98765" expireTime="0" />
+	<userconnection userId="4" providerId="facebook"
+		providerUserId="0" rank="1" displayName="facebook" accessToken="987654321"
+		secret="4321" refreshToken="98765" expireTime="0" />
 </dataset>

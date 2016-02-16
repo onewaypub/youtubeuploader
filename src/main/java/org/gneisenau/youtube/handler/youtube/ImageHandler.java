@@ -29,7 +29,9 @@ import org.springframework.stereotype.Service;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.media.MediaHttpUploader;
+import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.InputStreamContent;
+import com.google.api.client.json.JsonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.YouTube.Thumbnails.Set;
 import com.google.api.services.youtube.model.ThumbnailSetResponse;
@@ -50,6 +52,10 @@ public class ImageHandler {
 	private Auth auth;
 	@Value("${youtube.app.name}")
 	private String youtubeAppName;
+	@Autowired
+	private HttpTransport httpTransport; 
+	@Autowired
+	private JsonFactory jsonFactory;
 
 	/**
 	 * Define a global instance of a Youtube object, which will be used to make
@@ -85,7 +91,7 @@ public class ImageHandler {
 		}
 
 		// This object is used to make YouTube Data API requests.
-		youtube = new YouTube.Builder(Auth.HTTP_TRANSPORT, Auth.JSON_FACTORY, credential)
+		youtube = new YouTube.Builder(httpTransport, jsonFactory, credential)
 				.setApplicationName(Auth.APP_NAME).build();
 
 		// Create an object that contains the thumbnail image file's

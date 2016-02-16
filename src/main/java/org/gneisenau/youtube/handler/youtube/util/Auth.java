@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.collections4.list.UnmodifiableList;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -31,16 +32,19 @@ import com.google.common.collect.Lists;
 @Service
 public class Auth {
 
-	@Value("${tomcat.home.dir}")
-	private String tomcatHomeDir;
 	public static final String APP_NAME = "YoutubeUploader";
-	@Value("${youtube.client.secret}")
-	private String clientSecretJson;
 	public static final String APPROVAL_PROMPT_FORCE = "force";
 	public static final String ACCESS_TYPE_OFFLINE = "offline";
-	public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-	public static final JsonFactory JSON_FACTORY = new JacksonFactory();
 	private static final String CREDENTIALS_DIRECTORY = ".oauth-credentials";
+
+	@Value("${tomcat.home.dir}")
+	private String tomcatHomeDir;
+	@Autowired
+	private HttpTransport httpTransport;
+	@Autowired
+	private JsonFactory jsonFactory;
+	@Value("${youtube.client.secret}")
+	private String clientSecretJson;
 
 	public static final List<String> SCOPES = new UnmodifiableList<String>(
 			Lists.newArrayList(YouTubeScopes.YOUTUBE, YouTubeScopes.YOUTUBE_UPLOAD));
@@ -66,7 +70,7 @@ public class Auth {
 
 		GoogleClientSecrets clientSecrets;
 		try {
-			clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, clientSecretReader);
+			clientSecrets = GoogleClientSecrets.load(jsonFactory, clientSecretReader);
 		} catch (IOException e) {
 			throw new AuthorizeException(e);
 		}
@@ -86,7 +90,7 @@ public class Auth {
 		} catch (IOException e) {
 			throw new AuthorizeException(e);
 		}
-		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, Auth.JSON_FACTORY,
+		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory,
 				clientSecrets, Auth.SCOPES).setAccessType(ACCESS_TYPE_OFFLINE).setApprovalPrompt(APPROVAL_PROMPT_FORCE)
 						.setCredentialDataStore(datastore).build();
 		return flow;

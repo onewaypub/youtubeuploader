@@ -22,6 +22,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+
 @ComponentScan(basePackages = "org.gneisenau.youtube")
 @Configuration
 @EnableWebMvc
@@ -72,6 +77,16 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 		mappingFiles.add("dozerMapping.xml");
 		DozerBeanMapper beanMapper = new DozerBeanMapper(mappingFiles);
 		return beanMapper;
+	}
+	
+	@Bean
+	public HttpTransport getHttpTransport(){
+		return new NetHttpTransport();
+	}
+	
+	@Bean
+	public JsonFactory getJsonFactory(){
+		return new JacksonFactory();
 	}
 
 }

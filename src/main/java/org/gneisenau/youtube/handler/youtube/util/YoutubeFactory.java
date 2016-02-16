@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
 import com.google.api.services.youtube.YouTube;
 
 @Service
@@ -20,6 +22,10 @@ public class YoutubeFactory {
 	private String youtubeAppName;
 	@Autowired
 	private Auth auth;
+	@Autowired
+	private HttpTransport httpTransport; 
+	@Autowired
+	private JsonFactory jsonFactory;
 
 	public YouTube getYoutube(String username) throws AuthorizeException {
 
@@ -33,7 +39,7 @@ public class YoutubeFactory {
 				throw new AuthorizeException(e);
 			}
 
-			YouTube youtube = new YouTube.Builder(Auth.HTTP_TRANSPORT, Auth.JSON_FACTORY, credential)
+			YouTube youtube = new YouTube.Builder(httpTransport, jsonFactory, credential)
 					.setApplicationName(Auth.APP_NAME).build();
 
 			youtubeMap.put(username, youtube);
