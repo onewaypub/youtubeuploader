@@ -51,7 +51,8 @@ public class VideoThumbnailUploadTask extends AbstractProcessorTask implements Y
 				}
 			});
 			try {
-				imgUploader.upload(v.getId(), v.getYoutubeId(), inputStream, v.getUsername(), thumb.length());
+				String imgUrl = imgUploader.upload(v.getYoutubeId(), inputStream, v.getUsername(), thumb.length());
+				v.setThumbnailUrl(imgUrl);
 			} finally {
 				try {
 					inputStream.close();

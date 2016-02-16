@@ -51,10 +51,6 @@ public class YoutubeHandler {
 	public Map<String, String> getPlaylists(String username) {
 		Map<String, String> playlistMap = new HashMap<String, String>();
 		try {
-			String mailTo = settingsDAO.findByUserName(username).getMailTo();
-			if (mailTo == null || mailTo.trim().length() == 0) {
-				return new HashMap<String, String>();
-			}
 			YouTube.Playlists.List searchList = youtubefactory.getYoutube(username).playlists()
 					.list("id,snippet,contentDetails");
 			searchList.setFields(

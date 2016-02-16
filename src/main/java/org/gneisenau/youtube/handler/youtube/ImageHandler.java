@@ -21,6 +21,7 @@ import java.io.InputStream;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.handler.video.exceptions.UploadException;
 import org.gneisenau.youtube.handler.youtube.util.Auth;
+import org.gneisenau.youtube.handler.youtube.util.YoutubeFactory;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class ImageHandler {
 	@Autowired
 	private VideoRepository videoDAO;
 	@Autowired
-	private Auth auth;
+	private YoutubeFactory youtubefactory;
 	@Value("${youtube.app.name}")
 	private String youtubeAppName;
 	@Autowired
@@ -75,24 +76,15 @@ public class ImageHandler {
 	 *
 	 * @param args
 	 *            command line args (not used).
+	 * @return 
 	 * @throws PreUploadException
 	 * @throws AuthorizeException
 	 * @throws UploadException
 	 */
-	public void upload(final Long id, String videoId, InputStream imageFile, String username, long length)
+	public String upload(String videoId, InputStream imageFile, String username, long length)
 			throws AuthorizeException, UploadException {
 
-		// Authorize the request.
-		Credential credential;
-		try {
-			credential = auth.authorize(youtubeAppName, username);
-		} catch (Exception e) {
-			throw new AuthorizeException(e);
-		}
-
-		// This object is used to make YouTube Data API requests.
-		youtube = new YouTube.Builder(httpTransport, jsonFactory, credential)
-				.setApplicationName(Auth.APP_NAME).build();
+		YouTube youTube = youtubefactory.getYoutube(username);
 
 		// Create an object that contains the thumbnail image file's
 		// contents.
@@ -103,7 +95,7 @@ public class ImageHandler {
 		// object is the thumbnail of the specified video.
 		Set thumbnailSet;
 		try {
-			thumbnailSet = youtube.thumbnails().set(videoId, mediaContent);
+			thumbnailSet = youTube.thumbnails().set(videoId, mediaContent);
 		} catch (IOException e) {
 			throw new UploadException(e);
 		}
@@ -129,9 +121,7 @@ public class ImageHandler {
 			throw new UploadException(e);
 		}
 
-		// Print the URL for the updated video's thumbnail image.
-		Video video = videoDAO.findById(id);
-		video.setThumbnailUrl(setResponse.getItems().get(0).getDefault().getUrl());
+		return setResponse.getItems().get(0).getDefault().getUrl();
 
 	}
 }

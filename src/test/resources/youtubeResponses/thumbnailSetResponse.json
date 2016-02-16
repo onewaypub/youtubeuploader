@@ -1,0 +1,22 @@
+{
+  "kind": "youtube#thumbnailSetResponse",
+  "etag": "true",
+  "items": [
+ {
+  "default": {
+    "url": "http://test.de/test",
+    "width": 20,
+    "height": 30
+  },
+  "medium": {
+    "url": "http://test.de/test2",
+    "width": 40,
+    "height": 50
+  },
+  "high": {
+    "url": "http://test.de/test3",
+    "width": 70,
+    "height": 90
+  }
+}  ]
+}

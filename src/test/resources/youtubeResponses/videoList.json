@@ -1,0 +1,28 @@
+{
+  "kind": "youtube#videoListResponse",
+  "etag": "true",
+  "nextPageToken": "",
+  "prevPageToken": "",
+  "pageInfo": {
+    "totalResults": 1,
+    "resultsPerPage": 1
+  },
+  "items": [
+{
+  "kind": "youtube#video",
+  "etag": "true",
+  "id": "1",
+  "snippet": {
+    "publishedAt": "1997-07-16T19:20:30.45+01:00",
+    "channelId": "channelId",
+    "title": "TestTitle",
+    "description": "Test Description",
+    "channelTitle": "Channel Title",
+    "tags": [
+      "test tag 1",
+      "test tag 2"
+    ],
+    "categoryId": "22"
+  }
+}  ]
+}

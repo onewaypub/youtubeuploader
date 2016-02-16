@@ -196,11 +196,12 @@ public class VideoController {
 					files.add(oldFile);
 				}
 				v.setThumbnail(newFile.getAbsolutePath());
-				videoDAO.persist(v);
 				if (StringUtils.isNotBlank(v.getYoutubeId())) {
-					imageHandler.upload(v.getId(), v.getYoutubeId(), new FileInputStream(newFile),
+					String imgUrl = imageHandler.upload(v.getYoutubeId(), new FileInputStream(newFile),
 							secUtil.getPrincipal(), newFile.length());
+					v.setThumbnailUrl(imgUrl);
 				}
+				videoDAO.persist(v);
 			}
 		} catch (IOException | AuthorizeException | UploadException e) {
 			// Cleanup on exception

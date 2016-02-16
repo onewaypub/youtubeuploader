@@ -101,22 +101,7 @@ public class TestConfigurationContext {
 
 	@Bean
 	public HttpTransport getHttpTransport() {
-		return new MockHttpTransport() {
-			@Override
-			public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
-				return new MockLowLevelHttpRequest() {
-					@Override
-					public LowLevelHttpResponse execute() throws IOException {
-						MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
-						response.addHeader("custom_header", "value");
-						response.setStatusCode(404);
-						response.setContentType(Json.MEDIA_TYPE);
-						response.setContent("{\"error\":\"not found\"}");
-						return response;
-					}
-				};
-			}
-		};
+		return new YoutTubeMockHttpTransport();
 	}
 
 	@Bean
