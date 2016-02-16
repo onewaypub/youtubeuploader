@@ -15,16 +15,16 @@ public class CommaSeperatedStringToListConverter extends DozerConverter<String, 
 
 	@Override
 	public String convertFrom(List arg0, String arg1) {
-		if (arg0 == null) {
-			return "";
+		if (arg0 == null || arg0.size() == 0) {
+			return null;
 		}
 		return StringUtils.join(arg0, ',');
 	}
 
 	@Override
 	public List<String> convertTo(String arg0, List arg1) {
-		if (arg0 == null) {
-			return new ArrayList<String>();
+		if (StringUtils.isBlank(arg0)) {
+			return null;
 		}
 		List<String> items = Arrays.asList(arg0.split("\\s*,\\s*"));
 		return items;

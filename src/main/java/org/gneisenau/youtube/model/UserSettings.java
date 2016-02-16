@@ -23,8 +23,10 @@ public class UserSettings {
 	private String defaultTags;
 	private boolean postOnTwitter;
 	private boolean postOnFacebook;
+	private boolean postOnGoogle;
 	private String twitterPost;
 	private String facebookPost;
+	private String googlePost;
 
 	public Long getId() {
 		return id;
@@ -146,14 +148,31 @@ public class UserSettings {
 		this.facebookPost = facebookPost;
 	}
 
+	public boolean isPostOnGoogle() {
+		return postOnGoogle;
+	}
+
+	public void setPostOnGoogle(boolean postOnGoogle) {
+		this.postOnGoogle = postOnGoogle;
+	}
+
+	public String getGooglePost() {
+		return googlePost;
+	}
+
+	public void setGooglePost(String googlePost) {
+		this.googlePost = googlePost;
+	}
+
 	@Override
 	public String toString() {
 		return "UserSettings [id=" + id + ", username=" + username + ", intro=" + intro + ", outro=" + outro
 				+ ", mailTo=" + mailTo + ", notifyUploadState=" + notifyUploadState + ", notifyProcessedState="
 				+ notifyProcessedState + ", notifyReleaseState=" + notifyReleaseState + ", notifyErrorState="
 				+ notifyErrorState + ", videoFooter=" + videoFooter + ", defaultTags=" + defaultTags
-				+ ", postOnTwitter=" + postOnTwitter + ", postOnFacebook=" + postOnFacebook + ", twitterPost="
-				+ twitterPost + ", facebookPost=" + facebookPost + "]";
+				+ ", postOnTwitter=" + postOnTwitter + ", postOnFacebook=" + postOnFacebook + ", postOnGoogle="
+				+ postOnGoogle + ", twitterPost=" + twitterPost + ", facebookPost=" + facebookPost + ", googlePost="
+				+ googlePost + "]";
 	}
 
 	@Override
@@ -162,6 +181,7 @@ public class UserSettings {
 		int result = 1;
 		result = prime * result + ((defaultTags == null) ? 0 : defaultTags.hashCode());
 		result = prime * result + ((facebookPost == null) ? 0 : facebookPost.hashCode());
+		result = prime * result + ((googlePost == null) ? 0 : googlePost.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((intro == null) ? 0 : intro.hashCode());
 		result = prime * result + ((mailTo == null) ? 0 : mailTo.hashCode());
@@ -171,6 +191,7 @@ public class UserSettings {
 		result = prime * result + (notifyUploadState ? 1231 : 1237);
 		result = prime * result + ((outro == null) ? 0 : outro.hashCode());
 		result = prime * result + (postOnFacebook ? 1231 : 1237);
+		result = prime * result + (postOnGoogle ? 1231 : 1237);
 		result = prime * result + (postOnTwitter ? 1231 : 1237);
 		result = prime * result + ((twitterPost == null) ? 0 : twitterPost.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
@@ -196,6 +217,11 @@ public class UserSettings {
 			if (other.facebookPost != null)
 				return false;
 		} else if (!facebookPost.equals(other.facebookPost))
+			return false;
+		if (googlePost == null) {
+			if (other.googlePost != null)
+				return false;
+		} else if (!googlePost.equals(other.googlePost))
 			return false;
 		if (id == null) {
 			if (other.id != null)
@@ -226,6 +252,8 @@ public class UserSettings {
 		} else if (!outro.equals(other.outro))
 			return false;
 		if (postOnFacebook != other.postOnFacebook)
+			return false;
+		if (postOnGoogle != other.postOnGoogle)
 			return false;
 		if (postOnTwitter != other.postOnTwitter)
 			return false;
