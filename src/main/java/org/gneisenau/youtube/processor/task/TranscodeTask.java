@@ -41,7 +41,7 @@ public class TranscodeTask extends AbstractProcessorTask implements VideoTask {
 		
 		String baseName = FilenameUtils.getBaseName(v.getVideo());
 		String path = FilenameUtils.getFullPath(v.getVideo());
-		File transcodedFile = new File(path + baseName + "_transcoded.webm");
+		File transcodedFile = new File(path + baseName + "_transcoded.mp4");
 		try {
 			videoProcessor.transcode(oldFile, transcodedFile, v.getId());
 			v.setVideo(transcodedFile.getAbsolutePath());
