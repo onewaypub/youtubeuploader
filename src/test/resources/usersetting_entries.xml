@@ -2,11 +2,10 @@
 	<usersettings id="1" username="test1" intro="0" outro="0"
 		mailTo="test1@localhost" notifyUploadState="1" notifyProcessedState="1"
 		notifyReleaseState="1" notifyErrorState="1" videoFooter="0"
-		defaultTags="default_tag_test01,default_tag_test02,default_tag_test03" postOnTwitter="this is a testpost for twitter" postOnFacebook="the %%DEVELOPER%% is crazy" twitterPost="the %%RELEASEDATE%% also"
-		facebookPost="not post here" />
+		defaultTags="default_tag_test01,default_tag_test02,default_tag_test03" postOnTwitter="1" postOnFacebook="1" postOnGoogle="1" twitterPost="the %%RELEASEDATE%% also"
+		facebookPost="not post here" googlePost="not post here" />
 	<usersettings id="2" username="0" intro="0" outro="0"
 		mailTo="test2@localhost" notifyUploadState="0" notifyProcessedState="0"
 		notifyReleaseState="0" notifyErrorState="0" videoFooter="0"
-		defaultTags="0" postOnTwitter="0" postOnFacebook="0" twitterPost="0"
-		facebookPost="0"/>
+		defaultTags="0"/>
 </dataset>

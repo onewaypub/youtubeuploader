@@ -45,7 +45,7 @@ public class YouTubeUtils {
 			desc = desc + "\nPublisher: " + v.getPublisher();
 		}
 		if (StringUtils.isNotBlank(v.getPublished())) {
-			desc = desc + "\nVeröffentlichung: " + v.getPublished();
+			desc = desc + "\nVer\u00F6ffentlichung: " + v.getPublished();
 		}
 		desc = desc + "\n\nhttps://www.facebook.com/pages/PeachesLp/781275711939550";
 		desc = desc + "\nhttps://twitter.com/Peaches_LP";

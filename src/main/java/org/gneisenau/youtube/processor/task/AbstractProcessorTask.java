@@ -29,7 +29,7 @@ public abstract class AbstractProcessorTask {
 	@Autowired
 	protected MailSendService mailService;
 
-	private final ApplicationEventPublisher publisher;
+	private ApplicationEventPublisher publisher;
 
 	@Autowired
 	public AbstractProcessorTask(ApplicationEventPublisher publisher) {

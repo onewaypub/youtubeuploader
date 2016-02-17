@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.Validate;
 import org.gneisenau.youtube.handler.video.FfmpegHandler;
 import org.gneisenau.youtube.handler.youtube.exceptions.VideoMergeException;
 import org.gneisenau.youtube.handler.youtube.exceptions.VideoTranscodeException;
@@ -36,8 +37,14 @@ public class IntroOutroTask extends AbstractProcessorTask implements VideoTask {
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
 	public int process(Video v) {
+		Validate.notNull(v, "No Video provided");
+		Validate.notEmpty(v.getVideo(), "No video for processing found");
+		
 		// Merge Videos
 		File oldFile = new File(v.getVideo());
+		
+		Validate.isTrue(oldFile.exists(), "Video file does not exist on harddisk");
+
 		File intro = new File(introOutroDir + "/intro.mp4");
 		File outro = new File(introOutroDir + "/outro.mp4");
 		String baseName = FilenameUtils.getBaseName(v.getVideo());
