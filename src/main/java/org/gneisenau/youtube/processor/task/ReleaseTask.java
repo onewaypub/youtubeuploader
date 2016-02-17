@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.handler.video.exceptions.NotFoundException;
 import org.gneisenau.youtube.handler.video.exceptions.UpdateException;
@@ -33,11 +34,12 @@ public class ReleaseTask extends AbstractProcessorTask implements PublishTask {
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
 	public int process(Video v) {
+		Validate.notNull(v, "Video is not given");
+		Validate.notEmpty(v.getUsername(), "username not given");
+
 		if (StringUtils.isBlank(v.getYoutubeId()) || v.getReleaseDate() == null) {
 			return PublishTask.CONTINUE;
 		}
-		List<String> tags = new ArrayList<String>();
-		CollectionUtils.addAll(tags, v.getTags().split(","));
 		try {
 			vidUploader.release(v.getYoutubeId(), PrivacySetting.Public, v.getUsername());
 		} catch (NotFoundException e) {
