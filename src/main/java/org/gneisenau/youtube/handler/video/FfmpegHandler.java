@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.exec.ExecuteException;
+import org.apache.commons.lang3.Validate;
 import org.gneisenau.youtube.events.StatusUpdateEvent;
 import org.gneisenau.youtube.handler.youtube.exceptions.VideoMergeException;
 import org.gneisenau.youtube.handler.youtube.exceptions.VideoTranscodeException;
@@ -34,6 +35,16 @@ public class FfmpegHandler {
 	}
 
 	public String transcode(File inputFile, File outputFile, long id) throws ExecuteException, IOException {
+		Validate.notNull(inputFile, "Source video is null");
+		Validate.notNull(outputFile, "Output video is null");
+		
+		if(!inputFile.exists()){
+			throw new IOException("Source video not existing");
+		}
+		if(outputFile.exists()){
+			throw new IOException("Target video already existing");
+		}
+		
 		String line = ioService.findFFMPEG() + " -i " + inputFile.getAbsolutePath()
 				+ " -codec:v libx264 -bf 2 -flags +cgop -pix_fmt yuv420p -codec:a aac -strict -2 -b:a 384k -r:a 48000 -movflags faststart "
 				+ outputFile.getAbsolutePath();
