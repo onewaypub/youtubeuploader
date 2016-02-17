@@ -41,17 +41,17 @@ public class TranscodeTask extends AbstractProcessorTask implements VideoTask {
 		
 		String baseName = FilenameUtils.getBaseName(v.getVideo());
 		String path = FilenameUtils.getFullPath(v.getVideo());
-		File transcodedFile = new File(path + baseName + "_transcoded.mp4");
+		File transcodedFile = new File(path + baseName + "_transcoded.webm");
 		try {
 			videoProcessor.transcode(oldFile, transcodedFile, v.getId());
 			v.setVideo(transcodedFile.getAbsolutePath());
 			oldFile.delete();
 		} catch (ExecuteException e) {
-			handleError(v, "Fehler beim Ausf�hren des Transcodings");
+			handleError(v, "Fehler beim Ausf\u00fchren des Transcodings");
 			transcodedFile.delete();
 			return VideoTask.STOP;
 		} catch (IOException e) {
-			handleError(v, "Fehler beim Zugriff auf die Videodateien w�hrend des Transcodings");
+			handleError(v, "Fehler beim Zugriff auf die Videodateien w\u00e4hrend des Transcodings");
 			transcodedFile.delete();
 			return VideoTask.STOP;
 		}

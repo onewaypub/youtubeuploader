@@ -119,43 +119,36 @@ public class VideoHandlerTest {
 		pushVideoListResponse();
 		pushVideoUpdateMetadataResponse();
 		pushAuthorizationMock();
-		String id = handler.updateMetadata(PrivacySetting.Private, "1", new ArrayList<String>(), "title", "desc",
+		String id = handler.updateMetadata("1", new ArrayList<String>(), "title", "desc",
 				"channelId", "categoryId", "username", true);
 		assertEquals("1", id);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testUpdateMetadataPrivacySettingIsNull()
-			throws IOException, AuthorizeException, UpdateException, NotFoundException {
-		handler.updateMetadata(null, "1", new ArrayList<String>(), "title", "desc", "channelId", "categoryId",
-				"username", true);
-	}
-
-	@Test(expected = NullPointerException.class)
 	public void testUpdateMetadataVideoIdIsNull()
 			throws IOException, AuthorizeException, UpdateException, NotFoundException {
-		handler.updateMetadata(PrivacySetting.Private, null, new ArrayList<String>(), "title", "desc", "channelId",
+		handler.updateMetadata(null, new ArrayList<String>(), "title", "desc", "channelId",
 				"categoryId", "username", true);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testUpdateMetadataVideoIdIsEmpty()
 			throws IOException, AuthorizeException, UpdateException, NotFoundException {
-		handler.updateMetadata(PrivacySetting.Private, "", new ArrayList<String>(), "title", "desc", "channelId",
+		handler.updateMetadata("", new ArrayList<String>(), "title", "desc", "channelId",
 				"categoryId", "username", true);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testUpdateMetadataUsernameIsNull()
 			throws IOException, AuthorizeException, UpdateException, NotFoundException {
-		handler.updateMetadata(PrivacySetting.Private, "1", new ArrayList<String>(), "title", "desc", "channelId",
+		handler.updateMetadata("1", new ArrayList<String>(), "title", "desc", "channelId",
 				"categoryId", null, true);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testUpdateMetadataUsernameIsEmpty()
 			throws IOException, AuthorizeException, UpdateException, NotFoundException {
-		handler.updateMetadata(PrivacySetting.Private, "1", new ArrayList<String>(), "title", "desc", "channelId",
+		handler.updateMetadata("1", new ArrayList<String>(), "title", "desc", "channelId",
 				"categoryId", "", true);
 	}
 

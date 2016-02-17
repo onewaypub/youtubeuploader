@@ -75,11 +75,10 @@ public class VideoHandler {
 		return returnedVideo.getId();
 	}
 
-	public String updateMetadata(PrivacySetting privacySetting, String youtubeId, List<String> tags, String title,
+	public String updateMetadata(String youtubeId, List<String> tags, String title,
 			String desc, String channelId, String categoryId, String username, boolean ageRestricted)
 					throws AuthorizeException, UpdateException, NotFoundException {
 
-		Validate.notNull(privacySetting, "PrivacySettings not set");
 		Validate.notEmpty(title, "No title given");
 		Validate.notEmpty(youtubeId, "No youtube video id given");
 		Validate.notEmpty(username, "No username given");

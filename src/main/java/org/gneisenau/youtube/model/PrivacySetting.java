@@ -18,7 +18,7 @@ public enum PrivacySetting {
 		if (this.equals(PrivacySetting.Private)) {
 			return "Privat";
 		} else if (this.equals(PrivacySetting.Public)) {
-			return "�ffentlich";
+			return "\u00f6ffentlich";
 		} else if (this.equals(PrivacySetting.Unlisted)) {
 			return "Nicht gelistet";
 		}

@@ -43,13 +43,13 @@ public class ReleaseTask extends AbstractProcessorTask implements PublishTask {
 		try {
 			vidUploader.release(v.getYoutubeId(), PrivacySetting.Public, v.getUsername());
 		} catch (NotFoundException e) {
-			handleError(v, "Kann Video nicht der Playlist hinzuf�gen", e);
+			handleError(v, "Kann Video nicht der Playlist hinzuf\u00fcgen", e);
 			return VideoTask.STOP;
 		} catch (AuthorizeException e) {
-			handleError(v, "Kann Video nicht der Playlist hinzuf�gen", e);
+			handleError(v, "Kann Video nicht der Playlist hinzuf\u00fcgen", e);
 			return VideoTask.STOP;
 		} catch (UpdateException e) {
-			handleError(v, "Kann Video nicht der Playlist hinzuf�gen", e);
+			handleError(v, "Kann Video nicht der Playlist hinzuf\u00fcgen", e);
 			return VideoTask.STOP;
 		}
 		if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyReleaseState()) {

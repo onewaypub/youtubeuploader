@@ -77,7 +77,7 @@ public enum State {
 		}
 
 		public String getDisplayName() {
-			return "Warte auf Ver�ffentlichung";
+			return "Warte auf Ver\u00f6ffentlichung";
 		}
 	},
 	Done {
@@ -90,7 +90,7 @@ public enum State {
 		}
 
 		public String getDisplayName() {
-			return "Ver�ffentlicht";
+			return "Ver\u00f6ffentlicht";
 		}
 	},
 	Error {
