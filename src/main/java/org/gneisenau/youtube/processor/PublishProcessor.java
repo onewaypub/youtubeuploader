@@ -11,6 +11,7 @@ import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
 import org.gneisenau.youtube.processor.task.PublishTask;
+import org.gneisenau.youtube.processor.task.YoutubeTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
@@ -44,9 +45,16 @@ public class PublishProcessor extends AbstractProcessor {
 	@Transactional(propagation = Propagation.MANDATORY)
 	protected void runChain(Video v) {
 		for (PublishTask chainItem : releaseProcessingChain) {
-			int process = chainItem.process(v);
-			videoDAO.persist(v);
-			videoDAO.flush();
+			int process = PublishTask.STOP;
+			try {
+				process = chainItem.process(v);
+			} catch (Exception e) {
+				v.setState(State.Error);
+				process = PublishTask.STOP;
+			} finally {
+				videoDAO.persist(v);
+				videoDAO.flush();
+			}
 			if (PublishTask.STOP == process) {
 				break;
 			}

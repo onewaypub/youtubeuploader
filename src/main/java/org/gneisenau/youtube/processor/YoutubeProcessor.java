@@ -10,6 +10,7 @@ import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
+import org.gneisenau.youtube.processor.task.VideoTask;
 import org.gneisenau.youtube.processor.task.YoutubeTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -44,9 +45,16 @@ public class YoutubeProcessor extends AbstractProcessor {
 	@Transactional(propagation = Propagation.MANDATORY)
 	protected void runChain(Video v) {
 		for (YoutubeTask chainItem : youtubeProcessingChain) {
-			int process = chainItem.process(v);
-			videoDAO.persist(v);
-			videoDAO.flush();
+			int process = YoutubeTask.STOP;
+			try {
+				process = chainItem.process(v);
+			} catch (Exception e) {
+				v.setState(State.Error);
+				process = YoutubeTask.STOP;
+			} finally {
+				videoDAO.persist(v);
+				videoDAO.flush();
+			}
 			if (YoutubeTask.STOP == process) {
 				break;
 			}

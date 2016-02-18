@@ -41,9 +41,16 @@ public class VideoProcessor extends AbstractProcessor {
 	@Override
 	protected void runChain(Video v) {
 		for (VideoTask chainItem : videoProcessingChain) {
-			int process = chainItem.process(v);
-			videoDAO.persist(v);
-			videoDAO.flush();
+			int process = VideoTask.STOP;
+			try {
+				process = chainItem.process(v);
+			} catch (Exception e) {
+				v.setState(State.Error);
+				process = VideoTask.STOP;
+			} finally {
+				videoDAO.persist(v);
+				videoDAO.flush();
+			}
 			if (VideoTask.STOP == process) {
 				break;
 			}
