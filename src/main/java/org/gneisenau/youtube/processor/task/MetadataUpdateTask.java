@@ -31,7 +31,7 @@ public class MetadataUpdateTask extends AbstractProcessorTask implements Youtube
 
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
-	public int process(Video v) {
+	public int process(Video v) throws Exception{
 		Validate.notNull(v, "Video is null");
 		Validate.notEmpty(v.getUsername(), "Username is null");
 		
@@ -42,14 +42,11 @@ public class MetadataUpdateTask extends AbstractProcessorTask implements Youtube
 			vidUploader.updateMetadata(v.getYoutubeId(), utils.getTagsList(v), v.getTitle(),
 					utils.createDescription(v), v.getChannelId(), v.getCategoryId(), v.getUsername(), false);
 		} catch (AuthorizeException e) {
-			handleError(v, "Authorisierung bei Youtube fehlgeschlagen", e);
-			return VideoTask.STOP;
+			throw new TaskException(v, "Authorisierung bei Youtube fehlgeschlagen", e);
 		} catch (UpdateException e) {
-			handleError(v, "Authorisierung bei Youtube fehlgeschlagen", e);
-			return VideoTask.STOP;
+			throw new TaskException(v, "Authorisierung bei Youtube fehlgeschlagen", e);
 		} catch (NotFoundException e) {
-			handleError(v, "Video konnte nicht mehr gefunden werden", e);
-			return VideoTask.STOP;
+			throw new TaskException(v, "Video konnte nicht mehr gefunden werden", e);
 		}
 		return VideoTask.CONTINUE;
 	}

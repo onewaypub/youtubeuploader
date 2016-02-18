@@ -34,7 +34,7 @@ public class VideoThumbnailUploadTask extends AbstractProcessorTask implements Y
 
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
-	public int process(Video v) {
+	public int process(Video v) throws TaskException {
 		if (StringUtils.isBlank(v.getThumbnail()) || StringUtils.isBlank(v.getYoutubeId())) {
 			return CONTINUE;
 		}
@@ -61,14 +61,11 @@ public class VideoThumbnailUploadTask extends AbstractProcessorTask implements Y
 				}
 			}
 		} catch (FileNotFoundException e) {
-			handleError(v, "Das Thumbnail konnte auf der Festplatt nicht mehr gefunden werden", null);
-			return VideoTask.STOP;
+			throw new TaskException(v, "Das Thumbnail konnte auf der Festplatt nicht mehr gefunden werden", null);
 		} catch (AuthorizeException e) {
-			handleError(v, "Authorisierung bei Youtube fehlgeschlagen", e);
-			return VideoTask.STOP;
+			throw new TaskException(v, "Authorisierung bei Youtube fehlgeschlagen", e);
 		} catch (UploadException e) {
-			handleError(v, "Das Thumbnails konnte nicht hochgeladen werden", e);
-			return VideoTask.STOP;
+			throw new TaskException(v, "Das Thumbnails konnte nicht hochgeladen werden", e);
 		}
 		return VideoTask.CONTINUE;
 	}

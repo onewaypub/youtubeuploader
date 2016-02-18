@@ -33,7 +33,7 @@ public class ReleaseTask extends AbstractProcessorTask implements PublishTask {
 
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
-	public int process(Video v) {
+	public int process(Video v) throws TaskException {
 		Validate.notNull(v, "Video is not given");
 		Validate.notEmpty(v.getUsername(), "username not given");
 
@@ -43,17 +43,11 @@ public class ReleaseTask extends AbstractProcessorTask implements PublishTask {
 		try {
 			vidUploader.release(v.getYoutubeId(), PrivacySetting.Public, v.getUsername());
 		} catch (NotFoundException e) {
-			handleError(v, "Kann Video nicht der Playlist hinzuf\u00fcgen", e);
-			return VideoTask.STOP;
+			throw new TaskException(v, "Kann Video nicht der Playlist hinzuf\u00fcgen", e);
 		} catch (AuthorizeException e) {
-			handleError(v, "Kann Video nicht der Playlist hinzuf\u00fcgen", e);
-			return VideoTask.STOP;
+			throw new TaskException(v, "Kann Video nicht der Playlist hinzuf\u00fcgen", e);
 		} catch (UpdateException e) {
-			handleError(v, "Kann Video nicht der Playlist hinzuf\u00fcgen", e);
-			return VideoTask.STOP;
-		}
-		if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyReleaseState()) {
-			mailService.sendStatusMail(v.getTitle(), v.getState(), v.getUsername());
+			throw new TaskException(v, "Kann Video nicht der Playlist hinzuf\u00fcgen", e);
 		}
 		return PublishTask.CONTINUE;
 	}

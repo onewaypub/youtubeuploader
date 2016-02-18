@@ -23,8 +23,6 @@ import org.springframework.stereotype.Component;
 public abstract class AbstractProcessorTask {
 
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Autowired
-	protected UserSettingsRepository userSettingsDAO;
 
 	@Autowired
 	protected MailSendService mailService;
@@ -40,42 +38,42 @@ public abstract class AbstractProcessorTask {
 		this.publisher.publishEvent(event);
 	}
 
-	protected void handleError(Video v, String message) {
-		List<String> errors = v.getErrors();
-		if (errors == null)
-			errors = new ArrayList<String>();
-		errors.add(message);
-		v.setErrors(errors);
-		v.setState(State.Error);
-		if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyErrorState()) {
-			mailService.sendErrorMail(message, v.getTitle(), v.getState(), v.getUsername());
-		}
-	}
+//	protected void handleError(Video v, String message) {
+//		List<String> errors = v.getErrors();
+//		if (errors == null)
+//			errors = new ArrayList<String>();
+//		errors.add(message);
+//		v.setErrors(errors);
+//		v.setState(State.Error);
+//		if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyErrorState()) {
+//			mailService.sendErrorMail(message, v.getTitle(), v.getState(), v.getUsername());
+//		}
+//	}
 
-	protected void handleError(Video v, String message, Exception e) {
-		if (e != null) {
-			String returnJSON = e.getMessage();
-			try {
-				ByteArrayInputStream is = new ByteArrayInputStream(returnJSON.getBytes());
-				JsonReader rdr = Json.createReader(is);
-
-				JsonObject obj = rdr.readObject();
-				String results = obj.getString("message");
-				message = message + " - " + results;
-			} catch (Exception ex) {
-				logger.error("", ex);
-			}
-		}
-		logger.error("", e);
-		List<String> errors = v.getErrors();
-		if (errors == null)
-			errors = new ArrayList<String>();
-		errors.add(message);
-		v.setErrors(errors);
-		v.setState(State.Error);
-		if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyErrorState()) {
-			mailService.sendErrorMail(message, v.getTitle(), v.getState(), v.getUsername());
-		}
-	}
+//	protected void handleError(Video v, String message, Exception e) {
+//		if (e != null) {
+//			String returnJSON = e.getMessage();
+//			try {
+//				ByteArrayInputStream is = new ByteArrayInputStream(returnJSON.getBytes());
+//				JsonReader rdr = Json.createReader(is);
+//
+//				JsonObject obj = rdr.readObject();
+//				String results = obj.getString("message");
+//				message = message + " - " + results;
+//			} catch (Exception ex) {
+//				logger.error("", ex);
+//			}
+//		}
+//		logger.error("", e);
+//		List<String> errors = v.getErrors();
+//		if (errors == null)
+//			errors = new ArrayList<String>();
+//		errors.add(message);
+//		v.setErrors(errors);
+//		v.setState(State.Error);
+//		if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyErrorState()) {
+//			mailService.sendErrorMail(message, v.getTitle(), v.getState(), v.getUsername());
+//		}
+//	}
 
 }

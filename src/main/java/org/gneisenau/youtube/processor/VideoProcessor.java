@@ -21,12 +21,6 @@ public class VideoProcessor extends AbstractProcessor {
 
 	@Autowired
 	private List<VideoTask> videoProcessingChain;
-	@Autowired
-	private VideoRepository videoDAO;
-	@Autowired
-	private UserSettingsRepository userSettingsDAO;
-	@Autowired
-	protected MailSendService mailService;
 
 	@Autowired
 	public VideoProcessor(ApplicationEventPublisher publisher) {
@@ -39,18 +33,9 @@ public class VideoProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected void runChain(Video v) {
+	protected void runChain(Video v) throws Exception {
 		for (VideoTask chainItem : videoProcessingChain) {
-			int process = VideoTask.STOP;
-			try {
-				process = chainItem.process(v);
-			} catch (Exception e) {
-				v.setState(State.Error);
-				process = VideoTask.STOP;
-			} finally {
-				videoDAO.persist(v);
-				videoDAO.flush();
-			}
+			int process = chainItem.process(v);
 			if (VideoTask.STOP == process) {
 				break;
 			}

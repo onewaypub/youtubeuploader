@@ -36,7 +36,7 @@ public class IntroOutroTask extends AbstractProcessorTask implements VideoTask {
 
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
-	public int process(Video v) {
+	public int process(Video v) throws TaskException {
 		Validate.notNull(v, "No Video provided");
 		Validate.notEmpty(v.getVideo(), "No video for processing found");
 
@@ -53,14 +53,11 @@ public class IntroOutroTask extends AbstractProcessorTask implements VideoTask {
 		try {
 			videoProcessor.merge(newFile.getAbsolutePath(), intro, new File(v.getVideo()), outro);
 		} catch (IOException e) {
-			handleError(v, "Fehler beim Zugriff auf die zusammenzuf\u00fchrenden Videodatei w\u00f6hrend des Merges");
-			return VideoTask.STOP;
+			throw new TaskException(v, "Fehler beim Zugriff auf die zusammenzuf\u00fchrenden Videodatei w\u00f6hrend des Merges");
 		} catch (VideoTranscodeException e) {
-			handleError(v, "Zusammenzuf\u00fchrenden Videodateien k\u00f6nnten nicht transcodiert werden ");
-			return VideoTask.STOP;
+			throw new TaskException(v, "Zusammenzuf\u00fchrenden Videodateien k\u00f6nnten nicht transcodiert werden ");
 		} catch (VideoMergeException e) {
-			handleError(v, "Fehler beim Merge der Videodateien");
-			return VideoTask.STOP;
+			throw new TaskException(v, "Fehler beim Merge der Videodateien");
 		}
 		v.setVideo(newFile.getAbsolutePath());
 		oldFile.delete();

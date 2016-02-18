@@ -34,11 +34,7 @@ public class VideoUploadTask extends AbstractProcessorTask implements YoutubeTas
 
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
-	public int process(Video v) {
-		String mail = userSettingsDAO.findByUserName(v.getUsername()).getMailTo();
-		if (mail != null && mail.trim().length() == 0) {
-			return VideoTask.CONTINUE;
-		}
+	public int process(Video v) throws TaskException {
 		File video = new File(v.getVideo());
 		v.setState(State.OnUpload);
 		try {
@@ -65,14 +61,11 @@ public class VideoUploadTask extends AbstractProcessorTask implements YoutubeTas
 				}
 			}
 		} catch (FileNotFoundException e) {
-			handleError(v, "Video konnte auf der Festplatt nicht mehr gefunden werden", null);
-			return VideoTask.STOP;
+			throw new TaskException(v, "Video konnte auf der Festplatt nicht mehr gefunden werden", null);
 		} catch (AuthorizeException e) {
-			handleError(v, "Authorisierung bei Youttube fehlgeschlagen", e);
-			return VideoTask.STOP;
+			throw new TaskException(v, "Authorisierung bei Youttube fehlgeschlagen", e);
 		} catch (UploadException e) {
-			handleError(v, "Das Video konnte nicht hochgeladen werden", e);
-			return VideoTask.STOP;
+			throw new TaskException(v, "Das Video konnte nicht hochgeladen werden", e);
 		}
 		return VideoTask.CONTINUE;
 	}

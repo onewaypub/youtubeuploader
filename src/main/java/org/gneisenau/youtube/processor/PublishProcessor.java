@@ -24,12 +24,6 @@ public class PublishProcessor extends AbstractProcessor {
 
 	@Autowired
 	private List<PublishTask> releaseProcessingChain;
-	@Autowired
-	private VideoRepository videoDAO;
-	@Autowired
-	private UserSettingsRepository userSettingsDAO;
-	@Autowired
-	protected MailSendService mailService;
 
 	@Autowired
 	public PublishProcessor(ApplicationEventPublisher publisher) {
@@ -43,18 +37,9 @@ public class PublishProcessor extends AbstractProcessor {
 
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
-	protected void runChain(Video v) {
+	protected void runChain(Video v) throws Exception {
 		for (PublishTask chainItem : releaseProcessingChain) {
-			int process = PublishTask.STOP;
-			try {
-				process = chainItem.process(v);
-			} catch (Exception e) {
-				v.setState(State.Error);
-				process = PublishTask.STOP;
-			} finally {
-				videoDAO.persist(v);
-				videoDAO.flush();
-			}
+			int process = chainItem.process(v);
 			if (PublishTask.STOP == process) {
 				break;
 			}

@@ -24,12 +24,6 @@ public class YoutubeProcessor extends AbstractProcessor {
 
 	@Autowired
 	private List<YoutubeTask> youtubeProcessingChain;
-	@Autowired
-	private VideoRepository videoDAO;
-	@Autowired
-	private UserSettingsRepository userSettingsDAO;
-	@Autowired
-	protected MailSendService mailService;
 
 	@Autowired
 	public YoutubeProcessor(ApplicationEventPublisher publisher) {
@@ -43,18 +37,9 @@ public class YoutubeProcessor extends AbstractProcessor {
 
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
-	protected void runChain(Video v) {
+	protected void runChain(Video v) throws Exception {
 		for (YoutubeTask chainItem : youtubeProcessingChain) {
-			int process = YoutubeTask.STOP;
-			try {
-				process = chainItem.process(v);
-			} catch (Exception e) {
-				v.setState(State.Error);
-				process = YoutubeTask.STOP;
-			} finally {
-				videoDAO.persist(v);
-				videoDAO.flush();
-			}
+			int process = chainItem.process(v);
 			if (YoutubeTask.STOP == process) {
 				break;
 			}

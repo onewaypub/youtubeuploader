@@ -29,14 +29,13 @@ public class TranscodeTask extends AbstractProcessorTask implements VideoTask {
 
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
-	public int process(Video v) {
+	public int process(Video v) throws TaskException {
 		Validate.notNull(v, "Video is not given");
 		Validate.notEmpty(v.getVideo(), "Video is empty");
 
 		File oldFile = new File(v.getVideo());
 		if (!oldFile.exists()) {
-			handleError(v, "Datei existiert nicht.");
-			return VideoTask.STOP;
+			throw new TaskException(v, "Datei existiert nicht.");
 		}
 		
 		String baseName = FilenameUtils.getBaseName(v.getVideo());
@@ -47,13 +46,11 @@ public class TranscodeTask extends AbstractProcessorTask implements VideoTask {
 			v.setVideo(transcodedFile.getAbsolutePath());
 			oldFile.delete();
 		} catch (ExecuteException e) {
-			handleError(v, "Fehler beim Ausf\u00fchren des Transcodings");
 			transcodedFile.delete();
-			return VideoTask.STOP;
+			throw new TaskException(v, "Fehler beim Ausf\u00fchren des Transcodings");
 		} catch (IOException e) {
-			handleError(v, "Fehler beim Zugriff auf die Videodateien w\u00e4hrend des Transcodings");
 			transcodedFile.delete();
-			return VideoTask.STOP;
+			throw new TaskException(v, "Fehler beim Zugriff auf die Videodateien w\u00e4hrend des Transcodings");
 		}
 		return VideoTask.CONTINUE;
 	}
