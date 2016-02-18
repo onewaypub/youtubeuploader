@@ -77,11 +77,7 @@ public enum State {
 		}
 
 		public String getDisplayName() {
-<<<<<<< HEAD
-			return "Warte auf Ver\u00F6ffentlichung";
-=======
 			return "Warte auf Ver\u00f6ffentlichung";
->>>>>>> d84ea3f4a8069fde4670b7d633f65edbe6121366
 		}
 	},
 	Done {
@@ -94,11 +90,7 @@ public enum State {
 		}
 
 		public String getDisplayName() {
-<<<<<<< HEAD
-			return "Ver\u00F6ffentlicht";
-=======
 			return "Ver\u00f6ffentlicht";
->>>>>>> d84ea3f4a8069fde4670b7d633f65edbe6121366
 		}
 	},
 	Error {
