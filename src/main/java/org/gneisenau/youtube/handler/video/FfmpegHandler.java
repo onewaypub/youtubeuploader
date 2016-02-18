@@ -46,6 +46,7 @@ public class FfmpegHandler {
 		}
 		
 		String line = ioService.findFFMPEG() + " -i " + inputFile.getAbsolutePath()
+				//+ " -codec:v libvpx-vp9 -codec:a libopus -b:v 12000K -strict -2 -b:a 384k -r:a 48000 -movflags faststart "
 				+ " -codec:v libx264 -bf 2 -flags +cgop -pix_fmt yuv420p -codec:a aac -strict -2 -b:a 384k -r:a 48000 -movflags faststart "
 				+ outputFile.getAbsolutePath();
 		String newFile = outputFile.getAbsolutePath();

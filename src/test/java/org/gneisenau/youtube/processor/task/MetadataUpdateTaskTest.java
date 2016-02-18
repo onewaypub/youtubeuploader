@@ -206,8 +206,8 @@ public class MetadataUpdateTaskTest {
 		v.setYoutubeId("test");
 		v.setTitle("title");
 		v.setUsername("username");
-		doThrow(AuthorizeException.class).when(vidUploader).updateMetadata(any(PrivacySetting.class), anyString(),
-				any(List.class), anyString(), anyString(), anyString(), anyString(), anyString(), eq(false));
+		doThrow(AuthorizeException.class).when(vidUploader).updateMetadata(anyString(), any(List.class), anyString(),
+				anyString(), anyString(), anyString(), anyString(), eq(false));
 		assertEquals(VideoTask.STOP, task.process(v));
 	}
 
@@ -219,8 +219,8 @@ public class MetadataUpdateTaskTest {
 		v.setYoutubeId("test");
 		v.setTitle("title");
 		v.setUsername("username");
-		doThrow(UpdateException.class).when(vidUploader).updateMetadata(any(PrivacySetting.class), anyString(),
-				any(List.class), anyString(), anyString(), anyString(), anyString(), anyString(), eq(false));
+		doThrow(UpdateException.class).when(vidUploader).updateMetadata(anyString(), any(List.class), anyString(),
+				anyString(), anyString(), anyString(), anyString(), eq(false));
 		assertEquals(VideoTask.STOP, task.process(v));
 	}
 
@@ -232,8 +232,8 @@ public class MetadataUpdateTaskTest {
 		v.setYoutubeId("test");
 		v.setTitle("title");
 		v.setUsername("username");
-		doThrow(NotFoundException.class).when(vidUploader).updateMetadata(any(PrivacySetting.class), anyString(),
-				any(List.class), anyString(), anyString(), anyString(), anyString(), anyString(), eq(false));
+		doThrow(NotFoundException.class).when(vidUploader).updateMetadata(anyString(), any(List.class), anyString(),
+				anyString(), anyString(), anyString(), anyString(), eq(false));
 		assertEquals(VideoTask.STOP, task.process(v));
 	}
 

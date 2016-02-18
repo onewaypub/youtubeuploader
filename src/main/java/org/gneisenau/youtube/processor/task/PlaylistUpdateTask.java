@@ -38,10 +38,10 @@ public class PlaylistUpdateTask extends AbstractProcessorTask implements Publish
 		try {
 			vidUploader.insertPlaylistItem(v.getPlaylistId(), v.getYoutubeId(), v.getUsername());
 		} catch (IOException e) {
-			handleError(v, "Kann Video nicht der Playlist hinzuf�gen", e);
+			handleError(v, "Kann Video nicht der Playlist hinzuf\u00fcgen", e);
 			return VideoTask.STOP;
 		} catch (AuthorizeException e) {
-			handleError(v, "Kann Video nicht der Playlist hinzuf�gen; Autorisierung fehlgeschlagen", e);
+			handleError(v, "Kann Video nicht der Playlist hinzuf\u00fcgen; Autorisierung fehlgeschlagen", e);
 			return VideoTask.STOP;
 		}
 		if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyReleaseState()) {

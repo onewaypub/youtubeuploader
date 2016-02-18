@@ -29,6 +29,7 @@ import org.gneisenau.youtube.handler.youtube.ImageHandler;
 import org.gneisenau.youtube.handler.youtube.VideoHandler;
 import org.gneisenau.youtube.handler.youtube.YouTubeUtils;
 import org.gneisenau.youtube.handler.youtube.YoutubeHandler;
+import org.gneisenau.youtube.model.PrivacySetting;
 import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
@@ -156,6 +157,7 @@ public class VideoController {
 				files.add(newFile);
 				Video v = new Video();
 				v.setTitle(title);
+				v.setPrivacySetting(PrivacySetting.Private);
 				v.setVideo(newFile.getAbsolutePath());
 				v.setState(State.WaitForProcessing);
 				v.setUsername(secUtil.getPrincipal());
@@ -277,7 +279,7 @@ public class VideoController {
 	private void updateYoutubeVideo(Video v)
 			throws AuthorizeException, UpdateException, NotFoundException, IOException {
 		if (StringUtils.isNotBlank(v.getYoutubeId())) {
-			videoHandler.updateMetadata(v.getPrivacySetting(), v.getYoutubeId(), youtubeUtils.getTagsList(v),
+			videoHandler.updateMetadata(v.getYoutubeId(), youtubeUtils.getTagsList(v),
 					v.getTitle(), youtubeUtils.createDescription(v), v.getChannelId(), v.getCategoryId(),
 					v.getUsername(), false);
 			if (StringUtils.isNotBlank(v.getPlaylistId())) {
@@ -326,8 +328,8 @@ public class VideoController {
 			websocketEventBus.notifyDeleteVideo(videoTO);
 			return new ResponseEntity<>("{}", HttpStatus.OK);
 		} catch (Exception e) {
-			logger.error("Fehler beim L�schen des Videos", e);
-			ErrorEvent event = new ErrorEvent("Video konnte nicht gel�scht werden", this);
+			logger.error("Fehler beim L\u00f6schen des Videos", e);
+			ErrorEvent event = new ErrorEvent("Video konnte nicht gel\u00f6scht werden", this);
 			websocketEventBus.onApplicationEvent(event);
 			return new ResponseEntity<>("{}", HttpStatus.OK);
 		}
