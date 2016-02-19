@@ -59,14 +59,16 @@ public class VideoRepositoryTest {
 		Video v = repo.findById(1L);
 		v.setState(State.WaitForProcessing);
 		List<Video> list = repo.findAllWaitForPorcessing();
-		assertEquals(2, list.size());
+		assertEquals(4, list.size());
 		assertEquals(new Long(1), list.get(0).getId());
 		assertEquals(new Long(2), list.get(1).getId());
+		assertEquals(new Long(3), list.get(2).getId());
+		assertEquals(new Long(4), list.get(3).getId());
 		
 		v = repo.findById(1L);
 		v.setState(State.WaitForUpload);
 		list = repo.findAllWaitForPorcessing();
-		assertEquals(1, list.size());
+		assertEquals(3, list.size());
 		assertEquals(new Long(2), list.get(0).getId());
 	}
 

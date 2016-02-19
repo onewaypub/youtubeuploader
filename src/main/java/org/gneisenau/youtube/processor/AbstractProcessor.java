@@ -1,11 +1,6 @@
 package org.gneisenau.youtube.processor;
 
-import java.io.ByteArrayInputStream;
 import java.util.List;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 
 import org.gneisenau.youtube.events.StatusUpdateEvent;
 import org.gneisenau.youtube.message.MailSendService;
@@ -14,7 +9,6 @@ import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
 import org.gneisenau.youtube.processor.task.TaskException;
-import org.gneisenau.youtube.processor.task.YoutubeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -66,12 +60,12 @@ public abstract class AbstractProcessor {
 			v.setState(v.getState().nextState());
 		} catch (TaskException e) {
 			v.setState(State.Error);
-			if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyErrorState()) {
+			if (userSettingsDAO.findOrCreateByUserName(v.getUsername()).isNotifyErrorState()) {
 				mailService.sendErrorMail(e.getMessage(), v.getTitle(), v.getState(), v.getUsername());
 			}
 		} catch (Exception e) {
 			v.setState(State.Error);
-			if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyErrorState()) {
+			if (userSettingsDAO.findOrCreateByUserName(v.getUsername()).isNotifyErrorState()) {
 				mailService.sendErrorMail("Es ist ein Fehler bei der Verarbeitung des Videos aufgetreten", v.getTitle(),
 						v.getState(), v.getUsername());
 			}

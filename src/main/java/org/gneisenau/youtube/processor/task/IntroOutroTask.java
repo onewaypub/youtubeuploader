@@ -36,7 +36,7 @@ public class IntroOutroTask extends AbstractProcessorTask implements VideoTask {
 
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
-	public int process(Video v) throws TaskException {
+	public ChainAction process(Video v) throws TaskException {
 		Validate.notNull(v, "No Video provided");
 		Validate.notEmpty(v.getVideo(), "No video for processing found");
 
@@ -61,7 +61,7 @@ public class IntroOutroTask extends AbstractProcessorTask implements VideoTask {
 		}
 		v.setVideo(newFile.getAbsolutePath());
 		oldFile.delete();
-		return VideoTask.CONTINUE;
+		return ChainAction.CONTINUE;
 	}
 
 }

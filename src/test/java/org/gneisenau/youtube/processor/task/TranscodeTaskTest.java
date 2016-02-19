@@ -3,6 +3,7 @@ package org.gneisenau.youtube.processor.task;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
@@ -66,11 +67,11 @@ public class TranscodeTaskTest {
 		s.setNotifyProcessedState(true);
 		s.setNotifyReleaseState(true);
 		s.setNotifyUploadState(true);
-		when(userSettingsDAO.findByUserName(anyString())).thenReturn(s);
+		when(userSettingsDAO.findOrCreateByUserName(anyString())).thenReturn(s);
 	}
 
 	@Test
-	public void testProcess() throws ExecuteException, IOException {
+	public void testProcess() throws Exception {
 		File original = new File(IntroOutroTaskTest.class.getResource("/SampleVideo_1080x720_1mb.mp4").getPath());
 		File srcVideo = new File("dest.mp4");
 		FileUtils.copyFile(original, srcVideo);
@@ -78,21 +79,21 @@ public class TranscodeTaskTest {
 		v.setVideo(srcVideo.getAbsolutePath());
 		v.setId(1L);
 		when(videoProcessor.transcode(any(File.class), any(File.class), any(Long.class))).thenReturn("1");
-		assertEquals(VideoTask.CONTINUE, task.process(v));
+		assertEquals(ChainAction.CONTINUE, task.process(v));
 		assertFalse(srcVideo.exists());
 		assertEquals(new File("dest_transcoded.mp4").getAbsolutePath(), v.getVideo());
 	}
 
-	@Test(expected=NullPointerException.class)
-	public void testProcessVideoIsNull() throws ExecuteException, IOException {
+	@Test(expected = NullPointerException.class)
+	public void testProcessVideoIsNull() throws Exception {
 		Video v = new Video();
 		v.setVideo(null);
 		v.setId(1L);
 		task.process(v);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
-	public void testProcessVideoIsEmpty() throws ExecuteException, IOException {
+	@Test(expected = IllegalArgumentException.class)
+	public void testProcessVideoIsEmpty() throws Exception {
 		Video v = new Video();
 		v.setVideo("");
 		v.setId(1L);
@@ -100,34 +101,43 @@ public class TranscodeTaskTest {
 	}
 
 	@Test
-	public void testProcessVideoNotExist() throws ExecuteException, IOException {
+	public void testProcessVideoNotExist() throws Exception {
 		File srcVideo = new File("dest.mp4");
 		Video v = new Video();
 		v.setVideo(srcVideo.getAbsolutePath());
 		v.setId(1L);
-		assertEquals(VideoTask.STOP, task.process(v));
-		assertFalse(srcVideo.exists());
-		assertEquals(new File("dest.mp4").getAbsolutePath(), v.getVideo());
+		try {
+			task.process(v);
+			fail("expected TaskException not thrown");
+		} catch (TaskException e) {
+			assertFalse(srcVideo.exists());
+			assertEquals(new File("dest.mp4").getAbsolutePath(), v.getVideo());
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testProcessExecuteException() throws ExecuteException, IOException {
+	public void testProcessExecuteException() throws Exception {
 		File original = new File(IntroOutroTaskTest.class.getResource("/SampleVideo_1080x720_1mb.mp4").getPath());
 		File srcVideo = new File("dest.mp4");
 		FileUtils.copyFile(original, srcVideo);
 		Video v = new Video();
 		v.setVideo(srcVideo.getAbsolutePath());
 		v.setId(1L);
-		when(videoProcessor.transcode(any(File.class), any(File.class), any(Long.class))).thenThrow(ExecuteException.class);
-		assertEquals(VideoTask.STOP, task.process(v));
-		assertTrue(srcVideo.exists());
-		srcVideo.delete();
+		when(videoProcessor.transcode(any(File.class), any(File.class), any(Long.class)))
+				.thenThrow(ExecuteException.class);
+		try {
+			task.process(v);
+			fail("expected TaskException not thrown");
+		} catch (TaskException e) {
+			assertTrue(srcVideo.exists());
+			srcVideo.delete();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testProcessIOException() throws ExecuteException, IOException {
+	public void testProcessIOException() throws Exception {
 		File original = new File(IntroOutroTaskTest.class.getResource("/SampleVideo_1080x720_1mb.mp4").getPath());
 		File srcVideo = new File("dest.mp4");
 		FileUtils.copyFile(original, srcVideo);
@@ -135,9 +145,13 @@ public class TranscodeTaskTest {
 		v.setVideo(srcVideo.getAbsolutePath());
 		v.setId(1L);
 		when(videoProcessor.transcode(any(File.class), any(File.class), any(Long.class))).thenThrow(IOException.class);
-		assertEquals(VideoTask.STOP, task.process(v));
-		assertTrue(srcVideo.exists());
-		srcVideo.delete();
+		try {
+			task.process(v);
+			fail("expected TaskException not thrown");
+		} catch (TaskException e) {
+			assertTrue(srcVideo.exists());
+			srcVideo.delete();
+		}
 	}
 
 }

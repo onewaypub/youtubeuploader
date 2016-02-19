@@ -45,7 +45,7 @@ public class MailSendService {
 	}
 
 	private void setMailTo(Email email, String username) throws EmailException {
-		UserSettings settings = userSettingsDAO.findByUserName(username);
+		UserSettings settings = userSettingsDAO.findOrCreateByUserName(username);
 		email.addTo(settings.getMailTo());
 	}
 

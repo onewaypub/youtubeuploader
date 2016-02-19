@@ -33,12 +33,12 @@ public class ReleaseTask extends AbstractProcessorTask implements PublishTask {
 
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
-	public int process(Video v) throws TaskException {
+	public ChainAction process(Video v) throws TaskException {
 		Validate.notNull(v, "Video is not given");
 		Validate.notEmpty(v.getUsername(), "username not given");
 
 		if (StringUtils.isBlank(v.getYoutubeId()) || v.getReleaseDate() == null) {
-			return PublishTask.CONTINUE;
+			return ChainAction.STOP;
 		}
 		try {
 			vidUploader.release(v.getYoutubeId(), PrivacySetting.Public, v.getUsername());
@@ -49,7 +49,7 @@ public class ReleaseTask extends AbstractProcessorTask implements PublishTask {
 		} catch (UpdateException e) {
 			throw new TaskException(v, "Kann Video nicht der Playlist hinzuf\u00fcgen", e);
 		}
-		return PublishTask.CONTINUE;
+		return ChainAction.CONTINUE;
 	}
 
 }

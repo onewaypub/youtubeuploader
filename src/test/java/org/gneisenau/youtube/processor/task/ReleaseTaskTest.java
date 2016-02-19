@@ -66,92 +66,104 @@ public class ReleaseTaskTest {
 		s.setNotifyProcessedState(true);
 		s.setNotifyReleaseState(true);
 		s.setNotifyUploadState(true);
-		when(userSettingsDAO.findByUserName(anyString())).thenReturn(s);
+		when(userSettingsDAO.findOrCreateByUserName(anyString())).thenReturn(s);
 	}
 
 	@Test
-	public void testProcess() {
+	public void testProcess() throws Exception{
 		Video v = new Video();
 		v.setYoutubeId("test");
 		v.setReleaseDate(new Date());
 		v.setUsername("username");
-		assertEquals(PublishTask.CONTINUE,task.process(v));
+		assertEquals(ChainAction.CONTINUE,task.process(v));
 	}
 
 	@Test
-	public void testProcessYoutubeIdIsNull() {
+	public void testProcessYoutubeIdIsNull() throws Exception{
 		Video v = new Video();
 		v.setYoutubeId(null);
 		v.setReleaseDate(new Date());
 		v.setUsername("username");
-		assertEquals(PublishTask.CONTINUE,task.process(v));
+		assertEquals(ChainAction.STOP,task.process(v));
 	}
 
 	@Test
-	public void testProcessYoutubeIdIsEmpty() {
+	public void testProcessYoutubeIdIsEmpty() throws Exception{
 		Video v = new Video();
 		v.setYoutubeId("");
 		v.setReleaseDate(new Date());
 		v.setUsername("username");
-		assertEquals(PublishTask.CONTINUE,task.process(v));
+		assertEquals(ChainAction.STOP,task.process(v));
 	}
 
 	@Test
-	public void testProcessReleaseDateIsNull() {
+	public void testProcessReleaseDateIsNull()throws Exception {
 		Video v = new Video();
 		v.setYoutubeId("1");
 		v.setReleaseDate(null);
 		v.setUsername("username");
-		assertEquals(PublishTask.CONTINUE,task.process(v));
+		assertEquals(ChainAction.STOP,task.process(v));
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testProcessVideoIsNull() {
+	public void testProcessVideoIsNull()throws Exception {
 		task.process(null);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testProcessUsernameIsNull() {
+	public void testProcessUsernameIsNull() throws Exception{
 		Video v = new Video();
 		v.setUsername(null);
 		task.process(v);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testProcessUsernameIsEmpty() {
+	public void testProcessUsernameIsEmpty() throws Exception{
 		Video v = new Video();
 		v.setUsername("");
 		task.process(v);
 	}
 
 	@Test
-	public void testProcessAuthorizedException() throws AuthorizeException, UpdateException, NotFoundException {
+	public void testProcessAuthorizedException() throws Exception {
 		Video v = new Video();
 		v.setYoutubeId("test");
 		v.setReleaseDate(new Date());
 		v.setUsername("username");
 		doThrow(AuthorizeException.class).when(vidUploader).release(anyString(), any(PrivacySetting.class), anyString());
-		assertEquals(PublishTask.STOP,task.process(v));
+		try {
+			task.process(v);
+			fail("expected TaskException not thrown");
+		} catch (TaskException e) {
+		}
 	}
 
 	@Test
-	public void testProcessNotFoundException() throws AuthorizeException, UpdateException, NotFoundException {
+	public void testProcessNotFoundException() throws Exception {
 		Video v = new Video();
 		v.setYoutubeId("test");
 		v.setReleaseDate(new Date());
 		v.setUsername("username");
 		doThrow(NotFoundException.class).when(vidUploader).release(anyString(), any(PrivacySetting.class), anyString());
-		assertEquals(PublishTask.STOP,task.process(v));
+		try {
+			task.process(v);
+			fail("expected TaskException not thrown");
+		} catch (TaskException e) {
+		}
 	}
 
 	@Test
-	public void testProcessUpdateException() throws AuthorizeException, UpdateException, NotFoundException {
+	public void testProcessUpdateException() throws Exception {
 		Video v = new Video();
 		v.setYoutubeId("test");
 		v.setReleaseDate(new Date());
 		v.setUsername("username");
 		doThrow(UpdateException.class).when(vidUploader).release(anyString(), any(PrivacySetting.class), anyString());
-		assertEquals(PublishTask.STOP,task.process(v));
+		try {
+			task.process(v);
+			fail("expected TaskException not thrown");
+		} catch (TaskException e) {
+		}
 	}
 
 

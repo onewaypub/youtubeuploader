@@ -62,48 +62,56 @@ public class PlaylistUpdateTaskTest {
 		s.setNotifyProcessedState(true);
 		s.setNotifyReleaseState(true);
 		s.setNotifyUploadState(true);
-		when(userSettingsDAO.findByUserName(anyString())).thenReturn(s);
+		when(userSettingsDAO.findOrCreateByUserName(anyString())).thenReturn(s);
 	}
 
 	@Test
-	public void testProcess() throws IOException, AuthorizeException {
+	public void testProcess() throws Exception {
 		Video v = new Video();
 		v.setPlaylistId("playlistId");
 		v.setYoutubeId("test");
 		v.setUsername("username");
 		when(vidUploader.insertPlaylistItem(anyString(), anyString(), anyString())).thenReturn("1");
-		assertEquals(VideoTask.CONTINUE, task.process(v));
+		assertEquals(ChainAction.CONTINUE, task.process(v));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testProcessWithAuthorizeExcpetion() throws IOException, AuthorizeException {
+	public void testProcessWithAuthorizeExcpetion() throws Exception {
 		Video v = new Video();
 		v.setPlaylistId("playlistId");
 		v.setYoutubeId("test");
 		v.setUsername("username");
 		when(vidUploader.insertPlaylistItem(anyString(), anyString(), anyString())).thenThrow(AuthorizeException.class);
-		assertEquals(VideoTask.STOP, task.process(v));
+		try {
+			task.process(v);
+			fail("expected TaskException not thrown");
+		} catch (TaskException e) {
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testProcessWithIOExcpetion() throws IOException, AuthorizeException {
+	public void testProcessWithIOExcpetion() throws Exception {
 		Video v = new Video();
 		v.setPlaylistId("playlistId");
 		v.setYoutubeId("test");
 		v.setUsername("username");
 		when(vidUploader.insertPlaylistItem(anyString(), anyString(), anyString())).thenThrow(IOException.class);
-		assertEquals(VideoTask.STOP, task.process(v));
+		try {
+			task.process(v);
+			fail("expected TaskException not thrown");
+		} catch (TaskException e) {
+		}
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testProcessVideoIsNull() {
+	public void testProcessVideoIsNull() throws Exception{
 		task.process(null);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testProcessUsernameIsNull() {
+	public void testProcessUsernameIsNull() throws Exception{
 		Video v = new Video();
 		v.setPlaylistId("playlistId");
 		v.setYoutubeId("test");
@@ -112,7 +120,7 @@ public class PlaylistUpdateTaskTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testProcessUsernameIsEmpty() {
+	public void testProcessUsernameIsEmpty() throws Exception{
 		Video v = new Video();
 		v.setPlaylistId("playlistId");
 		v.setYoutubeId("test");
@@ -121,39 +129,39 @@ public class PlaylistUpdateTaskTest {
 	}
 
 	@Test
-	public void testProcessPlayListIdIsNull() {
+	public void testProcessPlayListIdIsNull() throws Exception{
 		Video v = new Video();
 		v.setPlaylistId(null);
 		v.setYoutubeId("test");
 		v.setUsername("username");
-		assertEquals(VideoTask.CONTINUE, task.process(v));
+		assertEquals(ChainAction.CONTINUE, task.process(v));
 	}
 
 	@Test
-	public void testProcessPlayListIdIsEmpty() {
+	public void testProcessPlayListIdIsEmpty() throws Exception{
 		Video v = new Video();
 		v.setPlaylistId("");
 		v.setYoutubeId("test");
 		v.setUsername("username");
-		assertEquals(VideoTask.CONTINUE, task.process(v));
+		assertEquals(ChainAction.CONTINUE, task.process(v));
 	}
 
 	@Test
-	public void testProcessYoutubeIdIsNull() {
+	public void testProcessYoutubeIdIsNull() throws Exception{
 		Video v = new Video();
 		v.setPlaylistId("playlistId");
 		v.setYoutubeId(null);
 		v.setUsername("username");
-		assertEquals(VideoTask.CONTINUE, task.process(v));
+		assertEquals(ChainAction.CONTINUE, task.process(v));
 	}
 
 	@Test
-	public void testProcessYoutubeIdIsEmpty() {
+	public void testProcessYoutubeIdIsEmpty() throws Exception{
 		Video v = new Video();
 		v.setPlaylistId("playlistId");
 		v.setYoutubeId("");
 		v.setUsername("username");
-		assertEquals(VideoTask.CONTINUE, task.process(v));
+		assertEquals(ChainAction.CONTINUE, task.process(v));
 	}
 
 

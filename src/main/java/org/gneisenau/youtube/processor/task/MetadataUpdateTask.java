@@ -31,12 +31,12 @@ public class MetadataUpdateTask extends AbstractProcessorTask implements Youtube
 
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
-	public int process(Video v) throws Exception{
+	public ChainAction process(Video v) throws Exception{
 		Validate.notNull(v, "Video is null");
 		Validate.notEmpty(v.getUsername(), "Username is null");
 		
 		if (StringUtils.isBlank(v.getYoutubeId())) {
-			return CONTINUE;
+			return ChainAction.CONTINUE;
 		}
 		try {
 			vidUploader.updateMetadata(v.getYoutubeId(), utils.getTagsList(v), v.getTitle(),
@@ -48,6 +48,6 @@ public class MetadataUpdateTask extends AbstractProcessorTask implements Youtube
 		} catch (NotFoundException e) {
 			throw new TaskException(v, "Video konnte nicht mehr gefunden werden", e);
 		}
-		return VideoTask.CONTINUE;
+		return ChainAction.CONTINUE;
 	}
 }

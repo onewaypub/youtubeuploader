@@ -29,7 +29,7 @@ public class TranscodeTask extends AbstractProcessorTask implements VideoTask {
 
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
-	public int process(Video v) throws TaskException {
+	public ChainAction process(Video v) throws TaskException {
 		Validate.notNull(v, "Video is not given");
 		Validate.notEmpty(v.getVideo(), "Video is empty");
 
@@ -52,7 +52,7 @@ public class TranscodeTask extends AbstractProcessorTask implements VideoTask {
 			transcodedFile.delete();
 			throw new TaskException(v, "Fehler beim Zugriff auf die Videodateien w\u00e4hrend des Transcodings");
 		}
-		return VideoTask.CONTINUE;
+		return ChainAction.CONTINUE;
 	}
 
 }

@@ -34,7 +34,7 @@ public class VideoUploadTask extends AbstractProcessorTask implements YoutubeTas
 
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
-	public int process(Video v) throws TaskException {
+	public ChainAction process(Video v) throws TaskException {
 		File video = new File(v.getVideo());
 		v.setState(State.OnUpload);
 		try {
@@ -67,7 +67,7 @@ public class VideoUploadTask extends AbstractProcessorTask implements YoutubeTas
 		} catch (UploadException e) {
 			throw new TaskException(v, "Das Video konnte nicht hochgeladen werden", e);
 		}
-		return VideoTask.CONTINUE;
+		return ChainAction.CONTINUE;
 	}
 
 }

@@ -53,7 +53,7 @@ public class VideoUploadTaskTest {
 		s.setNotifyProcessedState(true);
 		s.setNotifyReleaseState(true);
 		s.setNotifyUploadState(true);
-		when(userSettingsDAO.findByUserName(anyString())).thenReturn(s);
+		when(userSettingsDAO.findOrCreateByUserName(anyString())).thenReturn(s);
 	}
 
 	@Test

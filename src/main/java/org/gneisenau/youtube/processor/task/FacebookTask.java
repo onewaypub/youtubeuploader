@@ -33,19 +33,16 @@ public class FacebookTask extends AbstractProcessorTask implements PublishTask {
 	}
 
 	@Override
-	public int process(Video v) {
-		ConnectionRepository repository = usersConnectionFactory.createConnectionRepository(v.getUsername());
-		List<Connection<Facebook>> connections = repository.findConnections(Facebook.class);
-		if (connections.size() != 1) {
-			return PublishTask.CONTINUE;
-		}
-		if (!connections.get(0).test()) {
-			return PublishTask.CONTINUE;
+	public ChainAction process(Video v) {
+		UserSettings settings = userSettings.findOrCreateByUserName(v.getUsername());
+		if (!settings.isPostOnFacebook() || StringUtils.isBlank(settings.getFacebookPost())) {
+			return ChainAction.CONTINUE;
 		}
 
-		UserSettings settings = userSettings.findByUserName(v.getUsername());
-		if (!settings.isPostOnFacebook() || StringUtils.isBlank(settings.getFacebookPost())) {
-			return PublishTask.CONTINUE;
+		ConnectionRepository repository = usersConnectionFactory.createConnectionRepository(v.getUsername());
+		List<Connection<Facebook>> connections = repository.findConnections(Facebook.class);
+		if (connections.size() != 1 || !connections.get(0).test()) {
+			return ChainAction.CONTINUE;
 		}
 
 		String text = textUtil.replacePlaceholder(settings.getFacebookPost(), v);
@@ -54,7 +51,7 @@ public class FacebookTask extends AbstractProcessorTask implements PublishTask {
 		Facebook facebook = fConnection.getApi();
 		facebook.feedOperations().updateStatus(text);
 
-		return PublishTask.CONTINUE;
+		return ChainAction.CONTINUE;
 	}
 
 }

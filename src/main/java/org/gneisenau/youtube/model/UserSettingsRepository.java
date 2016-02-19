@@ -37,7 +37,7 @@ public class UserSettingsRepository {
 		return v;
 	}
 
-	public UserSettings findByUserName(String name) {
+	public UserSettings findOrCreateByUserName(String name) {
 		Query query = em.createQuery("from UserSettings where username = :username");
 		query.setParameter("username", name);
 		Object singleResult;
@@ -52,8 +52,8 @@ public class UserSettingsRepository {
 		return (UserSettings) singleResult;
 	}
 
-	public UserSettings findByLoggedInUser() {
-		return findByUserName(secUtil.getPrincipal());
+	public UserSettings findOrCreateByLoggedInUser() {
+		return findOrCreateByUserName(secUtil.getPrincipal());
 	}
 
 	public void persist(UserSettings video) {

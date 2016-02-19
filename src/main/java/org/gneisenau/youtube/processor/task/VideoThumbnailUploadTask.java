@@ -34,9 +34,9 @@ public class VideoThumbnailUploadTask extends AbstractProcessorTask implements Y
 
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
-	public int process(Video v) throws TaskException {
+	public ChainAction process(Video v) throws TaskException {
 		if (StringUtils.isBlank(v.getThumbnail()) || StringUtils.isBlank(v.getYoutubeId())) {
-			return CONTINUE;
+			return ChainAction.CONTINUE;
 		}
 		File thumb = new File(v.getThumbnail());
 		v.setState(State.OnUpload);
@@ -67,7 +67,7 @@ public class VideoThumbnailUploadTask extends AbstractProcessorTask implements Y
 		} catch (UploadException e) {
 			throw new TaskException(v, "Das Thumbnails konnte nicht hochgeladen werden", e);
 		}
-		return VideoTask.CONTINUE;
+		return ChainAction.CONTINUE;
 	}
 
 }

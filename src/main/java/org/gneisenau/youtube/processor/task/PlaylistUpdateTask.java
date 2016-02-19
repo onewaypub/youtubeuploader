@@ -28,12 +28,12 @@ public class PlaylistUpdateTask extends AbstractProcessorTask implements Publish
 
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
-	public int process(Video v) throws TaskException {
+	public ChainAction process(Video v) throws TaskException {
 		Validate.notNull(v, "Video is not given");
 		Validate.notEmpty(v.getUsername(), "username not given");
 		
 		if (StringUtils.isBlank(v.getYoutubeId()) || StringUtils.isBlank(v.getPlaylistId())) {
-			return CONTINUE;
+			return ChainAction.CONTINUE;
 		}
 		try {
 			vidUploader.insertPlaylistItem(v.getPlaylistId(), v.getYoutubeId(), v.getUsername());
@@ -42,7 +42,7 @@ public class PlaylistUpdateTask extends AbstractProcessorTask implements Publish
 		} catch (AuthorizeException e) {
 			throw new TaskException(v, "Kann Video nicht der Playlist hinzuf\u00fcgen; Autorisierung fehlgeschlagen", e);
 		}
-		return VideoTask.CONTINUE;
+		return ChainAction.CONTINUE;
 	}
 
 }

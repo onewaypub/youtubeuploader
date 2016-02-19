@@ -16,8 +16,8 @@ public class CleanUpTask extends AbstractProcessorTask implements YoutubeTask {
 
 	@Override
 	@Transactional(propagation = Propagation.MANDATORY)
-	public int process(Video v) {
-		return VideoTask.CONTINUE;
+	public ChainAction process(Video v) {
+		return ChainAction.CONTINUE;
 	}
 
 }

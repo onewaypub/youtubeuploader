@@ -3,16 +3,16 @@
 		privacySetting="0" state="0" youtubeId="0" thumbnailUrl="0" videoUrl="0"
 		title="test1" description="0" categoryId="0" channelId="0" playlistId="0"
 		publisher="0" published="0" developer="0" genre="0" shorttitle="0"
-		username="0" ageRestricted="0" />
+		username="0" ageRestricted="false" />
 	<video id="2" video="0" thumbnail="0" releaseDate="2007-12-31 23:59:59" tags="0"
 		privacySetting="0" state="0" youtubeId="0" thumbnailUrl="0" videoUrl="0"
 		title="test2" description="0" categoryId="0" channelId="0" playlistId="0"
 		publisher="0" published="0" developer="0" genre="0" shorttitle="0"
-		username="0" ageRestricted="0" />
-	<video id="3" privacySetting="0" state="0" username="0"/>
+		username="0" ageRestricted="false" />
+	<video id="3" privacySetting="0" state="0" username="0" ageRestricted="false" />
 	<video id="4" video="SampleVideo_1080x720_1mb.mp4" releaseDate="2007-12-31 23:59:59" tags="0"
 		privacySetting="0" state="0" youtubeId="ysert" 
 		title="test4" description="0" categoryId="0" channelId="0" playlistId="0"
 		publisher="0" published="0" developer="0" genre="0" shorttitle="0"
-		username="0" ageRestricted="0" />
+		username="0" ageRestricted="false" />
 </dataset>

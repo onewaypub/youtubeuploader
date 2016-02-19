@@ -46,7 +46,7 @@ public class SettingsController {
 	@RequestMapping(value = "/settings", method = RequestMethod.GET)
 	public ModelAndView init(HttpServletRequest request, HttpServletResponse response) {
 
-		UserSettingsTO settings = dozerBeanMapper.map(userSettingsDAO.findByLoggedInUser(), UserSettingsTO.class);
+		UserSettingsTO settings = dozerBeanMapper.map(userSettingsDAO.findOrCreateByLoggedInUser(), UserSettingsTO.class);
 
 		ModelAndView model = new ModelAndView("settings");
 		model.addObject("usersettings", settings);
@@ -66,7 +66,7 @@ public class SettingsController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String save(@Valid UserSettingsTO to, BindingResult result, Model m) {
 
-		UserSettings settings = userSettingsDAO.findByLoggedInUser();
+		UserSettings settings = userSettingsDAO.findOrCreateByLoggedInUser();
 
 		dozerBeanMapper.map(to, settings);
 

@@ -79,11 +79,11 @@ public class MetadataUpdateTaskTest {
 		s.setNotifyProcessedState(true);
 		s.setNotifyReleaseState(true);
 		s.setNotifyUploadState(true);
-		when(userSettingsDAO.findByUserName(anyString())).thenReturn(s);
+		when(userSettingsDAO.findOrCreateByUserName(anyString())).thenReturn(s);
 	}
 
 	@Test
-	public void testProcess() {
+	public void testProcess() throws Exception {
 		Video v = new Video();
 		v.setPrivacySetting(PrivacySetting.Private);
 		v.setYoutubeId("test");
@@ -99,11 +99,11 @@ public class MetadataUpdateTaskTest {
 		v.setPublisher("publisher");
 		v.setPublished("12.12.2015");
 
-		assertEquals(VideoTask.CONTINUE, task.process(v));
+		assertEquals(ChainAction.CONTINUE, task.process(v));
 	}
 
 	@Test
-	public void testProcessWithNullYoutubeId() {
+	public void testProcessWithNullYoutubeId() throws Exception {
 		Video v = new Video();
 		v.setPrivacySetting(PrivacySetting.Private);
 		v.setYoutubeId(null);
@@ -119,11 +119,11 @@ public class MetadataUpdateTaskTest {
 		v.setPublisher("publisher");
 		v.setPublished("12.12.2015");
 
-		assertEquals(VideoTask.CONTINUE, task.process(v));
+		assertEquals(ChainAction.CONTINUE, task.process(v));
 	}
 
 	@Test
-	public void testProcessWithEmptyYoutubeId() {
+	public void testProcessWithEmptyYoutubeId() throws Exception {
 		Video v = new Video();
 		v.setPrivacySetting(PrivacySetting.Private);
 		v.setYoutubeId("");
@@ -139,11 +139,11 @@ public class MetadataUpdateTaskTest {
 		v.setPublisher("publisher");
 		v.setPublished("12.12.2015");
 
-		assertEquals(VideoTask.CONTINUE, task.process(v));
+		assertEquals(ChainAction.CONTINUE, task.process(v));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testProcessWithEmptyUsername() {
+	public void testProcessWithEmptyUsername() throws Exception {
 		Video v = new Video();
 		v.setPrivacySetting(PrivacySetting.Private);
 		v.setYoutubeId("1");
@@ -163,7 +163,7 @@ public class MetadataUpdateTaskTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testProcessWithNullUsername() {
+	public void testProcessWithNullUsername() throws Exception {
 		Video v = new Video();
 		v.setPrivacySetting(PrivacySetting.Private);
 		v.setYoutubeId("1");
@@ -183,24 +183,24 @@ public class MetadataUpdateTaskTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testProcessWithNullVideo() {
+	public void testProcessWithNullVideo() throws Exception {
 		task.process(null);
 	}
 
 	@Test
-	public void testProcessWithOnlyMandatory() {
+	public void testProcessWithOnlyMandatory() throws Exception {
 		Video v = new Video();
 		v.setPrivacySetting(PrivacySetting.Private);
 		v.setYoutubeId("test");
 		v.setTitle("title");
 		v.setUsername("username");
 
-		assertEquals(VideoTask.CONTINUE, task.process(v));
+		assertEquals(ChainAction.CONTINUE, task.process(v));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testProcessWithAuthorizeException() throws AuthorizeException, UpdateException, NotFoundException {
+	public void testProcessWithAuthorizeException() throws Exception {
 		Video v = new Video();
 		v.setPrivacySetting(PrivacySetting.Private);
 		v.setYoutubeId("test");
@@ -208,12 +208,16 @@ public class MetadataUpdateTaskTest {
 		v.setUsername("username");
 		doThrow(AuthorizeException.class).when(vidUploader).updateMetadata(anyString(), any(List.class), anyString(),
 				anyString(), anyString(), anyString(), anyString(), eq(false));
-		assertEquals(VideoTask.STOP, task.process(v));
+		try {
+			task.process(v);
+			fail("expected TaskException not thrown");
+		} catch (TaskException e) {
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testProcessWithUpdateException() throws AuthorizeException, UpdateException, NotFoundException {
+	public void testProcessWithUpdateException() throws Exception {
 		Video v = new Video();
 		v.setPrivacySetting(PrivacySetting.Private);
 		v.setYoutubeId("test");
@@ -221,12 +225,16 @@ public class MetadataUpdateTaskTest {
 		v.setUsername("username");
 		doThrow(UpdateException.class).when(vidUploader).updateMetadata(anyString(), any(List.class), anyString(),
 				anyString(), anyString(), anyString(), anyString(), eq(false));
-		assertEquals(VideoTask.STOP, task.process(v));
+		try {
+			task.process(v);
+			fail("expected TaskException not thrown");
+		} catch (TaskException e) {
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testProcessWithNotFoundException() throws AuthorizeException, UpdateException, NotFoundException {
+	public void testProcessWithNotFoundException() throws Exception {
 		Video v = new Video();
 		v.setPrivacySetting(PrivacySetting.Private);
 		v.setYoutubeId("test");
@@ -234,7 +242,11 @@ public class MetadataUpdateTaskTest {
 		v.setUsername("username");
 		doThrow(NotFoundException.class).when(vidUploader).updateMetadata(anyString(), any(List.class), anyString(),
 				anyString(), anyString(), anyString(), anyString(), eq(false));
-		assertEquals(VideoTask.STOP, task.process(v));
+		try {
+			task.process(v);
+			fail("expected TaskException not thrown");
+		} catch (TaskException e) {
+		}
 	}
 
 }

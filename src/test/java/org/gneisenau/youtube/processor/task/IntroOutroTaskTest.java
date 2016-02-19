@@ -74,11 +74,11 @@ public class IntroOutroTaskTest {
 		s.setNotifyProcessedState(true);
 		s.setNotifyReleaseState(true);
 		s.setNotifyUploadState(true);
-		when(userSettingsDAO.findByUserName(anyString())).thenReturn(s);
+		when(userSettingsDAO.findOrCreateByUserName(anyString())).thenReturn(s);
 	}
 
 	@Test
-	public void testProcess() throws IOException {
+	public void testProcess() throws Exception {
 		File original = new File(IntroOutroTaskTest.class.getResource("/SampleVideo_1080x720_1mb.mp4").getPath());
 		File intro = new File("intro.mp4");
 		File outro = new File("outro.mp4");
@@ -88,40 +88,40 @@ public class IntroOutroTaskTest {
 		FileUtils.copyFile(original, srcVideo);
 		Video v = new Video();
 		v.setVideo(srcVideo.getAbsolutePath());
-		assertEquals(VideoTask.CONTINUE, task.process(v));
+		assertEquals(ChainAction.CONTINUE, task.process(v));
 		assertFalse(srcVideo.exists());
 		intro.delete();
 		outro.delete();
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testProcessWhenVideoIsNull() throws IOException {
+	public void testProcessWhenVideoIsNull() throws Exception {
 		task.process(null);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testProcessWhenVideoPathIsNull() throws IOException {
+	public void testProcessWhenVideoPathIsNull() throws Exception {
 		Video v = new Video();
 		v.setVideo(null);
 		task.process(v);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testProcessWhenVideoPathIsEmpty() throws IOException {
+	public void testProcessWhenVideoPathIsEmpty() throws Exception {
 		Video v = new Video();
 		v.setVideo("");
 		task.process(v);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testProcessWhenVideoNotExist() throws IOException {
+	public void testProcessWhenVideoNotExist() throws Exception {
 		Video v = new Video();
 		v.setVideo("test.mp4");
 		task.process(v);
 	}
 
 	@Test
-	public void testProcessWithIOException() throws IOException, VideoTranscodeException, VideoMergeException {
+	public void testProcessWithIOException() throws Exception {
 		File original = new File(IntroOutroTaskTest.class.getResource("/SampleVideo_1080x720_1mb.mp4").getPath());
 		File intro = new File("intro.mp4");
 		File outro = new File("outro.mp4");
@@ -131,16 +131,21 @@ public class IntroOutroTaskTest {
 		FileUtils.copyFile(original, srcVideo);
 		Video v = new Video();
 		v.setVideo(srcVideo.getAbsolutePath());
-		doThrow(IOException.class).when(videoProcessor).merge(anyString(), any(File.class), any(File.class), any(File.class));
-		assertEquals(VideoTask.STOP, task.process(v));
-		assertTrue(srcVideo.exists());
-		intro.delete();
-		outro.delete();
-		srcVideo.delete();
+		doThrow(IOException.class).when(videoProcessor).merge(anyString(), any(File.class), any(File.class),
+				any(File.class));
+		try {
+			task.process(v);
+			fail("expected TaskException not thrown");
+		} catch (TaskException e) {
+			assertTrue(srcVideo.exists());
+			intro.delete();
+			outro.delete();
+			srcVideo.delete();
+		}
 	}
 
 	@Test
-	public void testProcessWithVideoMergeException() throws IOException, VideoTranscodeException, VideoMergeException {
+	public void testProcessWithVideoMergeException() throws Exception {
 		File original = new File(IntroOutroTaskTest.class.getResource("/SampleVideo_1080x720_1mb.mp4").getPath());
 		File intro = new File("intro.mp4");
 		File outro = new File("outro.mp4");
@@ -150,16 +155,21 @@ public class IntroOutroTaskTest {
 		FileUtils.copyFile(original, srcVideo);
 		Video v = new Video();
 		v.setVideo(srcVideo.getAbsolutePath());
-		doThrow(VideoMergeException.class).when(videoProcessor).merge(anyString(), any(File.class), any(File.class), any(File.class));
-		assertEquals(VideoTask.STOP, task.process(v));
-		assertTrue(srcVideo.exists());
-		intro.delete();
-		outro.delete();
-		srcVideo.delete();
+		doThrow(VideoMergeException.class).when(videoProcessor).merge(anyString(), any(File.class), any(File.class),
+				any(File.class));
+		try {
+			task.process(v);
+			fail("expected TaskException not thrown");
+		} catch (TaskException e) {
+			assertTrue(srcVideo.exists());
+			intro.delete();
+			outro.delete();
+			srcVideo.delete();
+		}
 	}
 
 	@Test
-	public void testProcessWithVideoTranscodeException() throws IOException, VideoTranscodeException, VideoMergeException {
+	public void testProcessWithVideoTranscodeException() throws Exception {
 		File original = new File(IntroOutroTaskTest.class.getResource("/SampleVideo_1080x720_1mb.mp4").getPath());
 		File intro = new File("intro.mp4");
 		File outro = new File("outro.mp4");
@@ -169,13 +179,17 @@ public class IntroOutroTaskTest {
 		FileUtils.copyFile(original, srcVideo);
 		Video v = new Video();
 		v.setVideo(srcVideo.getAbsolutePath());
-		doThrow(VideoTranscodeException.class).when(videoProcessor).merge(anyString(), any(File.class), any(File.class), any(File.class));
-		assertEquals(VideoTask.STOP, task.process(v));
-		assertTrue(srcVideo.exists());
-		intro.delete();
-		outro.delete();
-		srcVideo.delete();
+		doThrow(VideoTranscodeException.class).when(videoProcessor).merge(anyString(), any(File.class), any(File.class),
+				any(File.class));
+		try {
+			task.process(v);
+			fail("expected TaskException not thrown");
+		} catch (TaskException e) {
+			assertTrue(srcVideo.exists());
+			intro.delete();
+			outro.delete();
+			srcVideo.delete();
+		}
 	}
-
 
 }

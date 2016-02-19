@@ -10,6 +10,7 @@ import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.gneisenau.youtube.model.Video;
 import org.gneisenau.youtube.model.VideoRepository;
+import org.gneisenau.youtube.processor.task.ChainAction;
 import org.gneisenau.youtube.processor.task.VideoTask;
 import org.gneisenau.youtube.processor.task.YoutubeTask;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +40,8 @@ public class YoutubeProcessor extends AbstractProcessor {
 	@Transactional(propagation = Propagation.MANDATORY)
 	protected void runChain(Video v) throws Exception {
 		for (YoutubeTask chainItem : youtubeProcessingChain) {
-			int process = chainItem.process(v);
-			if (YoutubeTask.STOP == process) {
+			ChainAction process = chainItem.process(v);
+			if (ChainAction.STOP.equals(process)) {
 				break;
 			}
 		}
@@ -48,7 +49,7 @@ public class YoutubeProcessor extends AbstractProcessor {
 
 	@Override
 	protected void notifyProcessing(Video v) {
-		if (userSettingsDAO.findByUserName(v.getUsername()).isNotifyUploadState()) {
+		if (userSettingsDAO.findOrCreateByUserName(v.getUsername()).isNotifyUploadState()) {
 			mailService.sendStatusMail(v.getTitle(), v.getState(), v.getUsername());
 		}
 	}
