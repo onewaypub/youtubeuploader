@@ -2,10 +2,7 @@ package org.gneisenau.youtube.utils;
 
 import java.text.SimpleDateFormat;
 
-import org.dozer.DozerBeanMapper;
 import org.gneisenau.youtube.model.Video;
-import org.gneisenau.youtube.to.VideoTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service

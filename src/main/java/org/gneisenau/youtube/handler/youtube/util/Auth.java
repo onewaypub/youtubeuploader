@@ -7,6 +7,7 @@ import java.io.StringReader;
 import java.util.List;
 
 import org.apache.commons.collections4.list.UnmodifiableList;
+import org.apache.commons.lang.Validate;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,12 +44,19 @@ public class Auth {
 	private JsonFactory jsonFactory;
 	@Value("${youtube.client.secret}")
 	private String clientSecretJson;
+	private FileDataStoreFactory fileDataStoreFactory;
+
+	private Auth() throws IOException {
+		fileDataStoreFactory = new FileDataStoreFactory(new File(tomcatHomeDir + "/" + CREDENTIALS_DIRECTORY));
+	}
 
 	public static final List<String> SCOPES = new UnmodifiableList<String>(
 			Lists.newArrayList(YouTubeScopes.YOUTUBE, YouTubeScopes.YOUTUBE_UPLOAD));
 
 	public synchronized Credential authorize(String credentialDatastore, String username) throws AuthorizeException {
 
+		Validate.notEmpty(username);
+		
 		GoogleAuthorizationCodeFlow flow = createGoogleAuthorizationCodeFlow(credentialDatastore);
 		Credential credential;
 		try {
@@ -77,13 +85,14 @@ public class Auth {
 
 	public GoogleAuthorizationCodeFlow createGoogleAuthorizationCodeFlow(String credentialDatastore)
 			throws AuthorizeException {
+
+		Validate.notEmpty(credentialDatastore);
+		
 		GoogleClientSecrets clientSecrets = initializeClientSecrets();
 		// This creates the credentials datastore at
 		// ~/.oauth-credentials/${credentialDatastore}
-		FileDataStoreFactory fileDataStoreFactory;
 		DataStore<StoredCredential> datastore;
 		try {
-			fileDataStoreFactory = new FileDataStoreFactory(new File(tomcatHomeDir + "/" + CREDENTIALS_DIRECTORY));
 			datastore = fileDataStoreFactory.getDataStore(credentialDatastore);
 		} catch (IOException e) {
 			throw new AuthorizeException(e);

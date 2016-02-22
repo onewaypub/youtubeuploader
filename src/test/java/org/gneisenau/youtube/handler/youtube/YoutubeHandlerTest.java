@@ -1,20 +1,18 @@
 package org.gneisenau.youtube.handler.youtube;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.handler.youtube.util.Auth;
 import org.gneisenau.youtube.handler.youtube.util.YoutubeFactory;
-import org.gneisenau.youtube.model.PrivacySetting;
 import org.gneisenau.youtube.test.util.TestConfigurationContext;
 import org.gneisenau.youtube.test.util.YoutTubeMockHttpTransport;
 import org.junit.Before;

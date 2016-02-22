@@ -1,9 +1,5 @@
 package org.gneisenau.youtube.processor.task;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;

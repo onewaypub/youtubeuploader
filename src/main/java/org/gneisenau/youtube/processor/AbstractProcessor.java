@@ -2,6 +2,7 @@ package org.gneisenau.youtube.processor;
 
 import java.util.List;
 
+import org.apache.commons.lang3.Validate;
 import org.gneisenau.youtube.events.StatusUpdateEvent;
 import org.gneisenau.youtube.message.MailSendService;
 import org.gneisenau.youtube.model.State;
@@ -46,6 +47,10 @@ public abstract class AbstractProcessor {
 	}
 
 	private void execute(Video videoTemp) {
+		Validate.notNull(videoTemp);
+		Validate.notNull(videoTemp.getId());
+		Validate.notEmpty(videoTemp.getUsername());
+		
 		Video v = videoDAO.findById(videoTemp.getId());
 
 		v.setState(initialProcessState());

@@ -1,8 +1,6 @@
 package org.gneisenau.youtube.model;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -12,7 +10,6 @@ import javax.persistence.PersistenceContext;
 
 import org.gneisenau.youtube.test.util.TestConfigurationContext;
 import org.gneisenau.youtube.utils.SecurityUtil;
-import org.hibernate.validator.internal.util.IgnoreJava6Requirement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

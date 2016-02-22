@@ -1,23 +1,21 @@
 package org.gneisenau.youtube.processor.task;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.handler.video.exceptions.NotFoundException;
 import org.gneisenau.youtube.handler.video.exceptions.UpdateException;
 import org.gneisenau.youtube.handler.youtube.VideoHandler;
 import org.gneisenau.youtube.handler.youtube.YouTubeUtils;
 import org.gneisenau.youtube.handler.youtube.YoutubeHandler;
-import org.gneisenau.youtube.handler.youtube.exceptions.VideoMergeException;
 import org.gneisenau.youtube.message.MailSendService;
 import org.gneisenau.youtube.model.PrivacySetting;
 import org.gneisenau.youtube.model.UserSettings;

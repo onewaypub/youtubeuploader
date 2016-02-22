@@ -5,9 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.web.client.HttpStatusCodeException;
 
-import com.google.api.client.http.HttpStatusCodes;
 import com.google.api.client.http.LowLevelHttpRequest;
 import com.google.api.client.http.LowLevelHttpResponse;
 import com.google.api.client.json.Json;

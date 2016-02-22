@@ -1,6 +1,7 @@
 package org.gneisenau.youtube.processor.task;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -9,7 +10,6 @@ import java.io.IOException;
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.handler.youtube.VideoHandler;
 import org.gneisenau.youtube.message.MailSendService;
-import org.gneisenau.youtube.model.PrivacySetting;
 import org.gneisenau.youtube.model.UserSettings;
 import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.gneisenau.youtube.model.Video;

@@ -28,6 +28,7 @@ import org.gneisenau.youtube.handler.video.exceptions.UpdateException;
 import org.gneisenau.youtube.handler.video.exceptions.UploadException;
 import org.gneisenau.youtube.handler.youtube.util.YoutubeFactory;
 import org.gneisenau.youtube.model.PrivacySetting;
+import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +48,10 @@ public class VideoHandler {
 
 	@Autowired
 	private YoutubeFactory youtubefactory;
+	@Autowired
+	private UserSettingsRepository userSettings;
+	@Autowired
+	private YouTubeUtils utils;
 
 	private static final Logger logger = Logger.getLogger(VideoHandler.class);
 

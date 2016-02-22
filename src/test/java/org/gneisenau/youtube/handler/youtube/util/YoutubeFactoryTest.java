@@ -1,6 +1,7 @@
 package org.gneisenau.youtube.handler.youtube.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 

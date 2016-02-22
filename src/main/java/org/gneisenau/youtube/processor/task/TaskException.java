@@ -1,6 +1,5 @@
 package org.gneisenau.youtube.processor.task;
 
-import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.model.Video;
 
 public class TaskException extends Exception{

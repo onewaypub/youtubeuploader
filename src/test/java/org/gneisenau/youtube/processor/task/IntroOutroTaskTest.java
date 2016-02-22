@@ -1,12 +1,13 @@
 package org.gneisenau.youtube.processor.task;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +17,6 @@ import org.gneisenau.youtube.handler.video.FfmpegHandler;
 import org.gneisenau.youtube.handler.youtube.exceptions.VideoMergeException;
 import org.gneisenau.youtube.handler.youtube.exceptions.VideoTranscodeException;
 import org.gneisenau.youtube.message.MailSendService;
-import org.gneisenau.youtube.model.State;
 import org.gneisenau.youtube.model.UserSettings;
 import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.gneisenau.youtube.model.Video;

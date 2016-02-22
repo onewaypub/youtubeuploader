@@ -5,11 +5,9 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.gneisenau.youtube.message.MailSendService;
+import org.apache.commons.lang3.Validate;
 import org.gneisenau.youtube.model.State;
-import org.gneisenau.youtube.model.UserSettingsRepository;
 import org.gneisenau.youtube.model.Video;
-import org.gneisenau.youtube.model.VideoRepository;
 import org.gneisenau.youtube.processor.task.ChainAction;
 import org.gneisenau.youtube.processor.task.VideoTask;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +33,7 @@ public class VideoProcessor extends AbstractProcessor {
 
 	@Override
 	protected void runChain(Video v) throws Exception {
+		Validate.notEmpty(v.getVideo());
 		for (VideoTask chainItem : videoProcessingChain) {
 			ChainAction process = chainItem.process(v);
 			if (ChainAction.STOP.equals(process)) {

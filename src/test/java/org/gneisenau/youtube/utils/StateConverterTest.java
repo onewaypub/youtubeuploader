@@ -1,6 +1,7 @@
 package org.gneisenau.youtube.utils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.gneisenau.youtube.model.State;
 import org.junit.Test;

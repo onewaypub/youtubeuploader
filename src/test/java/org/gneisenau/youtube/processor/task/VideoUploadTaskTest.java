@@ -1,6 +1,6 @@
 package org.gneisenau.youtube.processor.task;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 

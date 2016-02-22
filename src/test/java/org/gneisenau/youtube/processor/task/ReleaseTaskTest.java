@@ -1,8 +1,13 @@
 package org.gneisenau.youtube.processor.task;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+
+import java.util.Date;
 
 import org.gneisenau.youtube.handler.video.exceptions.AuthorizeException;
 import org.gneisenau.youtube.handler.video.exceptions.NotFoundException;
@@ -30,10 +35,6 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
-
-import java.util.Date;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { TestConfigurationContext.class })
