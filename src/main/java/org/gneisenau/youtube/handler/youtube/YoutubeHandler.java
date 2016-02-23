@@ -2,6 +2,7 @@ package org.gneisenau.youtube.handler.youtube;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,7 +48,7 @@ public class YoutubeHandler {
 	 * @throws IOException
 	 */
 	public Map<String, String> getPlaylists(String username) {
-		Validate.notEmpty(username,"No username given");
+		Validate.notEmpty(username, "No username given");
 
 		Map<String, String> playlistMap = new HashMap<String, String>();
 		try {
@@ -81,22 +82,27 @@ public class YoutubeHandler {
 			categories.clear();
 		}
 		if (categories.size() == 0) {
-			URL url;
+			URL url = null;
 			try {
 				url = new URL("https://www.googleapis.com/youtube/v3/videoCategories?part=snippet&regionCode=de&key="
 						+ API_KEY);
-				InputStream is = url.openStream();
-				JsonReader rdr = Json.createReader(is);
+			} catch (MalformedURLException e) {
+				logger.error("", e);
+				return categories;
+			}
 
+			try (InputStream is = url.openStream()) {
+				JsonReader rdr = Json.createReader(is);
 				JsonObject obj = rdr.readObject();
 				JsonArray results = obj.getJsonArray("items");
 				for (JsonObject result : results.getValuesAs(JsonObject.class)) {
 					categories.put(result.getString("id"), result.getJsonObject("snippet").getString("title"));
 				}
-				lastUpdate = System.currentTimeMillis();
+
 			} catch (Exception e) {
 				logger.error("", e);
 			}
+			lastUpdate = System.currentTimeMillis();
 		}
 		return categories;
 	}

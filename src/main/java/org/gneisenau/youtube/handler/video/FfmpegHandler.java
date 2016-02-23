@@ -37,23 +37,22 @@ public class FfmpegHandler {
 	public String transcode(File inputFile, File outputFile, long id) throws ExecuteException, IOException {
 		Validate.notNull(inputFile, "Source video is null");
 		Validate.notNull(outputFile, "Output video is null");
-		
-		if(!inputFile.exists()){
+
+		if (!inputFile.exists()) {
 			throw new IOException("Source video not existing");
 		}
-		if(outputFile.exists()){
+		if (outputFile.exists()) {
 			throw new IOException("Target video already existing");
 		}
-		
+
 		String line = ioService.findFFMPEG() + " -i " + inputFile.getAbsolutePath()
-				//+ " -codec:v libvpx-vp9 -codec:a libopus -b:v 12000K -strict -2 -b:a 384k -r:a 48000 -movflags faststart "
+		// + " -codec:v libvpx-vp9 -codec:a libopus -b:v 12000K -strict -2 -b:a
+		// 384k -r:a 48000 -movflags faststart "
 				+ " -codec:v libx264 -bf 2 -flags +cgop -pix_fmt yuv420p -codec:a aac -strict -2 -b:a 384k -r:a 48000 -movflags faststart "
 				+ outputFile.getAbsolutePath();
 		String newFile = outputFile.getAbsolutePath();
 		String output = null;
-		ProgressAwareFFmpegOutputfilterStream stream = null;
-		try {
-			stream = new ProgressAwareFFmpegOutputfilterStream(publisher, id);
+		try (ProgressAwareFFmpegOutputfilterStream stream = new ProgressAwareFFmpegOutputfilterStream(publisher, id)) {
 			output = ioService.executeCommandLineWithReturn(line, stream, ioService.getTemporaryProcessingFolder());
 			boolean delete = inputFile.delete();
 			logger.debug("Delete old file " + inputFile.getAbsolutePath() + ", State: " + delete);
@@ -62,8 +61,6 @@ public class FfmpegHandler {
 			boolean delete = outputFile.delete();
 			logger.debug("Delete transcoded file " + outputFile.getAbsolutePath() + ", State: " + delete);
 			return inputFile.getPath();
-		} finally {
-			stream.close();
 		}
 		return newFile;
 	}
@@ -112,10 +109,7 @@ public class FfmpegHandler {
 				throw new VideoMergeException(e);
 			}
 		} finally {
-			for (File f : streamFiles) {
-				boolean deleted = f.delete();
-				logger.debug("Delete intermediate file " + f.getAbsolutePath() + ", State: " + deleted);
-			}
+			streamFiles.forEach((File f) -> f.delete());
 		}
 	}
 

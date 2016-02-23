@@ -17,6 +17,7 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.io.FileSystemUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.gneisenau.youtube.model.Video;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,12 +50,12 @@ public class IOService {
 
 	public String executeCommandLineWithReturn(String line, String processingFolder)
 			throws ExecuteException, IOException {
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		executeCmdLine(line, outputStream, processingFolder);
-		String output = outputStream.toString();
-		outputStream.close();
-		logger.debug(output);
-		return output;
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			executeCmdLine(line, outputStream, processingFolder);
+			String output = outputStream.toString();
+			logger.debug(output);
+			return output;
+		}
 	}
 
 	public String executeCommandLineWithReturn(String line, OutputStream outputStream)
@@ -144,11 +145,7 @@ public class IOService {
 			}
 		} catch (IOException e) {
 			// Cleanup on exception
-			for (File f : files) {
-				if (f.exists()) {
-					f.delete();
-				}
-			}
+			files.forEach((File f) -> f.delete());
 			throw e;
 		}
 		return files;

@@ -94,9 +94,7 @@ public class VideoController {
 		List<ValueTO> values = new ArrayList<ValueTO>();
 		try {
 			Map<String, String> cats = youtubeHandler.getCategories();
-			for (Entry<String, String> entry : cats.entrySet()) {
-				values.add(new ValueTO(entry.getKey(), entry.getValue()));
-			}
+			cats.forEach((k, v) -> values.add(new ValueTO(k, v)));
 			return values;
 		} catch (Exception e) {
 			logger.error("Fehler beim Laden der Kategorien", e);
@@ -111,9 +109,7 @@ public class VideoController {
 		List<ValueTO> values = new ArrayList<ValueTO>();
 		try {
 			Map<String, String> playlist = youtubeHandler.getPlaylists(secUtil.getPrincipal());
-			for (Entry<String, String> entry : playlist.entrySet()) {
-				values.add(new ValueTO(entry.getKey(), entry.getValue()));
-			}
+			playlist.forEach((k, v) -> values.add(new ValueTO(k, v)));
 			return values;
 		} catch (Exception e) {
 			logger.error("Fehler beim Laden der Playlist", e);
@@ -128,10 +124,7 @@ public class VideoController {
 		List<VideoTO> videos = new ArrayList<VideoTO>();
 		try {
 			List<Video> list = videoDAO.findAll();
-			for (Video v : list) {
-				VideoTO bean = beanMapper.createVideo(v, secUtil.getPrincipal());
-				videos.add(bean);
-			}
+			list.forEach((Video v) -> videos.add(beanMapper.createVideo(v, secUtil.getPrincipal())));
 			return videos;
 		} catch (Exception e) {
 			logger.error("Fehler beim Laden der Videos", e);
@@ -166,12 +159,7 @@ public class VideoController {
 				websocketEventBus.notifyNewVideo(to);
 			}
 		} catch (IOException e) {
-			// Cleanup on exception
-			for (File f : files) {
-				if (f.exists()) {
-					f.delete();
-				}
-			}
+			files.forEach((File f) -> f.delete());
 			logger.error("Fehler beim Hochladen der Videos", e);
 			ErrorEvent event = new ErrorEvent("Fehler beim Hochladen des Videos", this);
 			websocketEventBus.onApplicationEvent(event);
@@ -199,19 +187,18 @@ public class VideoController {
 				}
 				v.setThumbnail(newFile.getAbsolutePath());
 				if (StringUtils.isNotBlank(v.getYoutubeId())) {
-					String imgUrl = imageHandler.upload(v.getYoutubeId(), new FileInputStream(newFile),
-							secUtil.getPrincipal(), newFile.length());
+					String imgUrl = "";
+					try (FileInputStream imageFile = new FileInputStream(newFile)) {
+						imgUrl = imageHandler.upload(v.getYoutubeId(), imageFile, secUtil.getPrincipal(),
+								newFile.length());
+					}
 					v.setThumbnailUrl(imgUrl);
 				}
 				videoDAO.persist(v);
 			}
 		} catch (IOException | AuthorizeException | UploadException e) {
 			// Cleanup on exception
-			for (File f : files) {
-				if (f.exists()) {
-					f.delete();
-				}
-			}
+			files.forEach((File f) -> f.delete());
 			logger.error("Fehler beim Hochladen der Thumbnails", e);
 			ErrorEvent event = new ErrorEvent("Fehler beim Hochladen des Thumbnails", this);
 			websocketEventBus.onApplicationEvent(event);
@@ -227,17 +214,21 @@ public class VideoController {
 			InputStream is = null;
 			if (StringUtils.isNotBlank(v.getThumbnail())) {
 				File f = new File(v.getThumbnail());
-				InputStream thumb = new FileInputStream(f);
-				BufferedImage buff = ImageIO.read(thumb);
+				BufferedImage buff = null;
+				try (InputStream thumb = new FileInputStream(f)) {
+					buff = ImageIO.read(thumb);
+				}
 				buff = Scalr.resize(buff, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_WIDTH, 75, 75, Scalr.OP_ANTIALIAS);
 				BufferedImage outPad = Scalr.pad(buff, 10);
-				ByteArrayOutputStream os = new ByteArrayOutputStream();
-				ImageIO.write(outPad, "jpg", os);
-				is = new ByteArrayInputStream(os.toByteArray());
+				try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+					ImageIO.write(outPad, "jpg", os);
+					is = new ByteArrayInputStream(os.toByteArray());
+				}
 			} else {
 				is = VideoController.class.getResourceAsStream("/thumbnail_placeholder.jpg");
 			}
 			org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
+			is.close();
 		} catch (Exception e) {
 			logger.error("Fehler beim Holen des Thumbnails", e);
 			ErrorEvent event = new ErrorEvent("Thumbnail konnte nicht geladen werden", this);
@@ -279,9 +270,8 @@ public class VideoController {
 	private void updateYoutubeVideo(Video v)
 			throws AuthorizeException, UpdateException, NotFoundException, IOException {
 		if (StringUtils.isNotBlank(v.getYoutubeId())) {
-			videoHandler.updateMetadata(v.getYoutubeId(), youtubeUtils.getTagsList(v),
-					v.getTitle(), youtubeUtils.createDescription(v), v.getChannelId(), v.getCategoryId(),
-					v.getUsername(), false);
+			videoHandler.updateMetadata(v.getYoutubeId(), youtubeUtils.getTagsList(v), v.getTitle(),
+					youtubeUtils.createDescription(v), v.getChannelId(), v.getCategoryId(), v.getUsername(), false);
 			if (StringUtils.isNotBlank(v.getPlaylistId())) {
 				videoHandler.insertPlaylistItem(v.getPlaylistId(), v.getYoutubeId(), secUtil.getPrincipal());
 			}
@@ -290,14 +280,13 @@ public class VideoController {
 	}
 
 	@RequestMapping(value = "/getVideo/{id}.mp4", method = RequestMethod.GET)
-	public void getVideoStream(HttpServletResponse response, @PathVariable("id") long id) throws IOException {
-		try {
-			Video v = videoDAO.findById(id);
-			if (v == null) {
-				return;
-			}
-			File f = new File(v.getVideo());
-			InputStream video = new FileInputStream(f);
+	public void getVideoStream(HttpServletResponse response, @PathVariable("id") long id) {
+		Video v = videoDAO.findById(id);
+		if (v == null) {
+			return;
+		}
+		File f = new File(v.getVideo());
+		try (InputStream video = new FileInputStream(f)) {
 			response.setHeader("Content-Type", "video/*");
 			response.setHeader("X-Content-Type-Options", "nosniff");
 			response.setHeader("Accept-Ranges", "bytes");

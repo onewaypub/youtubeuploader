@@ -93,6 +93,7 @@ public class ProgressAwareFFmpegOutputfilterStream extends ByteArrayOutputStream
 
 	@Override
 	public synchronized void write(byte[] b, int off, int len) {
+		
 		for (byte c : b) {
 			findAndCalcPercentage(c);
 		}

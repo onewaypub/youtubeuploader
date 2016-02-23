@@ -40,9 +40,9 @@ public class VideoThumbnailUploadTask extends AbstractProcessorTask implements Y
 		}
 		File thumb = new File(v.getThumbnail());
 		v.setState(State.OnUpload);
-		try {
-			ProgressAwareInputStream inputStream = new ProgressAwareInputStream(new FileInputStream(thumb),
-					thumb.length(), thumb);
+		try (ProgressAwareInputStream inputStream = new ProgressAwareInputStream(new FileInputStream(thumb),
+				thumb.length(), thumb);) {
+
 			inputStream.setOnProgressListener(new ProgressAwareInputStream.OnProgressListener() {
 				@Override
 				public void onProgress(int percentage, Object tag) {
@@ -50,21 +50,15 @@ public class VideoThumbnailUploadTask extends AbstractProcessorTask implements Y
 					publishEvent(event);
 				}
 			});
-			try {
-				String imgUrl = imgUploader.upload(v.getYoutubeId(), inputStream, v.getUsername(), thumb.length());
-				v.setThumbnailUrl(imgUrl);
-			} finally {
-				try {
-					inputStream.close();
-				} catch (IOException e) {
-					logger.error("Cannot close progress aware inputstream for thumbnail upload", e);
-				}
-			}
+			String imgUrl = imgUploader.upload(v.getYoutubeId(), inputStream, v.getUsername(), thumb.length());
+			v.setThumbnailUrl(imgUrl);
 		} catch (FileNotFoundException e) {
 			throw new TaskException(v, "Das Thumbnail konnte auf der Festplatt nicht mehr gefunden werden", null);
 		} catch (AuthorizeException e) {
 			throw new TaskException(v, "Authorisierung bei Youtube fehlgeschlagen", e);
 		} catch (UploadException e) {
+			throw new TaskException(v, "Das Thumbnails konnte nicht hochgeladen werden", e);
+		} catch (IOException e) {
 			throw new TaskException(v, "Das Thumbnails konnte nicht hochgeladen werden", e);
 		}
 		return ChainAction.CONTINUE;

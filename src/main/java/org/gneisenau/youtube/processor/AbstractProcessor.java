@@ -41,9 +41,7 @@ public abstract class AbstractProcessor {
 	@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED, timeout = 10800)
 	public void execute() {
 		List<Video> videos = getProcessingVideoList();
-		for (Video videoTemp : videos) {
-			execute(videoTemp);
-		}
+		videos.forEach((Video v) -> execute(v));
 	}
 
 	private void execute(Video videoTemp) {

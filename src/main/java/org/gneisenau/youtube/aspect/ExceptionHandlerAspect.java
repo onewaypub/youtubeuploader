@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Aspect
 public class ExceptionHandlerAspect {
-	@AfterThrowing(pointcut = "execution(* org.gneisenau.youtube.scheduler..* (..))", throwing = "ex")
+	@AfterThrowing(pointcut = "execution(* org.gneisenau.youtube.processor..* (..))", throwing = "ex")
 	public void errorInterceptor(JoinPoint joinPoint, Exception ex) {
 		Logger localLog = LoggerFactory.getLogger(joinPoint.getClass());
 		localLog.error("Error during runtime", ex);

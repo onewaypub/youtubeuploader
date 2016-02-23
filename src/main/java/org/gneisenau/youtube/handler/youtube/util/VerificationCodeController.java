@@ -57,11 +57,12 @@ public class VerificationCodeController {
 		String uuid = UUID.randomUUID().toString();
 		// Check if the user has already a uuid token; if yes then delete it.
 		if (userTokenRegister.containsValue(secUtil.getPrincipal())) {
-			for (Entry<String, String> e : userTokenRegister.entrySet()) {
-				if (e.getValue().equals(secUtil.getPrincipal())) {
-					userTokenRegister.remove(e.getKey());
-				}
-			}
+//			for (Entry<String, String> e : userTokenRegister.entrySet()) {
+//				if (e.getValue().equals(secUtil.getPrincipal())) {
+//					userTokenRegister.remove(e.getKey());
+//				}
+//			}
+			userTokenRegister.entrySet().stream().filter(e -> e.getValue().equals(secUtil.getPrincipal()));
 		}
 		userTokenRegister.put(uuid, secUtil.getPrincipal());
 		GoogleAuthorizationCodeFlow flow = authService.createGoogleAuthorizationCodeFlow("youtube");
