@@ -19,9 +19,14 @@ public class YouTubeUtils {
 	private YoutubeHandler youtubeHandler;
 
 	public List<String> getTagsList(Video v) {
+		Validate.notNull(v);
 		List<String> tags = new ArrayList<String>();
 		if (StringUtils.isNotBlank(v.getTags())) {
-			CollectionUtils.addAll(tags, v.getTags().split(","));
+			String[] split = v.getTags().split(",");
+			for(String s : split){
+				s = s.trim();
+				tags.add(s);
+			}
 		}
 		return tags;
 	}
@@ -54,6 +59,9 @@ public class YouTubeUtils {
 
 	public String getCategoryId(String category) {
 		Map<String, String> categories = youtubeHandler.getCategories();
+		if(categories == null){
+			return category;
+		}
 		if (categories.containsValue(category)) {
 			for (Entry<String, String> e : categories.entrySet()) {
 				if (e.getValue().equals(category)) {
@@ -65,7 +73,11 @@ public class YouTubeUtils {
 	}
 
 	public String getPaylistId(String playlist, String username) {
+		Validate.notEmpty(username);
 		Map<String, String> playlists = youtubeHandler.getPlaylists(username);
+		if(playlists == null){
+			return playlist;
+		}
 		if (playlists.containsValue(playlist)) {
 			for (Entry<String, String> e : playlists.entrySet()) {
 				if (e.getValue().equals(playlist)) {
@@ -78,6 +90,9 @@ public class YouTubeUtils {
 
 	public String getCategoryDisplayName(String youtubeCategoryId) {
 		Map<String, String> categories = youtubeHandler.getCategories();
+		if(categories == null){
+			return youtubeCategoryId;
+		}
 		if (categories.containsKey(youtubeCategoryId)) {
 			for (Entry<String, String> e : categories.entrySet()) {
 				if (e.getKey().equals(youtubeCategoryId)) {
@@ -89,7 +104,11 @@ public class YouTubeUtils {
 	}
 
 	public String getPlaylistDisplayName(String youtubePlaylistId, String username) {
+		Validate.notEmpty(username);
 		Map<String, String> playlists = youtubeHandler.getPlaylists(username);
+		if(playlists == null){
+			return youtubePlaylistId;
+		}
 		if (playlists.containsKey(youtubePlaylistId)) {
 			for (Entry<String, String> e : playlists.entrySet()) {
 				if (e.getKey().equals(youtubePlaylistId)) {
